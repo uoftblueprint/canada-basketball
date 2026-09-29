@@ -32,3 +32,16 @@
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+
+# Ignore Idea IDE config directory
+/.idea
+
+/config/credentials/development.key
+
+/config/credentials/production.key
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Node modules
+node_modules/
