@@ -1,9 +1,13 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
+Rails.root.glob("test/helpers/**/*.rb").each { |file| require file }
+
 require "rails/test_help"
 
 module ActiveSupport
   class TestCase
+    include FactoryBot::Syntax::Methods
+
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
