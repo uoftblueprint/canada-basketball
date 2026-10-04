@@ -23,7 +23,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="min-h-screen">
+      <main>
+        <div id="flash">
+          <%= render "shared/flash" %>
+        </div>
+        <%= yield %>
+        <div id="modal"></div>
+      </main>
   </body>
 </html>
