@@ -15,5 +15,20 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def create_logged_in_admin
+      create(:admin).tap do |admin|
+        post login_admin_url, params: { email: admin.email, password: admin.password }
+      end
+    end
+
+    def create_logged_in_camp
+      create(:camp).tap do |camp|
+        post login_url, params: { camp_id: camp.id, password: camp.password }
+      end
+    end
+
+    def log_out_user
+      delete logout_url
+    end
   end
 end

@@ -1,0 +1,15 @@
+<div>
+  <h1 class="font-bold text-4xl">Login</h1>
+
+  <%= form_with url: login_path do |form| %>
+    <div>
+      <%= label_tag :camp_id %>
+      <%= select_tag :camp_id, options_from_collection_for_select(Camp.all, :id, :name), prompt: "Choose a Camp" %>
+    </div>
+    <div>
+      <%= form.label :password %>
+      <%= form.password_field :password, required: true, placeholder: "Password" %>
+    </div>
+    <%= form.submit "Login" %>
+  <% end %>
+</div>
