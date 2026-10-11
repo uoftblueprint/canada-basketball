@@ -1,7 +1,13 @@
 FactoryBot.define do
   factory :camp do
     sequence(:name) { |n| "Camp #{n}" }
+    sequence(:description) { |n| "Camp #{n} description" }
     password { "password" }
+    active { true }
+
+    trait :inactive do
+      active { false }
+    end
 
     trait :with_teams do
       transient do

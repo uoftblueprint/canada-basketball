@@ -5,6 +5,7 @@ class CreateGames < ActiveRecord::Migration[8.1]
       t.references :camp, null: false, foreign_key: true
       t.references :team, null: false, foreign_key: true
       t.string :opponent_name, null: false
+      t.boolean :active, default: true, null: false
 
       t.timestamps
     end

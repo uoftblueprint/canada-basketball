@@ -32,7 +32,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_195440) do
 
   create_table "camps", force: :cascade do |t|
     t.string "name", null: false
+    t.string "description", null: false
     t.string "password_digest"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_camps_on_name", unique: true
@@ -43,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_195440) do
     t.integer "camp_id", null: false
     t.integer "team_id", null: false
     t.string "opponent_name", null: false
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["camp_id", "name"], name: "index_games_on_camp_id_and_name", unique: true

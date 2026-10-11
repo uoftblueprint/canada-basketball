@@ -7,4 +7,6 @@ class Camp < ApplicationRecord
   has_many :players, through: :teams
 
   validates :name, presence: true, uniqueness: true
+  validates :description, presence: true
+  validates :active, inclusion: { in: [true, false] }
 end

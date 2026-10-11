@@ -4,6 +4,7 @@ class Game < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { scope: :camp_id }
   validates :opponent_name, presence: true
+  validates :active, inclusion: { in: [true, false] }
   validate :team_assigned_to_camp
 
   private
