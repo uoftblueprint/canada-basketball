@@ -19,6 +19,7 @@ module Seeds
           Camp.create!(
             name: "Camp #{index + 1}",
             password: "password",
+            description: "Description",
             teams: teams[0, index + 1]
           )
         end
