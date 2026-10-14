@@ -56,7 +56,7 @@ group :development, :test do
   gem "factory_bot_rails"
 
   # Ruby linting
-  gem "rubocop", "~> 1.91"
+  gem "rubocop", "~> 1.92"
   gem "rubocop-capybara", "~> 3.0"
   gem "rubocop-factory_bot", "~> 2.28"
   gem "rubocop-performance", "~> 1.27"
