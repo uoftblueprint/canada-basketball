@@ -11,5 +11,6 @@ Rails.application.routes.draw do
   post "/login/admin", to: "sessions#create_admin"
   delete "/logout", to: "sessions#destroy"
 
+  resources :teams, only: :show
   root "home#index"
 end
