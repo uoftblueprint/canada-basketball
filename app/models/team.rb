@@ -6,5 +6,8 @@ class Team < ApplicationRecord
   has_many :camp_assignments, dependent: :destroy
   has_many :camps, through: :camp_assignments
 
+  searchable_by :name
+  sortable_by :name
+
   validates :name, presence: true
 end

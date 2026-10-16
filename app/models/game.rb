@@ -2,6 +2,9 @@ class Game < ApplicationRecord
   belongs_to :camp
   belongs_to :team
 
+  searchable_by :name, :opponent_name
+  sortable_by :name, :opponent_name
+
   validates :name, presence: true, uniqueness: { scope: :camp_id }
   validates :opponent_name, presence: true
   validates :active, inclusion: { in: [true, false] }
