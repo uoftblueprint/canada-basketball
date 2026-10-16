@@ -1,8 +1,8 @@
 module Seeds
   class Teams
     class << self
-      PlayerStruct = Struct.new(:name)
-      TeamStruct = Struct.new(:name, :players)
+      PlayerData = Data.define(:name)
+      TeamData = Data.define(:name, :players)
 
       def run
         ActiveRecord::Base.connection.truncate_tables("teams", "players")
@@ -13,37 +13,37 @@ module Seeds
 
       def seed_teams
         puts "Seeding teams and players"
-        team_data.map do |team_struct|
-          create_team(team_struct)
+        team_data.map do |team_datum|
+          create_team(team_datum)
         end
       end
 
       def team_data
         [
-          TeamStruct.new(
+          TeamData.new(
             "Team 1",
             [
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 1"
               ),
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 2"
               ),
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 3"
               )
             ]
           ),
-          TeamStruct.new(
+          TeamData.new(
             "Team 2",
             [
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 4"
               ),
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 5"
               ),
-              PlayerStruct.new(
+              PlayerData.new(
                 "Player 6"
               )
             ]
@@ -51,10 +51,10 @@ module Seeds
         ]
       end
 
-      def create_team(team_struct)
+      def create_team(team_datum)
         Team.create!(
-          name: team_struct.name,
-          players: team_struct.players.map { |player_struct| Player.new(name: player_struct.name) }
+          name: team_datum.name,
+          players: team_datum.players.map { |player_datum| Player.new(name: player_datum.name) }
         )
       end
     end
