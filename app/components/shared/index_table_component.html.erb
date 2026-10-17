@@ -1,0 +1,60 @@
+<%= turbo_frame_tag frame_id, data: { turbo_action: "advance" } do %>
+  <section>
+    <%# Search bar %>
+    <% if searchable %>
+      <%= form_with url: path, method: :get, scope: param_scope, data: { turbo: true } do |form| %>
+        <%= form.search_field :q, value: query_params.q %>
+        <%= form.hidden_field :order_by, value: query_params.order_by %>
+        <%= form.hidden_field :order, value: query_params.order %>
+        <%= form.button type: :submit, name: nil do %>
+          <%= render Shared::IconComponent.new(icon: "search") %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <%# Header %>
+    <div class="grid" style="grid-template-columns: <%= column_sizes %>">
+      <% columns.each do |column| %>
+        <div>
+          <% if sortable?(column) %>
+            <%= link_to path_with_sort(column), class: "flex flex-row items-center gap-2" do %>
+              <%= column.header %>
+              <% if column.attribute.to_s == query_params.order_by %>
+                <%= render Shared::IconComponent.new(icon: query_params.order == "asc" ? "caret-up" : "caret-down") %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= column.header %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <%# Rows %>
+    <% if records.empty? %>
+      <div class="flex flex-row justify-center items-center">
+        <span>No Entries Found</span>
+      </div>
+    <% else %>
+      <% records.each do |record| %>
+        <div class="grid" style="grid-template-columns: <%= column_sizes %>">
+          <% columns.each do |column| %>
+            <div><%= render_cell_content(record, column) %></div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+    <%# Controls %>
+    <div class="flex flex-row">
+      <% if current_page <= 1 %>
+        <span class="btn btn-disabled">&lt;</span>
+      <% else %>
+        <%= link_to "<", path_with_page(current_page - 1), class: "btn" %>
+      <% end %>
+      <span><%= current_page %> of <%= total_pages %></span>
+      <% if current_page >= total_pages %>
+        <span class="btn btn-disabled">&gt;</span>
+      <% else %>
+        <%= link_to ">", path_with_page(current_page + 1), class: "btn" %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
