@@ -14,6 +14,7 @@
           <td><%= camp.name %></td>
           <td><%= camp.description %></td>
           <td><%= camp.active? ? "Active" : "Inactive" %></td>
+          <td><%= button_to "Delete", camp_path(camp), method: :delete %></td>
         </tr>
       <% end %>
     </tbody>

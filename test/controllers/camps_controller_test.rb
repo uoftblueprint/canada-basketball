@@ -37,4 +37,40 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
     assert_equal "You must be logged in to access this page", flash[:error]
   end
+
+  test "destroy deletes the camp" do
+    create_logged_in_admin
+    camp = create(:camp)
+
+    assert_difference("Camp.count", -1) { delete camp_path(camp) }
+
+    assert_redirected_to camps_path
+    assert_equal "Camp deleted successfully", flash[:success]
+  end
+
+  test "destroy does not delete a camp with games" do
+    create_logged_in_admin
+    camp = create(:camp, :with_games)
+
+    assert_no_difference("Camp.count") { delete camp_path(camp) }
+
+    assert_redirected_to camps_path
+    assert_equal "Cannot delete record because dependent games exist", flash[:error]
+  end
+
+  test "destroy redirects camp users" do
+    camp = create_logged_in_camp
+
+    assert_no_difference("Camp.count") { delete camp_path(camp) }
+
+    assert_redirected_to login_path
+  end
+
+  test "destroy redirects logged out users" do
+    camp = create(:camp)
+
+    assert_no_difference("Camp.count") { delete camp_path(camp) }
+
+    assert_redirected_to login_path
+  end
 end
