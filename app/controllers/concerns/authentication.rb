@@ -5,7 +5,8 @@ module Authentication
     # By default, require login before accessing page (ON by default)
     # Use skip_before_action to skip login
     before_action :require_login
-    helper_method :logged_in?, :logged_in_as_admin?, :logged_in_as_camp?, :logged_in_admin, :logged_in_camp
+    helper_method :logged_in_state, :logged_in?, :logged_in_as_admin?, :logged_in_as_camp?, :logged_in_admin,
+                  :logged_in_camp
   end
 
   class_methods do
@@ -42,15 +43,23 @@ module Authentication
     redirect_to root_path, flash: { error: "You don't have access to this camp" }
   end
 
+  def current_identity
+    session[:identity]
+  end
+
+  def logged_in_state
+    current_identity&.dig("type")&.to_sym || :logged_out
+  end
+
+  def logged_in_as_admin? = logged_in_state == :admin
+  def logged_in_as_camp? = logged_in_state == :camp
+  def logged_in? = logged_in_state != :logged_out
+
   def logged_in_admin
-    @logged_in_admin ||= Admin.find_by(id: session[:admin_id]) if logged_in_as_admin?
+    @logged_in_admin ||= Admin.find_by(id: current_identity["id"]) if logged_in_as_admin?
   end
 
   def logged_in_camp
-    @logged_in_camp ||= Camp.find_by(id: session[:camp_id]) if logged_in_as_camp?
+    @logged_in_camp ||= Camp.find_by(id: current_identity["id"]) if logged_in_as_camp?
   end
-
-  def logged_in_as_admin? = !!session[:admin_id]
-  def logged_in_as_camp? = !!session[:camp_id]
-  def logged_in? = logged_in_as_admin? || logged_in_as_camp?
 end
