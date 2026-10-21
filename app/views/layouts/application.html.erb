@@ -24,12 +24,15 @@
   </head>
 
   <body class="min-h-screen">
-      <main>
+    <div class="flex flex-row">
+      <%= render SidebarComponent.new(logged_in_state: logged_in_state) %>
+      <main class="flex-1 overflow-auto">
         <div id="flash">
           <%= render "shared/flash" %>
         </div>
         <%= yield %>
         <div id="modal"></div>
       </main>
+    </div>
   </body>
 </html>

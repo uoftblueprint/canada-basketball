@@ -1,0 +1,41 @@
+<aside class="flex flex-col justify-between bg-base-200 h-screen w-64 tracking-wide">
+  <div class="flex-1">
+    <div class="px-4 py-4 border-b border-base-300">
+      <%= link_to root_path do %>
+        <div class="flex flex-row items-center gap-3">
+          <%= render Shared::IconComponent.new(icon: "basketball", size: :md) %>
+          <span class="font-semibold text-sm">
+            CANADA BASKETBALL
+          </span>
+        </div>
+      <% end %>
+    </div>
+    <ul class="menu py-4 w-full">
+      <% sections.each do |section| %>
+        <li>
+          <h2 class="menu-title uppercase"> <%= section.title %></h2>
+          <ul>
+            <% section.items.each do |item| %>
+              <li>
+                <%= link_to item.path do %>
+                  <%= render Shared::IconComponent.new(icon: item.icon, size: :md, classes: "w-5 h-5") %>
+                  <span class="truncate text-base-content"><%= item.name %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="border-t border-base-300">
+    <ul class="menu w-full">
+      <li>
+        <%= button_to logout_item.path, method: :delete, class: "flex flex-row gap-2" do %>
+          <%= render Shared::IconComponent.new(icon: logout_item.icon, size: :md) %>
+          <span><%= logout_item.name %></span>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</aside>
