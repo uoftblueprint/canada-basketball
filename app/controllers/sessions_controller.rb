@@ -10,7 +10,8 @@ class SessionsController < ApplicationController
 
     if camp&.authenticate(params[:password])
       reset_session
-      session[:camp_id] = camp.id
+      # Use strings to prevent serialization confusion
+      session[:identity] = { "type" => "camp", "id" => camp.id }
       redirect_to root_path, flash: { success: "Logged in successfully" }
     else
       redirect_to login_path, flash: { error: "Invalid camp or password" }
@@ -24,7 +25,8 @@ class SessionsController < ApplicationController
 
     if admin&.authenticate(params[:password])
       reset_session
-      session[:admin_id] = admin.id
+      # Use strings to prevent serialization confusion
+      session[:identity] = { "type" => "admin", "id" => admin.id }
       redirect_to root_path, flash: { success: "Logged in as admin successfully" }
     else
       redirect_to login_admin_path, flash: { error: "Invalid email or password" }
