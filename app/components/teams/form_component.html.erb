@@ -1,0 +1,22 @@
+<%= form_with model: team, html: { autocomplete: "off" } do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <fieldset>
+    <legend>Players</legend>
+    <%= f.collection_check_boxes :player_ids, players, :id, :name do |b| %>
+      <div><%= b.check_box %> <%= b.label %></div>
+    <% end %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Camps</legend>
+    <%= f.collection_check_boxes :camp_ids, camps, :id, :name do |b| %>
+      <div><%= b.check_box %> <%= b.label %></div>
+    <% end %>
+  </fieldset>
+
+  <%= f.submit %>
+<% end %>
