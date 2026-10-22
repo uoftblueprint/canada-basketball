@@ -6,6 +6,23 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     @camp = create(:camp)
   end
 
+  test "Logged in user can see team names" do
+    team = create(:team, name: "Ontario U17")
+    log_in_as_camp
+
+    get teams_path
+
+    assert_response :success
+    assert_match team.name, response.body
+  end
+
+  test "Logged out user is redirected to login from the teams index" do
+    get teams_path
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access this page", flash[:error]
+  end
+
   test "Admin can access the new team page" do
     log_in_as_admin
 

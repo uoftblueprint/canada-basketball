@@ -1,6 +1,10 @@
 class TeamsController < ApplicationController
   before_action :require_admin, only: %i[new create]
 
+  def index
+    @teams = Team.order(:name)
+  end
+
   def new
     @team = Team.new
     load_options
