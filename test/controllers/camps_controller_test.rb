@@ -70,6 +70,51 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     camp = create(:camp)
 
     assert_no_difference("Camp.count") { delete camp_path(camp) }
+  def setup
+    @camp_attributes = attributes_for(:camp, active: false)
+  end
+
+  test "admin can create a camp without exposing its password digest" do
+    create_logged_in_admin
+
+    assert_difference("Camp.count", 1) do
+      post "/camps", params: { camp: @camp_attributes }, as: :json
+    end
+
+    assert_response :created
+    camp = Camp.find(response.parsed_body["id"])
+    assert_equal @camp_attributes[:name], camp.name
+    assert_equal @camp_attributes[:description], camp.description
+    assert_not camp.active
+    assert camp.authenticate(@camp_attributes[:password])
+    assert_not response.parsed_body.key?("password_digest")
+  end
+
+  test "invalid camp returns validation errors without being saved" do
+    create_logged_in_admin
+
+    assert_no_difference("Camp.count") do
+      post "/camps", params: { camp: @camp_attributes.merge(name: "") }, as: :json
+    end
+
+    assert_response :unprocessable_content
+    assert_includes response.parsed_body["errors"], "Name can't be blank"
+  end
+
+  test "anonymous request cannot create a camp" do
+    assert_no_difference("Camp.count") do
+      post "/camps", params: { camp: @camp_attributes }, as: :json
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "camp login cannot create a camp" do
+    create_logged_in_camp
+
+    assert_no_difference("Camp.count") do
+      post "/camps", params: { camp: @camp_attributes }, as: :json
+    end
 
     assert_redirected_to login_path
   end
