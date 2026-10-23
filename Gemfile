@@ -59,7 +59,7 @@ group :development, :test do
 
   # Ruby linting
   gem "rubocop", "~> 1.92"
-  gem "rubocop-capybara", "~> 3.0"
+  gem "rubocop-capybara", "~> 3.1"
   gem "rubocop-factory_bot", "~> 2.28"
   gem "rubocop-performance", "~> 1.27"
   gem "rubocop-rails", "~> 2.38"
