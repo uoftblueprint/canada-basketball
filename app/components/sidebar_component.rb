@@ -1,6 +1,4 @@
 class SidebarComponent < ViewComponent::Base
-  attr_reader :logged_in_state, :sections
-
   SidebarSection = Data.define(:title, :items)
   SidebarItem = Data.define(:name, :icon, :path)
 
@@ -19,6 +17,8 @@ class SidebarComponent < ViewComponent::Base
   end
 
   private
+
+  attr_reader :logged_in_state, :sections
 
   def build_admin_section; end
 

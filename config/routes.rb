@@ -6,10 +6,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :camps do
-    resources :games, only: %i[new create show edit update destroy]
+    resources :games, except: :index
+    resources :teams, except: :index
   end
   resources :players
-  resources :teams
   resources :admins, except: :show
 
   get "/login", to: "sessions#login"

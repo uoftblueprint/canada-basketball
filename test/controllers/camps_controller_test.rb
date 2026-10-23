@@ -186,16 +186,16 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
   test "camp page shows players from every assigned team" do
     camp = create_logged_in_camp
-    teams = create_list(:team, 2, camps: [camp])
-    players = teams.map { |team| create(:player, team: team) }
+    teams = create_list(:team, 2, camp: camp)
+    registrations = teams.map { |team| create(:camp_registration, camp: camp, team: team) }
     unrelated_player = create(:player)
 
     get camp_path(camp)
 
     assert_response :success
-    players.each do |player|
-      assert_select "td", text: player.name
-      assert_select "td", text: player.team.name
+    registrations.each do |registration|
+      assert_select "td", text: registration.player.name
+      assert_select "td", text: registration.team.name
     end
     assert_select "td", text: unrelated_player.name, count: 0
     assert_not_includes response.body, camp.password_digest
@@ -203,9 +203,9 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
   test "camp page shows only its games with teams opponents and statuses" do
     camp = create_logged_in_camp
-    active_game = create(:game, camp: camp)
-    inactive_game = create(:game, :inactive, camp: camp)
-    unrelated_game = create(:game, team: active_game.team)
+    active_game = create(:game, team: create(:team, camp: camp))
+    inactive_game = create(:game, :inactive, team: create(:team, camp: camp))
+    unrelated_game = create(:game)
 
     get camp_path(camp)
 
@@ -245,7 +245,7 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     get camp_path(other_camp)
 
-    assert_redirected_to root_path
+    assert_redirected_to login_path
     assert_equal "You don't have access to this camp", flash[:error]
   end
 end

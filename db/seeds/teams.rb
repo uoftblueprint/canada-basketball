@@ -5,58 +5,36 @@ module Seeds
       TeamData = Data.define(:name, :players)
 
       def run
-        ActiveRecord::Base.connection.truncate_tables("teams", "players")
+        ActiveRecord::Base.connection.truncate_tables("teams", "players", "camp_registrations")
         seed_teams
       end
 
       private
 
       def seed_teams
-        puts "Seeding teams and players"
-        team_data.map do |team_datum|
-          create_team(team_datum)
+        puts "Seeding teams, players, and registrations"
+        create_team_from_camps(camps)
+      end
+
+      def create_team_from_camps(camps)
+        camps.each do |camp|
+          team = camp.teams.create!(name: "Team 1")
+
+          (1..3).map do |player_index|
+            player = Player.create!(name: "Player #{player_index} (Camp #{camp.id})")
+            camp.camp_registrations.create!(player: player, team: team)
+          end
+
+          team = camp.teams.create!(name: "Team 2")
+
+          (4..6).map do |player_index|
+            player = Player.create!(name: "Player #{player_index} (Camp #{camp.id})")
+            camp.camp_registrations.create!(player: player, team: team)
+          end
         end
       end
 
-      def team_data
-        [
-          TeamData.new(
-            "Team 1",
-            [
-              PlayerData.new(
-                "Player 1"
-              ),
-              PlayerData.new(
-                "Player 2"
-              ),
-              PlayerData.new(
-                "Player 3"
-              )
-            ]
-          ),
-          TeamData.new(
-            "Team 2",
-            [
-              PlayerData.new(
-                "Player 4"
-              ),
-              PlayerData.new(
-                "Player 5"
-              ),
-              PlayerData.new(
-                "Player 6"
-              )
-            ]
-          )
-        ]
-      end
-
-      def create_team(team_datum)
-        Team.create!(
-          name: team_datum.name,
-          players: team_datum.players.map { |player_datum| Player.new(name: player_datum.name) }
-        )
-      end
+      def camps = Camp.all
     end
   end
 end

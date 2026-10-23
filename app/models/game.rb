@@ -15,6 +15,6 @@ class Game < ApplicationRecord
   def team_assigned_to_camp
     return if team.blank? || camp.blank?
 
-    errors.add(:team, "must be assigned to this game's camp") unless camp.teams.exists?(team.id)
+    errors.add(:team, "must be assigned to this game's camp") unless team.camp_id == camp_id
   end
 end

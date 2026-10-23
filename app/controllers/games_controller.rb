@@ -38,9 +38,10 @@ class GamesController < ApplicationController
   def destroy
     @game = current_camp.games.find(params.expect(:id))
     if @game.destroy
-      redirect_to root_path, flash: { success: "Game was successfully deleted" }, status: :see_other
+      redirect_to camp_path(current_camp), flash: { success: "Game was successfully deleted" }, status: :see_other
     else
-      redirect_back_or_to games_path, flash: { error: @game.errors.full_messages.to_sentence }, status: :see_other
+      redirect_back_or_to camp_path(current_camp), flash: { error: @game.errors.full_messages.to_sentence },
+                                                   status: :see_other
     end
   end
 

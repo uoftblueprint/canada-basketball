@@ -6,18 +6,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     @camp = create(:camp, password: "password")
   end
 
-  test "Create admin redirects to root path when login is successful and sets identity in session" do
+  test "Create admin redirects to camps path when login is successful and sets identity in session" do
     post login_admin_path, params: { email: "admin@test.com", password: "password" }
 
-    assert_redirected_to root_path
+    assert_redirected_to camps_path
     assert_equal "Logged in as admin successfully", flash[:success]
     assert_equal({ "type" => "admin", "id" => @admin.id }, session[:identity])
   end
 
-  test "Create redirects to root path when login is successful and sets identity in session" do
+  test "Create redirects to camp path when login is successful and sets identity in session" do
     post login_path, params: { camp_id: @camp.id, password: "password" }
 
-    assert_redirected_to root_path
+    assert_redirected_to camp_path(@camp)
     assert_equal "Logged in successfully", flash[:success]
     assert_equal({ "type" => "camp", "id" => @camp.id }, session[:identity])
   end
@@ -42,7 +42,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post login_admin_path, params: { email: "admin@test.com", password: "password" }
     delete logout_path
 
-    assert_redirected_to root_path
+    assert_redirected_to login_path
     assert_equal "Logged out successfully", flash[:success]
     assert_nil session[:identity]
   end
@@ -51,7 +51,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { camp_id: @camp.id, password: "password" }
     delete logout_path
 
-    assert_redirected_to root_path
+    assert_redirected_to login_path
     assert_equal "Logged out successfully", flash[:success]
     assert_nil session[:identity]
   end

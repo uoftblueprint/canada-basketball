@@ -2,137 +2,130 @@ require "test_helper"
 
 class TeamsControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @camp = create(:camp, password: "password")
-    @team1 = create(:team, name: "T1")
-    @admin = create(:admin, email: "admin@test.com", password: "password")
+    @camp = create_logged_in_camp
+    @team = create(:team, name: "T1", camp: @camp)
 
-    create(:player, name: "A", team: @team1)
-    create(:player, name: "B", team: @team1)
+    create(:camp_registration, camp: @camp, team: @team, player: create(:player, name: "A"))
+    create(:camp_registration, camp: @camp, team: @team, player: create(:player, name: "B"))
   end
 
   test "does not allow access when not logged in" do
-    get team_path(@team1)
+    log_out_user
+
+    get camp_team_path(@camp, @team)
+
     assert_redirected_to login_path
   end
 
-  test "show allow access when logged in as camp" do
-    post login_path, params: { camp_id: @camp.id, password: "password" }
-
-    get team_path(@team1)
+  test "show allows access when logged in as camp" do
+    get camp_team_path(@camp, @team)
 
     assert_response :success
   end
 
-  test "shows allows access when logged in as admin" do
-    post login_admin_path, params: { email: "admin@test.com", password: "password" }
+  test "show allows access when logged in as admin" do
+    create_logged_in_admin
 
-    get team_path(@team1)
+    get camp_team_path(@camp, @team)
 
     assert_response :success
   end
 
   test "show displays team name and players when logged in as camp" do
-    post login_path, params: { camp_id: @camp.id, password: "password" }
-
-    get team_path(@team1)
+    get camp_team_path(@camp, @team)
 
     assert_select "h1", "T1"
-    assert_select "li", "A"
-    assert_select "li", "B"
+    assert_select "#players li", "A"
+    assert_select "#players li", "B"
   end
 
   test "show displays team name and players when logged in as admin" do
-    post login_admin_path, params: { email: "admin@test.com", password: "password" }
+    create_logged_in_admin
 
-    get team_path(@team1)
+    get camp_team_path(@camp, @team)
 
     assert_select "h1", "T1"
-    assert_select "li", "A"
-    assert_select "li", "B"
+    assert_select "#players li", "A"
+    assert_select "#players li", "B"
   end
 
   test "shows team name and no players" do
-    team = create(:team, name: "T2")
-    post login_path, params: { camp_id: @camp.id, password: "password" }
+    team = create(:team, name: "T2", camp: @camp)
 
-    get team_path(team)
+    get camp_team_path(@camp, team)
 
     assert_select "h1", "T2"
-    assert_select "players-list li", count: 0
+    assert_select "#players li", count: 0
   end
 
   test "returns not found when a team that does not exist is requested" do
-    post login_path, params: { camp_id: @camp.id, password: "password" }
+    get camp_team_path(@camp, 0)
 
-    get team_path(0)
     assert_response :not_found
   end
 
-  test "Logged in user can see team names" do
-    team = create(:team, name: "Ontario U17")
-    log_in_as_camp
+  test "logged in camp user can see team names on the camp page" do
+    team = create(:team, name: "Ontario U17", camp: @camp)
 
-    get teams_path
+    get camp_path(@camp)
 
     assert_response :success
     assert_match team.name, response.body
   end
 
-  test "Logged out user is redirected to login from the teams index" do
-    get teams_path
-
-    assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
-  end
-
   test "Admin can access the new team page" do
-    log_in_as_admin
+    create_logged_in_admin
 
-    get new_team_path
+    get new_camp_team_path(@camp)
+
     assert_response :success
   end
 
-  test "Admin can create a team" do
+  test "Admin can create a team and assign camp players to it" do
     players = create_list(:player, 2)
-    log_in_as_admin
+    players.each { |player| create(:camp_registration, camp: @camp, player: player) }
+    create_logged_in_admin
 
     assert_difference "Team.count", 1 do
-      post teams_path, params: {
-        team: { name: "Ontario U17", player_ids: players.map(&:id), camp_ids: [@camp.id] }
+      post camp_teams_path(@camp), params: {
+        team: { name: "Ontario U17", player_ids: players.map(&:id) }
       }
     end
 
-    team = Team.find_by!(name: "Ontario U17")
+    team = @camp.teams.find_by!(name: "Ontario U17")
+    assert_equal @camp, team.camp
     assert_equal players.sort_by(&:id), team.players.sort_by(&:id)
-    assert_equal [@camp], team.camps.to_a
+    assert_redirected_to camp_path(@camp)
   end
 
   test "Admin fails to create a team with no name" do
-    log_in_as_admin
+    create_logged_in_admin
 
     assert_no_difference "Team.count" do
-      post teams_path, params: { team: { name: "", player_ids: [], camp_ids: [] } }
+      post camp_teams_path(@camp), params: { team: { name: "" } }
     end
+
+    assert_response :unprocessable_content
   end
 
   [
-    { who: "A camp", logged_in_as_camp: true, message: "You must be logged in as an admin to access this page" },
-    { who: "A logged out user", logged_in_as_camp: false, message: "You must be logged in to access this page" }
+    { who: "A camp", logged_out: false, message: "You must be logged in as an admin to access this page" },
+    { who: "A logged out user", logged_out: true, message: "You must be logged in to access this page" }
   ].each do |user|
     test "#{user[:who]} cannot access the new team page" do
-      log_in_as_camp if user[:logged_in_as_camp]
+      log_out_user if user[:logged_out]
 
-      get new_team_path
+      get new_camp_team_path(@camp)
 
       assert_redirected_to login_path
       assert_equal user[:message], flash[:error]
     end
 
     test "#{user[:who]} cannot create a team" do
-      log_in_as_camp if user[:logged_in_as_camp]
+      log_out_user if user[:logged_out]
 
       assert_no_difference "Team.count" do
-        post teams_path, params: { team: { name: "Sneaky Team" } }
+        post camp_teams_path(@camp), params: { team: { name: "Sneaky Team" } }
       end
 
       assert_redirected_to login_path
@@ -140,110 +133,116 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test "#{user[:who]} cannot access the edit team page" do
-      log_in_as_camp if user[:logged_in_as_camp]
-      team = create(:team)
+      log_out_user if user[:logged_out]
 
-      get edit_team_path(team)
+      get edit_camp_team_path(@camp, @team)
 
       assert_redirected_to login_path
       assert_equal user[:message], flash[:error]
     end
 
     test "#{user[:who]} cannot update a team" do
-      log_in_as_camp if user[:logged_in_as_camp]
-      team = create(:team, name: "Old")
+      log_out_user if user[:logged_out]
 
-      patch team_path(team), params: { team: { name: "Hacked" } }
+      patch camp_team_path(@camp, @team), params: { team: { name: "Hacked" } }
 
       assert_redirected_to login_path
-      assert_equal "Old", team.reload.name
+      assert_equal "T1", @team.reload.name
       assert_equal user[:message], flash[:error]
     end
   end
 
   test "destroy deletes the team" do
-    log_in_as_admin
-    team = create(:team)
+    create_logged_in_admin
+    team = create(:team, camp: @camp)
 
-    assert_difference("Team.count", -1) { delete team_path(team) }
+    assert_difference("Team.count", -1) { delete camp_team_path(@camp, team) }
 
-    assert_redirected_to root_path
+    assert_redirected_to camp_path(@camp)
     assert_equal "Team deleted successfully", flash[:success]
   end
 
   test "destroy does not delete a team with games" do
-    log_in_as_admin
-    team = create(:team, :with_games)
+    create_logged_in_admin
+    team = create(:team, :with_games, camp: @camp)
 
-    assert_no_difference("Team.count") { delete team_path(team) }
+    assert_no_difference("Team.count") { delete camp_team_path(@camp, team) }
 
-    assert_redirected_to root_path
+    assert_redirected_to camp_path(@camp)
     assert_equal "Cannot delete record because dependent games exist", flash[:error]
   end
 
   test "destroy redirects camp users" do
-    log_in_as_camp
-    team = create(:team)
+    team = create(:team, camp: @camp)
 
-    assert_no_difference("Team.count") { delete team_path(team) }
+    assert_no_difference("Team.count") { delete camp_team_path(@camp, team) }
 
     assert_redirected_to login_path
   end
 
   test "destroy redirects logged out users" do
-    team = create(:team)
+    log_out_user
+    team = create(:team, camp: @camp)
 
-    assert_no_difference("Team.count") { delete team_path(team) }
+    assert_no_difference("Team.count") { delete camp_team_path(@camp, team) }
 
     assert_redirected_to login_path
   end
 
   test "Admin can access the team edit page" do
-    log_in_as_admin
-    team = create(:team)
-    get edit_team_path(team)
+    create_logged_in_admin
+
+    get edit_camp_team_path(@camp, @team)
+
     assert_response :success
   end
 
   test "edit team has correct content" do
-    log_in_as_admin
+    create_logged_in_admin
     player = create(:player)
-    team = create(:team, name: "One", players: [player])
-    get edit_team_path(team)
+    team = create(:team, name: "One", camp: @camp)
+    create(:camp_registration, camp: @camp, team: team, player: player)
+
+    get edit_camp_team_path(@camp, team)
 
     assert_select "input[name='team[name]'][value='One']"
     assert_select "input[type=checkbox][name='team[player_ids][]'][value='#{player.id}'][checked]"
   end
 
-  test "Admin can update a team" do
-    log_in_as_admin
-    old = create(:player)
-    team = create(:team, name: "One", players: [old])
-    players = create_list(:player, 2)
-    patch team_path(team), params: { team: { name: "New", player_ids: players.map(&:id) } }
+  test "edit team form labels each player with their current team in the camp" do
+    create_logged_in_admin
+    other_team = create(:team, name: "T2", camp: @camp)
+    create(:camp_registration, camp: @camp, team: other_team, player: create(:player, name: "Other Team Player"))
+    create(:camp_registration, camp: @camp, player: create(:player, name: "Pool Player"))
 
-    assert_redirected_to teams_path
+    get edit_camp_team_path(@camp, @team)
+
+    assert_select "label", text: /Other Team Player.*T2/
+    assert_select "label", text: /Pool Player.*No team/
+  end
+
+  test "Admin can update a team name and roster" do
+    create_logged_in_admin
+    team = create(:team, name: "One", camp: @camp)
+    old = create(:player)
+    create(:camp_registration, camp: @camp, team: team, player: old)
+    players = create_list(:player, 2)
+    players.each { |player| create(:camp_registration, camp: @camp, player: player) }
+
+    patch camp_team_path(@camp, team), params: { team: { name: "New", player_ids: players.map(&:id) } }
+
+    assert_redirected_to camp_path(@camp)
     assert_equal "New", team.reload.name
     assert_equal players.sort_by(&:id), team.players.sort_by(&:id)
+    assert_nil old.camp_registrations.first.reload.team_id
   end
 
   test "Admin fails to update a team with no name" do
-    log_in_as_admin
-    team = create(:team, name: "Old")
+    create_logged_in_admin
 
-    patch team_path(team), params: { team: { name: "", player_ids: [] } }
+    patch camp_team_path(@camp, @team), params: { team: { name: "", player_ids: [] } }
 
     assert_response :unprocessable_content
-    assert_equal "Old", team.reload.name
-  end
-
-  private
-
-  def log_in_as_admin
-    post login_admin_path, params: { email: "admin@test.com", password: "password" }
-  end
-
-  def log_in_as_camp
-    post login_path, params: { camp_id: @camp.id, password: "password" }
+    assert_equal "T1", @team.reload.name
   end
 end

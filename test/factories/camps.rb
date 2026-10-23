@@ -15,7 +15,7 @@ FactoryBot.define do
       end
 
       after(:create) do |camp, evaluator|
-        create_list(:team, evaluator.teams_count, camps: [camp])
+        create_list(:team, evaluator.teams_count, camp: camp)
       end
     end
 

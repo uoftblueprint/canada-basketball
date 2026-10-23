@@ -45,8 +45,6 @@ module Shared
   class IndexTableComponent < ViewComponent::Base
     include Turbo::FramesHelper
 
-    attr_accessor :state, :path_builder, :searchable, :columns
-
     delegate :records, :current_page, :total_pages, :query_params, :param_scope, to: :state
 
     Column = Data.define(:attribute, :header, :col_size, :cell_renderer)
@@ -69,6 +67,8 @@ module Shared
     end
 
     private
+
+    attr_reader :state, :path_builder, :searchable, :columns
 
     def frame_id
       "#{param_scope || model_class.model_name.plural}_index_table"

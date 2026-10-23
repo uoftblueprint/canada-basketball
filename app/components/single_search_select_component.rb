@@ -32,7 +32,7 @@
 #              name: "#{f.object_name}[team_id]",
 #              model: Team,
 #              param_scope: :team,
-#              selected: camp.team,
+#              selected: game.team,
 #              label: "Team",
 #              value_method: :id,
 #              text_method: :name,

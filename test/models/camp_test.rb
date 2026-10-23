@@ -3,11 +3,8 @@ require "test_helper"
 class CampTest < ActiveSupport::TestCase
   test "can have many teams associated with it" do
     camp = create(:camp)
-    team1 = create(:team)
-    team2 = create(:team)
-
-    camp.teams << team1
-    camp.teams << team2
+    create(:team, camp: camp)
+    create(:team, camp: camp)
 
     assert_equal 2, camp.teams.count
   end

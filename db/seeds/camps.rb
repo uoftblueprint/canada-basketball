@@ -2,7 +2,7 @@ module Seeds
   class Camps
     class << self
       def run
-        ActiveRecord::Base.connection.truncate_tables("camps", "camp_assignments")
+        ActiveRecord::Base.connection.truncate_tables("camps")
         seed_camps
       end
 
@@ -10,22 +10,19 @@ module Seeds
 
       def seed_camps
         puts "Seeding camps"
-        create_camps_from_teams(teams)
+        create_camps
       end
 
       # Create a camp with team 1, a camp with team 1 and 2, etc
-      def create_camps_from_teams(teams)
-        teams.each_with_index do |_, index|
+      def create_camps
+        3.times do |index|
           Camp.create!(
             name: "Camp #{index + 1}",
             password: "password",
-            description: "Description",
-            teams: teams[0, index + 1]
+            description: "Description"
           )
         end
       end
-
-      def teams = Team.all
     end
   end
 end
