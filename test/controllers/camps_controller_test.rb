@@ -73,4 +73,25 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+
+  test "admin can get a camp by id" do
+    camp = create(:camp)
+    create_logged_in_admin
+
+    get camp_path(camp), as: :json
+
+    assert_response :success
+    assert_equal camp.id, response.parsed_body["id"]
+    assert_equal camp.name, response.parsed_body["name"]
+    assert_not response.parsed_body.key?("password_digest")
+  end
+
+  test "missing camp returns not found" do
+    create_logged_in_admin
+    missing_id = Camp.maximum(:id).to_i + 1
+
+    get camp_path(missing_id), as: :json
+
+    assert_response :not_found
+  end
 end

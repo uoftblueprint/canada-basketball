@@ -15,5 +15,9 @@ Rails.application.routes.draw do
   post "/login/admin", to: "sessions#create_admin"
   delete "/logout", to: "sessions#destroy"
 
+  post "/camps", to: "camps#create"
+  patch "/camps/:id", to: "camps#update"
+  get "/camps/:id", to: "camps#show", as: :camp
+
   root "home#index"
 end

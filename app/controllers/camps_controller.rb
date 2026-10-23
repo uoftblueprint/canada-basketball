@@ -1,5 +1,14 @@
 class CampsController < ApplicationController
   before_action :require_admin, only: %i[index destroy]
+  scope_to_camp :id, only: :show
+
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: { errors: ["Camp not found"] }, status: :not_found
+  end
+
+  def show
+    render json: current_camp.as_json(except: :password_digest)
+  end
 
   def index
     @camps = Camp.order(active: :desc, name: :asc)
