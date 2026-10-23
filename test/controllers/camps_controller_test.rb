@@ -73,4 +73,61 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+
+  test "admin can update a camp without supplying a password" do
+    camp = create(:camp)
+    create_logged_in_admin
+
+    patch camp_path(camp), params: {
+      camp: { name: "Updated camp", description: "Updated description", active: false }
+    }, as: :json
+
+    assert_response :success
+    assert_equal "Updated camp", camp.reload.name
+    assert_equal "Updated description", camp.description
+    assert_not camp.active
+    assert_equal camp.id, response.parsed_body["id"]
+    assert_not response.parsed_body.key?("password_digest")
+  end
+
+  test "invalid update returns validation errors without changing the camp" do
+    camp = create(:camp)
+    original_name = camp.name
+    create_logged_in_admin
+
+    patch camp_path(camp), params: { camp: { name: "" } }, as: :json
+
+    assert_response :unprocessable_content
+    assert_includes response.parsed_body["errors"], "Name can't be blank"
+    assert_equal original_name, camp.reload.name
+  end
+
+  test "missing camp returns not found" do
+    create_logged_in_admin
+    missing_id = Camp.maximum(:id).to_i + 1
+
+    patch camp_path(missing_id), params: { camp: { name: "Updated camp" } }, as: :json
+
+    assert_response :not_found
+  end
+
+  test "camp login can update its own camp" do
+    camp = create_logged_in_camp
+
+    patch camp_path(camp), params: { camp: { description: "Updated description" } }, as: :json
+
+    assert_response :success
+    assert_equal "Updated description", camp.reload.description
+  end
+
+  test "camp login cannot update another camp" do
+    create_logged_in_camp
+    other_camp = create(:camp)
+    original_name = other_camp.name
+
+    patch camp_path(other_camp), params: { camp: { name: "Updated camp" } }, as: :json
+
+    assert_redirected_to root_path
+    assert_equal original_name, other_camp.reload.name
+  end
 end
