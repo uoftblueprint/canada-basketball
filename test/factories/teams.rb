@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :team do
     sequence(:name) { |n| "Team #{n}" }
+    camp
 
     trait :with_players do
       transient do
@@ -8,31 +9,19 @@ FactoryBot.define do
       end
 
       after(:create) do |team, evaluator|
-        create_list(:player, evaluator.players_count, team: team)
-      end
-    end
-
-    trait :with_camps do
-      transient do
-        camps_count { 2 }
-      end
-
-      after(:create) do |team, evaluator|
-        create_list(:camp, evaluator.camps_count, teams: [team])
+        create_list(:player, evaluator.players_count).each do |player|
+          create(:camp_registration, camp: team.camp, player: player, team: team)
+        end
       end
     end
 
     trait :with_games do
-      with_camps
-
       transient do
         games_count { 2 }
       end
 
       after(:create) do |team, evaluator|
-        team.reload.camps.each do |camp|
-          create_list(:game, evaluator.games_count, team: team, camp: camp)
-        end
+        create_list(:game, evaluator.games_count, team: team, camp: team.camp)
       end
     end
   end

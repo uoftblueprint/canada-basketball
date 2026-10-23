@@ -1,25 +1,21 @@
 require "test_helper"
 
 class TeamTest < ActiveSupport::TestCase
-  test "can have many camps associated with it" do
-    team = create(:team)
+  test "is invalid without a camp" do
+    team = build(:team, camp: nil)
 
-    camp1 = create(:camp)
-    camp2 = create(:camp)
-
-    team.camps << camp1
-    team.camps << camp2
-
-    assert_equal 2, team.camps.count
+    assert_not team.valid?
+    assert_includes team.errors[:camp], "must exist"
   end
 
-  test "should nullify players when it is destroyed" do
+  test "should nullify registrations when it is destroyed, keeping players in the camp" do
     team_with_players = create(:team, :with_players)
 
-    players = team_with_players.players.to_a
+    registrations = team_with_players.camp_registrations.to_a
     team_with_players.destroy!
 
-    assert(players.all? { |player| player.reload.team.nil? })
+    assert(registrations.all? { |r| r.reload.team_id.nil? })
+    assert(registrations.all? { |r| r.camp.players.include?(r.player) })
   end
 
   test "should prevent destruction when there are games associated with it" do
