@@ -15,7 +15,7 @@ class ActionButtonComponent < ViewComponent::Base
   def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small)
     super()
 
-    raise ArgumentError, "Invalid color" unless COLORS.include?(color)
+    raise ArgumentError, "Invalid color" unless COLOR_CLASSES.include?(color)
 
     @to = to
     @icon = icon
