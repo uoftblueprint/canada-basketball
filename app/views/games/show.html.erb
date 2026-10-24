@@ -1,0 +1,17 @@
+<div>
+  <h1>
+    Name:
+    <%= @game.name %>
+  </h1>
+  <h2>
+    Team:
+    <%= @game.team.name %>
+  </h2>
+  <h2>
+    Opponent Team:
+    <%= @game.opponent_name %>
+  </h2>
+  <%= button_to "Edit", edit_camp_game_path(current_camp, @game), method: :get %>
+  <%= button_to "Delete", camp_game_path(current_camp, @game), method: :delete %>
+
+</div>
