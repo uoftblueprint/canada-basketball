@@ -1,7 +1,7 @@
 require "test_helper"
 
 class TeamsControllerTest < ActionDispatch::IntegrationTest
-  # Setting up the virtual environment for testing teams
+  
   def setup
     @camp = create(:camp, password: "password")
     @team1 = create(:team, name: "T1")
