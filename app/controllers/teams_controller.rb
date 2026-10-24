@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :require_admin, only: %i[new create destroy]
+  before_action :require_admin, only: %i[new edit create update destroy]
 
   def index
     @teams = Team.order(:name)
@@ -14,6 +14,11 @@ class TeamsController < ApplicationController
     load_options
   end
 
+  def edit
+    @team = Team.find(params.expect(:id))
+    load_options
+  end
+
   def create
     @team = Team.new(team_params)
 
@@ -23,6 +28,17 @@ class TeamsController < ApplicationController
       flash.now[:error] = @team.errors.full_messages.to_sentence
       load_options
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    @team = Team.find(params.expect(:id))
+    if @team.update(team_params)
+      redirect_to teams_path, flash: { success: "Team updated successfully" }, status: :see_other
+    else
+      flash.now[:error] = @team.errors.full_messages.to_sentence
+      load_options
+      render :edit, status: :unprocessable_content
     end
   end
 
