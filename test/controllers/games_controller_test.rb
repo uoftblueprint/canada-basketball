@@ -53,4 +53,28 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :unprocessable_entity
   end
+
+  test "update changes a game's attributes" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp, name: "Prev")
+
+    patch camp_game_path(camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Updated", game.reload.name
+    assert_equal "Thunder", game.reload.opponent_name
+  end
+
+  test "update doesn't change a game with invalid input" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp, name: "Prev")
+
+    patch camp_game_path(camp, game), params: {
+      game: { name: "", opponent_name: "Pistons" }
+    }
+
+    assert_equal "Prev", game.reload.name
+    assert_response :unprocessable_entity
+  end
 end
