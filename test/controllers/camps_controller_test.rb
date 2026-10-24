@@ -73,4 +73,77 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+
+  test "camp can get its page with players from every assigned team" do
+    camp = create_logged_in_camp
+    teams = create_list(:team, 2, camps: [camp])
+    players = teams.map { |team| create(:player, team: team) }
+    unrelated_player = create(:player)
+
+    get camp_path(camp)
+
+    assert_response :success
+    assert_equal "text/html", response.media_type
+    assert_select "h1", camp.name
+    assert_select "section[aria-labelledby=players-heading] tbody tr", count: 2 do
+      players.each do |player|
+        assert_select "tr", text: /#{Regexp.escape(player.name)}/ do
+          assert_select "td", text: player.name
+          assert_select "td", text: player.team.name
+        end
+      end
+    end
+    assert_select "td", text: unrelated_player.name, count: 0
+    assert_not_includes response.body, camp.password_digest
+  end
+
+  test "camp page shows only its games with teams opponents and statuses" do
+    camp = create_logged_in_camp
+    active_game = create(:game, camp: camp)
+    inactive_game = create(:game, :inactive, camp: camp)
+    unrelated_game = create(:game, team: active_game.team)
+
+    get camp_path(camp)
+
+    assert_response :success
+    assert_select "section[aria-labelledby=games-heading] tbody tr", count: 2 do
+      [active_game, inactive_game].each do |game|
+        assert_select "tr", text: /#{Regexp.escape(game.name)}/ do
+          assert_select "td", text: game.name
+          assert_select "td", text: game.team.name
+          assert_select "td", text: game.opponent_name
+          assert_select "td", text: game.active? ? "Active" : "Inactive"
+        end
+      end
+    end
+    assert_select "td", text: unrelated_game.name, count: 0
+  end
+
+  test "camp page renders without players or games" do
+    camp = create_logged_in_camp
+
+    get camp_path(camp)
+
+    assert_response :success
+    assert_select "h1", camp.name
+    assert_select "tbody tr", count: 0
+  end
+
+  test "guests must log in" do
+    camp = create(:camp)
+
+    get camp_path(camp)
+
+    assert_redirected_to login_path
+  end
+
+  test "camp cannot get another camp's page" do
+    create_logged_in_camp
+    other_camp = create(:camp)
+
+    get camp_path(other_camp)
+
+    assert_redirected_to root_path
+    assert_equal "You don't have access to this camp", flash[:error]
+  end
 end
