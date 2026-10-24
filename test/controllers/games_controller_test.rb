@@ -77,4 +77,13 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prev", game.reload.name
     assert_response :unprocessable_entity
   end
+
+  test "destroy deletes a game" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp)
+
+    assert_difference("Game.count", -1) do
+      delete camp_game_path(camp, game)
+    end
+  end
 end

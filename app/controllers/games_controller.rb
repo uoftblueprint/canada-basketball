@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
   scope_to_camp
 
-  before_action :set_game, only: %i[show edit update]
+  before_action :set_game, only: %i[show edit update destroy]
 
   def show; end
 
@@ -28,6 +28,11 @@ class GamesController < ApplicationController
       flash.now[:error] = @game.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @game.destroy
+    redirect_to root_path, flash: { success: "Game was successfully deleted" }
   end
 
   private
