@@ -140,6 +140,43 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "destroy deletes the team" do
+    create_logged_in_admin
+    team = create(:team)
+
+    assert_difference("Team.count", -1) { delete team_path(team) }
+
+    assert_redirected_to root_path
+    assert_equal "Team deleted successfully", flash[:success]
+  end
+
+  test "destroy does not delete a team with games" do
+    create_logged_in_admin
+    team = create(:team, :with_games)
+
+    assert_no_difference("Team.count") { delete team_path(team) }
+
+    assert_redirected_to root_path
+    assert_equal "Cannot delete record because dependent games exist", flash[:error]
+  end
+
+  test "destroy redirects camp users" do
+    create_logged_in_camp
+    team = create(:team)
+
+    assert_no_difference("Team.count") { delete team_path(team) }
+
+    assert_redirected_to login_path
+  end
+
+  test "destroy redirects logged out users" do
+    team = create(:team)
+
+    assert_no_difference("Team.count") { delete team_path(team) }
+
+    assert_redirected_to login_path
+  end
+
   private
 
   def log_in_as_admin
