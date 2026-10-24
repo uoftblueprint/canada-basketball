@@ -16,6 +16,4 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"
 
   root "home#index"
-
-  post "/camps", to: "camps#create"
 end
