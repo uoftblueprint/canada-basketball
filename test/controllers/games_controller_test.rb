@@ -75,5 +75,27 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @camp.id, created_game.camp_id
     assert_equal @team.id, created_game.team_id
     assert_redirected_to camp_game_path(@camp, created_game)
+  test "update changes a game's attributes" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp, name: "Prev")
+
+    patch camp_game_path(camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Updated", game.reload.name
+    assert_equal "Thunder", game.reload.opponent_name
+  end
+
+  test "update doesn't change a game with invalid input" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp, name: "Prev")
+
+    patch camp_game_path(camp, game), params: {
+      game: { name: "", opponent_name: "Pistons" }
+    }
+
+    assert_equal "Prev", game.reload.name
+    assert_response :unprocessable_entity
   end
 end

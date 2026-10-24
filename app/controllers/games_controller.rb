@@ -5,6 +5,8 @@ class GamesController < ApplicationController
     @game = current_camp.games.new
   end
 
+  def edit; end
+
   def create
     @game = current_camp.games.new(games_params)
     if @game.save
@@ -13,6 +15,15 @@ class GamesController < ApplicationController
     else
       flash.now[:error] = @game.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    if @game.update(games_params)
+      redirect_to camp_game_path(current_camp, @game), flash: { success: "Game updated successfully" }
+    else
+      flash.now[:error] = @game.errors.full_messages.to_sentence
+      render :edit, status: :unprocessable_content
     end
   end
 
