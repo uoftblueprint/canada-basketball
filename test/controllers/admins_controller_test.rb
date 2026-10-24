@@ -245,4 +245,43 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+
+  test "destroy does not delete the last remaining admin" do
+    admin = create_logged_in_admin
+
+    assert_no_difference("Admin.count") { delete admin_path(admin) }
+
+    assert_redirected_to admins_path
+    assert_equal "Cannot delete admin because there is only one admin remaining", flash[:error]
+  end
+
+  test "admin who deletes their own account is logged out on the next request" do
+    admin = create_logged_in_admin
+    create(:admin)
+
+    assert_difference("Admin.count", -1) { delete admin_path(admin) }
+
+    get admins_path
+
+    assert_redirected_to login_path
+  end
+
+  test "admin deleted mid-session is denied access on the next request" do
+    admin = create_logged_in_admin
+    admin.destroy
+
+    get admins_path
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access this page", flash[:error]
+  end
+
+  test "stale session identity is cleared after the admin record is deleted" do
+    admin = create_logged_in_admin
+    admin.destroy
+
+    get admins_path
+
+    assert_nil session[:identity]
+  end
 end
