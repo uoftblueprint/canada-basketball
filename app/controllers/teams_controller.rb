@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :require_admin, only: %i[new create]
+  before_action :require_admin, only: %i[new create destroy]
 
   def index
     @teams = Team.order(:name)
@@ -23,6 +23,15 @@ class TeamsController < ApplicationController
       flash.now[:error] = @team.errors.full_messages.to_sentence
       load_options
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def destroy
+    team = Team.find(params.expect(:id))
+    if team.destroy
+      redirect_to root_path, flash: { success: "Team deleted successfully" }, status: :see_other
+    else
+      redirect_back_or_to root_path, flash: { error: team.errors.full_messages.to_sentence }, status: :see_other
     end
   end
 
