@@ -5,6 +5,10 @@ class TeamsController < ApplicationController
     @teams = Team.order(:name)
   end
 
+  def show
+    @team = Team.includes(:players).find(params.expect(:id))
+  end
+
   def new
     @team = Team.new
     load_options

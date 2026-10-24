@@ -2,8 +2,70 @@ require "test_helper"
 
 class TeamsControllerTest < ActionDispatch::IntegrationTest
   def setup
+    @camp = create(:camp, password: "password")
+    @team1 = create(:team, name: "T1")
     @admin = create(:admin, email: "admin@test.com", password: "password")
-    @camp = create(:camp)
+
+    create(:player, name: "A", team: @team1)
+    create(:player, name: "B", team: @team1)
+  end
+
+  test "does not allow access when not logged in" do
+    get team_path(@team1)
+    assert_redirected_to login_path
+  end
+
+  test "show allow access when logged in as camp" do
+    post login_path, params: { camp_id: @camp.id, password: "password" }
+
+    get team_path(@team1)
+
+    assert_response :success
+  end
+
+  test "shows allows access when logged in as admin" do
+    post login_admin_path, params: { email: "admin@test.com", password: "password" }
+
+    get team_path(@team1)
+
+    assert_response :success
+  end
+
+  test "show displays team name and players when logged in as camp" do
+    post login_path, params: { camp_id: @camp.id, password: "password" }
+
+    get team_path(@team1)
+
+    assert_select "h1", "T1"
+    assert_select "li", "A"
+    assert_select "li", "B"
+  end
+
+  test "show displays team name and players when logged in as admin" do
+    post login_admin_path, params: { email: "admin@test.com", password: "password" }
+
+    get team_path(@team1)
+
+    assert_select "h1", "T1"
+    assert_select "li", "A"
+    assert_select "li", "B"
+  end
+
+  test "shows team name and no players" do
+    team = create(:team, name: "T2")
+    post login_path, params: { camp_id: @camp.id, password: "password" }
+
+    get team_path(team)
+
+    assert_select "h1", "T2"
+    assert_select "players-list li", count: 0
+  end
+
+  test "returns not found when a team that does not exist is requested" do
+    post login_path, params: { camp_id: @camp.id, password: "password" }
+
+    get team_path(0)
+    assert_response :not_found
   end
 
   test "Logged in user can see team names" do
