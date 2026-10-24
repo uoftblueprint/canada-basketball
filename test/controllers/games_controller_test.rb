@@ -178,4 +178,59 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Updated", game.reload.name
   end
+
+  test "destroy deletes a game" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp)
+
+    assert_difference("Game.count", -1) do
+      delete camp_game_path(camp, game)
+    end
+  end
+
+  test "logged out user cannot destroy a game" do
+    log_out_user
+    game = create(:game, camp: @camp)
+
+    assert_no_difference("Game.count") do
+      delete camp_game_path(@camp, game)
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "camp cannot destroy another camp's game through its own url" do
+    other_camp = create(:camp)
+    game = create(:game, camp: other_camp)
+
+    assert_no_difference("Game.count") do
+      delete camp_game_path(@camp, game)
+    end
+
+    assert_response :not_found
+  end
+  
+  test "camp cannot destroy a game through another camp's URL" do
+    other_camp = create(:camp)
+    game = create(:game, camp: other_camp)
+
+    assert_no_difference("Game.count") do
+      delete camp_game_path(other_camp, game)
+    end
+
+    assert_redirected_to root_path
+  end
+
+  test "admin can destroy a game" do
+    log_out_user
+    create_logged_in_admin
+    camp = create(:camp)
+    game = create(:game, camp: camp)
+
+    assert_difference("Game.count", -1) do
+      delete camp_game_path(camp, game)
+    end
+
+    assert_response :see_other
+  end
 end
