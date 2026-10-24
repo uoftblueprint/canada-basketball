@@ -18,7 +18,7 @@ class TeamsController < ApplicationController
     @team = Team.new(team_params)
 
     if @team.save
-      redirect_to new_team_path, flash: { success: "Team created successfully" }
+      redirect_to team_path(@team), flash: { success: "Team created successfully" }
     else
       flash.now[:error] = @team.errors.full_messages.to_sentence
       load_options
