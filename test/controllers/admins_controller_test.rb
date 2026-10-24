@@ -34,4 +34,31 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
     assert_equal "You must be logged in to access this page", flash[:error]
   end
+
+  test "destroy deletes the admin" do
+    create_logged_in_admin
+    admin = create(:admin)
+
+    assert_difference("Admin.count", -1) { delete admin_path(admin) }
+
+    assert_redirected_to admins_path
+    assert_equal "Admin deleted successfully", flash[:success]
+  end
+
+  test "destroy redirects camp users" do
+    create_logged_in_camp
+    admin = create(:admin)
+
+    assert_no_difference("Admin.count") { delete admin_path(admin) }
+
+    assert_redirected_to login_path
+  end
+
+  test "destroy redirects logged out users" do
+    admin = create(:admin)
+
+    assert_no_difference("Admin.count") { delete admin_path(admin) }
+
+    assert_redirected_to login_path
+  end
 end
