@@ -1,6 +1,25 @@
 require "test_helper"
 
 class GamesControllerTest < ActionDispatch::IntegrationTest
+  test "show displays the right game and edit button" do
+    camp = create_logged_in_camp
+    game = create(:game, camp: camp, name: "Test Game", opponent_name: "Pacers")
+
+    get camp_game_path(camp, game)
+
+    assert_response :success
+    assert_select "h1", text: "Name: Test Game"
+  end
+
+  test "show does not allow access to another camp's game" do
+    camp = create_logged_in_camp
+    not_camp_game = create(:game)
+
+    get camp_game_path(camp, not_camp_game)
+
+    assert_response :not_found
+  end
+
   test "create creates a game" do
     camp = create_logged_in_camp
     team = create(:team)
@@ -18,6 +37,8 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal camp.id, created_game.camp_id
     assert_equal team.id, created_game.team_id
     assert_redirected_to camp_game_path(camp, created_game)
+    follow_redirect!
+    assert_select "h1", text: "Name: Raptors"
   end
 
   test "create doesn't create a game with invalid input" do
