@@ -1,0 +1,49 @@
+<%= form_with model: camp do |form| %>
+  <% if camp.errors.any? %>
+    <div role="alert">
+      <h2>Camp could not be saved</h2>
+      <ul>
+        <% camp.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.textarea :description, required: true %>
+  </div>
+
+  <fieldset>
+    <legend>Teams</legend>
+    <%= form.collection_checkboxes :team_ids, teams, :id, :name do |team| %>
+      <div>
+        <%= team.checkbox %>
+        <%= team.label %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <div>
+    <%= form.checkbox :active %>
+    <%= form.label :active %>
+  </div>
+
+  <div>
+    <%= form.label :password %>
+    <%= form.password_field :password, required: camp.new_record?, autocomplete: "new-password" %>
+  </div>
+
+  <div>
+    <%= form.label :password_confirmation %>
+    <%= form.password_field :password_confirmation, required: camp.new_record?, autocomplete: "new-password" %>
+  </div>
+
+  <%= form.submit camp.persisted? ? "Save camp" : "Create camp" %>
+<% end %>
