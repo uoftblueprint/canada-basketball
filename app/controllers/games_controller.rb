@@ -1,9 +1,9 @@
 class GamesController < ApplicationController
   scope_to_camp
 
-  before_action :set_game, only: %i[show]
-
-  def show; end
+  def show
+    @game = current_camp.games.find(params.expect(:id))
+  end
 
   def new
     @game = current_camp.games.new
@@ -24,9 +24,5 @@ class GamesController < ApplicationController
 
   def games_params
     params.expect(game: %i[name opponent_name team_id])
-  end
-
-  def set_game
-    @game = current_camp.games.find(params.expect(:id))
   end
 end
