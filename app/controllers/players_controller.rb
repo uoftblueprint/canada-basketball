@@ -1,6 +1,10 @@
 class PlayersController < ApplicationController
   before_action :require_admin, only: %i[destroy]
 
+  def index
+    @players = Player.includes(:team).order(:name)
+  end
+
   def destroy
     player = Player.find(params.expect(:id))
     if player.destroy
