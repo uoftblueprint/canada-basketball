@@ -129,6 +129,50 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
+  test "show player name and team for admins" do
+    create_logged_in_admin
+    player = create(:player)
+
+    get player_path(player)
+
+    assert_response :success
+    assert_select "h1", text: player.name
+    assert_select "p", text: player.team.name
+  end
+
+  test "show is accessible by camp users" do
+    create_logged_in_camp
+    player = create(:player)
+
+    get player_path(player)
+
+    assert_response :success
+  end
+
+  test "show redirects logged out users" do
+    player = create(:player)
+    get player_path(player)
+
+    assert_redirected_to login_path
+  end
+
+  test "show handles teamless player" do
+    create_logged_in_admin
+    player = create(:player, team: nil)
+
+    get player_path(player)
+    assert_response :success
+    assert_select "h1", text: player.name
+    assert_select "p", "No Team"
+  end
+
+  test "show handles non-existent id" do
+    create_logged_in_admin
+
+    get player_path(-1)
+    assert_response :not_found
+  end
+
   test "destroy deletes the player" do
     create_logged_in_admin
     player = create(:player)

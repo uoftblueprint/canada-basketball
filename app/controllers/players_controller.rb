@@ -5,6 +5,10 @@ class PlayersController < ApplicationController
     @players = Player.includes(:team).order(:name)
   end
 
+  def show
+    @player = Player.includes(:team).find(params.expect(:id))
+  end
+
   def new
     @player = Player.new
   end
