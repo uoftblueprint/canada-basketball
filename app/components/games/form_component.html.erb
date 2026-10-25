@@ -1,0 +1,14 @@
+<%= form_with model: [camp, game] do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+    <%= form.label :team_id, "Team" %>
+    <%= form.collection_select :team_id, camp.teams, :id, :name, { prompt: "Choose a Team" } %>
+    <%= form.label :opponent_name %>
+    <%= form.text_field :opponent_name %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

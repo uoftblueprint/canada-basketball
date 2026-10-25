@@ -1,5 +1,5 @@
 <div>
   <h1>New Game Page</h1>
 
-  <%= render "form", game: @game %>
+  <%= render Games::FormComponent.new(game: @game, camp: current_camp) %>
 </div>
