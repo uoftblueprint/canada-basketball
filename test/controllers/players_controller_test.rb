@@ -63,6 +63,72 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "tbody tr", count: 0
   end
 
+  test "new is accessible by admins" do
+    create_logged_in_admin
+
+    get new_player_path
+
+    assert_response :success
+    assert_select 'input[name="player[name]"]'
+  end
+
+  test "create adds the player" do
+    create_logged_in_admin
+
+    assert_difference("Player.count", 1) do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to players_path
+    assert_response :see_other
+    assert_equal "Player created successfully", flash[:success]
+    assert_equal "test_name", Player.last.name
+  end
+
+  test "create does not allow player with blank name" do
+    create_logged_in_admin
+
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "" } }
+    end
+
+    assert_response :unprocessable_content
+    assert_select 'input[name="player[name]"]'
+    assert_equal "Name can't be blank", flash[:error]
+  end
+
+  test "new redirects camp users" do
+    create_logged_in_camp
+
+    get new_player_path
+
+    assert_redirected_to login_path
+  end
+
+  test "new redirects logged out users" do
+    get new_player_path
+
+    assert_redirected_to login_path
+  end
+
+  test "create redirects camp users" do
+    create_logged_in_camp
+
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "create redirects logged out users" do
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to login_path
+  end
+
   test "destroy deletes the player" do
     create_logged_in_admin
     player = create(:player)

@@ -1,0 +1,8 @@
+<%= form_with model: player, html: { autocomplete: "off" } do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <%= f.submit %>
+<% end %>
