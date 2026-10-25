@@ -35,6 +35,69 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You must be logged in to access this page", flash[:error]
   end
 
+  test "new is accessible by admins" do
+    create_logged_in_admin
+
+    get new_admin_path
+
+    assert_response :success
+  end
+
+  test "create makes a new admin" do
+    create_logged_in_admin
+
+    assert_difference("Admin.count", 1) do
+      post admins_path, params: {
+        admin: { name: "Jane Doe", email: "jane@test.com", password: "password", password_confirmation: "password" }
+      }
+    end
+
+    assert_redirected_to root_path
+    assert_equal "Admin created.", flash[:success]
+    assert Admin.exists?(email: "jane@test.com")
+  end
+
+  test "create re-renders new with invalid params" do
+    create_logged_in_admin
+
+    assert_no_difference("Admin.count") do
+      post admins_path, params: {
+        admin: { name: "", email: "", password: "password", password_confirmation: "password" }
+      }
+    end
+
+    assert_response :unprocessable_content
+  end
+
+  [
+    { who: "camp users", logged_in: :create_logged_in_camp,
+      message: "You must be logged in as an admin to access this page" },
+    { who: "logged out users", logged_in: nil,
+      message: "You must be logged in to access this page" }
+  ].each do |user|
+    test "new redirects #{user[:who]}" do
+      send(user[:logged_in]) if user[:logged_in]
+
+      get new_admin_path
+
+      assert_redirected_to login_path
+      assert_equal user[:message], flash[:error]
+    end
+
+    test "create redirects #{user[:who]}" do
+      send(user[:logged_in]) if user[:logged_in]
+
+      assert_no_difference("Admin.count") do
+        post admins_path, params: {
+          admin: { name: "Sneaky", email: "sneaky@test.com", password: "password", password_confirmation: "password" }
+        }
+      end
+
+      assert_redirected_to login_path
+      assert_equal user[:message], flash[:error]
+    end
+  end
+
   test "destroy deletes the admin" do
     create_logged_in_admin
     admin = create(:admin)
