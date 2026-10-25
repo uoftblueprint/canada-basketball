@@ -1,0 +1,15 @@
+<%= render SearchSelectInput::FieldComponent.new(
+      url: url,
+      model: model,
+      multiple: false,
+      param_scope: param_scope,
+      label: label,
+      placeholder: placeholder,
+      initial_query: selected_text
+    ) do %>
+  <input
+    type="hidden"
+    name="<%= name %>"
+    value="<%= selected_value %>"
+    data-search-select-target="value">
+<% end %>
