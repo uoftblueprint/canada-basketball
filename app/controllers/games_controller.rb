@@ -8,7 +8,8 @@ class GamesController < ApplicationController
   def create
     @game = current_camp.games.new(games_params)
     if @game.save
-      redirect_to camp_game_path(current_camp, @game), flash: { success: "Game created successfully" }
+      redirect_to camp_game_path(current_camp, @game), flash: { success: "Game created successfully" },
+                                                       status: :see_other
     else
       flash.now[:error] = @game.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
