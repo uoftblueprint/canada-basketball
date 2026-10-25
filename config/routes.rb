@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :camps, only: %i[index destroy] do
     resources :games, only: %i[new create show edit update destroy]
   end
-  resources :players, only: %i[index show destroy new create]
+  resources :players
   resources :teams
   resources :admins, only: %i[index new create destroy]
 

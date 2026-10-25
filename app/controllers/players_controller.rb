@@ -1,5 +1,5 @@
 class PlayersController < ApplicationController
-  before_action :require_admin, only: %i[destroy new create]
+  before_action :require_admin, only: %i[new edit create update destroy]
 
   def index
     @players = Player.includes(:team).order(:name)
@@ -13,6 +13,10 @@ class PlayersController < ApplicationController
     @player = Player.new
   end
 
+  def edit
+    @player = Player.find(params.expect(:id))
+  end
+
   def create
     @player = Player.new(player_params)
 
@@ -21,6 +25,17 @@ class PlayersController < ApplicationController
     else
       flash.now[:error] = @player.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    @player = Player.find(params.expect(:id))
+
+    if @player.update(player_params)
+      redirect_to root_path, flash: { success: "Player updated successfully" }, status: :see_other
+    else
+      flash.now[:error] = @player.errors.full_messages.to_sentence
+      render :edit, status: :unprocessable_content
     end
   end
 
