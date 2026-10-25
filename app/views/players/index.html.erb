@@ -1,0 +1,29 @@
+<div>
+  <h1 class="font-bold text-4xl">Players</h1>
+  <% if @players.empty? %>
+    <p>No players yet.</p>
+  <% else %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @players.each do |player| %>
+          <tr>
+            <td><%= player.name %></td>
+            <td>
+              <% if player.team.nil? %>
+                No Team
+              <% else %>
+                <%= player.team.name %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

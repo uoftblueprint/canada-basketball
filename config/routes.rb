@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :camps, only: %i[index destroy]
-  resources :players, only: %i[destroy]
+  resources :players, only: %i[index destroy]
   resources :teams
 
   get "/login", to: "sessions#login"
