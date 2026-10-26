@@ -1,0 +1,44 @@
+<fieldset
+  class="fieldset w-full"
+  data-controller="search-select"
+  data-search-select-multiple-value="<%= multiple? %>"
+  data-search-select-url-value="<%= url %>"
+  data-search-select-param-scope-value="<%= param_scope_value %>"
+  data-search-select-min-chars-value="<%= min_chars %>"
+  data-action="click@window->search-select#closeOnOutsideClick keydown.esc@window->search-select#close">
+  <% if label %>
+    <legend class="fieldset-legend"><%= label %></legend>
+  <% end %>
+
+  <div class="relative w-full">
+    <label class="input w-full">
+      <%= render Shared::IconComponent.new(icon: "search", size: :sm, classes: "shrink-0") %>
+      <input
+        type="text"
+        class="grow"
+        placeholder="<%= placeholder %>"
+        autocomplete="off"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="<%= frame_id %>"
+        aria-autocomplete="list"
+        value="<%= initial_query %>"
+        data-search-select-target="input"
+        data-action="input->search-select#search focus->search-select#open keydown->search-select#navigate">
+      <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-circle hidden"
+        data-search-select-target="clear"
+        data-action="search-select#clear"
+        aria-label="Clear">
+        <%= render Shared::IconComponent.new(icon: "x", size: :sm) %>
+      </button>
+    </label>
+
+    <%= turbo_frame_tag frame_id,
+                        class: "absolute top-full left-0 z-20 w-full mt-2 shadow-lg rounded-xl bg-base-100 border border-base-300 hidden",
+                        data: { search_select_target: "results" } %>
+  </div>
+
+  <%= content %>
+</fieldset>
