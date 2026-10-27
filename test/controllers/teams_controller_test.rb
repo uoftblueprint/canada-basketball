@@ -138,10 +138,31 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
       assert_redirected_to login_path
       assert_equal user[:message], flash[:error]
     end
+
+    test "#{user[:who]} cannot access the edit team page" do
+      log_in_as_camp if user[:logged_in_as_camp]
+      team = create(:team)
+
+      get edit_team_path(team)
+
+      assert_redirected_to login_path
+      assert_equal user[:message], flash[:error]
+    end
+
+    test "#{user[:who]} cannot update a team" do
+      log_in_as_camp if user[:logged_in_as_camp]
+      team = create(:team, name: "Old")
+
+      patch team_path(team), params: { team: { name: "Hacked" } }
+
+      assert_redirected_to login_path
+      assert_equal "Old", team.reload.name
+      assert_equal user[:message], flash[:error]
+    end
   end
 
   test "destroy deletes the team" do
-    create_logged_in_admin
+    log_in_as_admin
     team = create(:team)
 
     assert_difference("Team.count", -1) { delete team_path(team) }
@@ -151,7 +172,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "destroy does not delete a team with games" do
-    create_logged_in_admin
+    log_in_as_admin
     team = create(:team, :with_games)
 
     assert_no_difference("Team.count") { delete team_path(team) }
@@ -161,7 +182,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "destroy redirects camp users" do
-    create_logged_in_camp
+    log_in_as_camp
     team = create(:team)
 
     assert_no_difference("Team.count") { delete team_path(team) }
@@ -175,6 +196,45 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference("Team.count") { delete team_path(team) }
 
     assert_redirected_to login_path
+  end
+
+  test "Admin can access the team edit page" do
+    log_in_as_admin
+    team = create(:team)
+    get edit_team_path(team)
+    assert_response :success
+  end
+
+  test "edit team has correct content" do
+    log_in_as_admin
+    player = create(:player)
+    team = create(:team, name: "One", players: [player])
+    get edit_team_path(team)
+
+    assert_select "input[name='team[name]'][value='One']"
+    assert_select "input[type=checkbox][name='team[player_ids][]'][value='#{player.id}'][checked]"
+  end
+
+  test "Admin can update a team" do
+    log_in_as_admin
+    old = create(:player)
+    team = create(:team, name: "One", players: [old])
+    players = create_list(:player, 2)
+    patch team_path(team), params: { team: { name: "New", player_ids: players.map(&:id) } }
+
+    assert_redirected_to teams_path
+    assert_equal "New", team.reload.name
+    assert_equal players.sort_by(&:id), team.players.sort_by(&:id)
+  end
+
+  test "Admin fails to update a team with no name" do
+    log_in_as_admin
+    team = create(:team, name: "Old")
+
+    patch team_path(team), params: { team: { name: "", player_ids: [] } }
+
+    assert_response :unprocessable_content
+    assert_equal "Old", team.reload.name
   end
 
   private

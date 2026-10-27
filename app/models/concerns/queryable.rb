@@ -34,7 +34,9 @@ module Queryable
 
     def ordered_by(column, direction)
       pk_column = arel_table[primary_key].asc
-      return reorder(pk_column) unless sortable_columns.include?(column.to_s)
+      # if there is no user sort active, keep the relation's order as the default
+      # with a secondary sort on primary key
+      return order(pk_column) unless sortable_columns.include?(column.to_s)
 
       dir = direction.to_s.casecmp?("desc") ? "desc" : "asc"
       # secondary sort on primary key

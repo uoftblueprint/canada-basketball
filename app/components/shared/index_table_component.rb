@@ -5,8 +5,9 @@ module Shared
   #
   # If a model column is declared as 'searchable', records are filtered on the model column's values.
   # If a model column is declared as 'sortable', the table records can be sorted by the model column's values
-  # by clicking the corresponding table column header. Note that sortable columns with custom renderers
-  # will sort by their underlying attribute.
+  # by clicking the corresponding table column header. The table records will be ordered by the order of the
+  # query passed to build_table_state until a sort is applied to them by clicking a table column header.
+  # Note that sortable columns with custom renderers will sort by their underlying attribute.
   #
   # Search, sort, and pagination run on the server, orchestrated by the IndexTable controller helper.
   # Results are swapped using Turbo frames so a full page reload is not triggered.

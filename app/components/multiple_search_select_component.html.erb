@@ -1,0 +1,45 @@
+<%= render SearchSelectInput::FieldComponent.new(
+      url: url,
+      model: model,
+      multiple: true,
+      param_scope: param_scope,
+      label: label,
+      placeholder: placeholder
+    ) do %>
+  <input type="hidden" name="<%= name %>" value="">
+  <ul class="flex flex-wrap gap-2 mt-2" data-search-select-target="selected">
+    <% selected.each do |record| %>
+      <li class="badge badge-neutral gap-1" data-id="<%= value_for(record) %>">
+        <input
+          type="hidden"
+          name="<%= name %>"
+          value="<%= value_for(record) %>">
+          <span>
+            <%= text_for(record) %>
+          </span>
+          <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-circle"
+            data-action="search-select#remove"
+            data-id="<%= value_for(record) %>"
+            aria-label="Remove <%= text_for(record) %>">
+            <%= render Shared::IconComponent.new(icon: "x", size: :sm) %>
+          </button>
+        </li>
+      <% end %>
+    </ul>
+    <template data-search-select-target="badgeTemplate">
+      <li class="badge badge-outline gap-2" data-id="">
+        <input type="hidden" name="<%= name %>" value="">
+        <span></span>
+        <button
+          type="button"
+          class="hover:cursor-pointer"
+          data-action="search-select#remove"
+          data-id=""
+          aria-label="Remove">
+          <%= render Shared::IconComponent.new(icon: "x", size: :sm) %>
+        </button>
+      </li>
+    </template>
+  <% end %>

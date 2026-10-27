@@ -1,6 +1,178 @@
 require "test_helper"
 
 class PlayersControllerTest < ActionDispatch::IntegrationTest
+  test "index is accessible by admins" do
+    create_logged_in_admin
+
+    get players_path
+
+    assert_response :success
+  end
+
+  test "index is accessible by camp users" do
+    create_logged_in_camp
+
+    get players_path
+
+    assert_response :success
+  end
+
+  test "index lists player names and teams" do
+    create_logged_in_admin
+    team1 = create(:team, name: "team1")
+    team2 = create(:team, name: "team2")
+    create(:player, name: "test_player_1", team: team1)
+    create(:player, name: "test_player_2", team: team2)
+
+    get players_path
+
+    assert_select "tbody tr:first-child" do
+      assert_select "td:first-child", text: "test_player_1"
+      assert_select "td:last-child", text: "team1"
+    end
+    assert_select "tbody tr:nth-child(2)" do
+      assert_select "td:first-child", text: "test_player_2"
+      assert_select "td:last-child", text: "team2"
+    end
+  end
+
+  test "index lists player names with no teams" do
+    create_logged_in_admin
+    create(:player, name: "test_player_3", team: nil)
+
+    get players_path
+
+    assert_select "td", text: "test_player_3"
+    assert_select "td", text: "No Team"
+  end
+
+  test "index redirects logged out users" do
+    get players_path
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access this page", flash[:error]
+  end
+
+  test "index displays a message when there are no players" do
+    create_logged_in_admin
+
+    get players_path
+
+    assert_response :success
+    assert_select "p", text: "No players yet."
+    assert_select "tbody tr", count: 0
+  end
+
+  test "new is accessible by admins" do
+    create_logged_in_admin
+
+    get new_player_path
+
+    assert_response :success
+    assert_select 'input[name="player[name]"]'
+  end
+
+  test "create adds the player" do
+    create_logged_in_admin
+
+    assert_difference("Player.count", 1) do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to players_path
+    assert_response :see_other
+    assert_equal "Player created successfully", flash[:success]
+    assert_equal "test_name", Player.last.name
+  end
+
+  test "create does not allow player with blank name" do
+    create_logged_in_admin
+
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "" } }
+    end
+
+    assert_response :unprocessable_content
+    assert_select 'input[name="player[name]"]'
+    assert_equal "Name can't be blank", flash[:error]
+  end
+
+  test "new redirects camp users" do
+    create_logged_in_camp
+
+    get new_player_path
+
+    assert_redirected_to login_path
+  end
+
+  test "new redirects logged out users" do
+    get new_player_path
+
+    assert_redirected_to login_path
+  end
+
+  test "create redirects camp users" do
+    create_logged_in_camp
+
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "create redirects logged out users" do
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "test_name" } }
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "show player name and team for admins" do
+    create_logged_in_admin
+    player = create(:player)
+
+    get player_path(player)
+
+    assert_response :success
+    assert_select "h1", text: player.name
+    assert_select "p", text: player.team.name
+  end
+
+  test "show is accessible by camp users" do
+    create_logged_in_camp
+    player = create(:player)
+
+    get player_path(player)
+
+    assert_response :success
+  end
+
+  test "show redirects logged out users" do
+    player = create(:player)
+    get player_path(player)
+
+    assert_redirected_to login_path
+  end
+
+  test "show handles teamless player" do
+    create_logged_in_admin
+    player = create(:player, team: nil)
+
+    get player_path(player)
+    assert_response :success
+    assert_select "h1", text: player.name
+    assert_select "p", "No Team"
+  end
+
+  test "show handles non-existent id" do
+    create_logged_in_admin
+
+    get player_path(-1)
+    assert_response :not_found
+  end
+
   test "destroy deletes the player" do
     create_logged_in_admin
     player = create(:player)
