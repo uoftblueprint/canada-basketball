@@ -16,12 +16,21 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "Name: Test Game"
   end
 
-  test "show does not allow access to another camp's game" do
+  test "show does not allow a game that doesn't exist in camp" do
     not_camp_game = create(:game)
 
     get camp_game_path(@camp, not_camp_game)
 
     assert_response :not_found
+  end
+
+  test "a camp cannot access another camps's game" do
+    other_camp = create(:camp)
+    game = create(:game, camp: other_camp)
+
+    get camp_game_path(other_camp, game)
+
+    assert_redirected_to root_path
   end
 
   test "logged out users cannot access a game" do
