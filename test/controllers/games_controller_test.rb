@@ -209,7 +209,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
-  
+
   test "camp cannot destroy a game through another camp's URL" do
     other_camp = create(:camp)
     game = create(:game, camp: other_camp)
