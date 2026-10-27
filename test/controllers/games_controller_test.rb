@@ -98,6 +98,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prev", game.reload.name
     assert_response :unprocessable_entity
   end
+
   test "logged out users cannot update a game" do
     game = create(:game, camp: @camp, name: "Prev")
     log_out_user
@@ -109,6 +110,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prev", game.reload.name
     assert_redirected_to login_path
   end
+
   test "camp cannot update another camp's game" do
     other_camp = create(:camp)
     game = create(:game, camp: other_camp, name: "Prev")
@@ -120,6 +122,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prev", game.reload.name
     assert_redirected_to root_path
   end
+  
   test "admin can update a game's attributes" do
     game = create(:game, camp: @camp, name: "Prev")
     log_out_user
