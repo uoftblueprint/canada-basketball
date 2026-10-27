@@ -122,7 +122,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prev", game.reload.name
     assert_redirected_to root_path
   end
-  
+
   test "admin can update a game's attributes" do
     game = create(:game, camp: @camp, name: "Prev")
     log_out_user
