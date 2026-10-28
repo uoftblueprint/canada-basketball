@@ -2,3 +2,5 @@ en:
   admins:
     create:
       success: "Admin created."
+    update:
+      success: "Admin updated."

@@ -10,13 +10,12 @@ Rails.application.routes.draw do
   end
   resources :players, only: %i[index show destroy new create]
   resources :teams
-  resources :admins, only: %i[index new create destroy]
+  resources :admins, except: :show
 
   get "/login", to: "sessions#login"
   post "/login", to: "sessions#create"
   get "/login/admin", to: "sessions#login_admin"
   post "/login/admin", to: "sessions#create_admin"
   delete "/logout", to: "sessions#destroy"
-
   root "home#index"
 end

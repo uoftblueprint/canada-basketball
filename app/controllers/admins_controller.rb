@@ -9,13 +9,28 @@ class AdminsController < ApplicationController
     @admin = Admin.new
   end
 
+  def edit
+    @admin = Admin.find(params.expect(:id))
+  end
+
   def create
     @admin = Admin.new(admin_params)
     if @admin.save
-      redirect_to root_path, flash: { success: t(".success") }, status: :see_other
+      redirect_to admins_path, flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @admin.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    @admin = Admin.find(params.expect(:id))
+
+    if @admin.update(admin_params)
+      redirect_to admins_path, flash: { success: t(".success") }, status: :see_other
+    else
+      flash.now[:error] = @admin.errors.full_messages.to_sentence
+      render :edit, status: :unprocessable_content
     end
   end
 
