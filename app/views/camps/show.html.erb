@@ -1,0 +1,47 @@
+<div>
+  <h1 class="font-bold text-4xl"><%= @camp.name %></h1>
+
+  <section aria-labelledby="players-heading">
+    <h2 id="players-heading">Players</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @players.each do |player| %>
+          <tr>
+            <td><%= player.name %></td>
+            <td><%= player.team.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+
+  <section aria-labelledby="games-heading">
+    <h2 id="games-heading">Games</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Team</th>
+          <th>Opponent</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @games.each do |game| %>
+          <tr>
+            <td><%= game.name %></td>
+            <td><%= game.team.name %></td>
+            <td><%= game.opponent_name %></td>
+            <td><%= game.active? ? "Active" : "Inactive" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+</div>

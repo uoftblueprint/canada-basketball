@@ -1,8 +1,15 @@
 class CampsController < ApplicationController
   before_action :require_admin, only: %i[index destroy]
+  scope_to_camp :id, only: :show
 
   def index
     @camps = Camp.order(active: :desc, name: :asc)
+  end
+
+  def show
+    @camp = current_camp
+    @players = @camp.players.includes(:team).order(:name)
+    @games = @camp.games.includes(:team).order(:name)
   end
 
   def destroy
