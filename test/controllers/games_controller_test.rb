@@ -120,4 +120,62 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @team.id, created_game.team_id
     assert_redirected_to camp_game_path(@camp, created_game)
   end
+
+  test "update changes a game's attributes" do
+    game = create(:game, camp: @camp, name: "Prev")
+
+    patch camp_game_path(@camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Updated", game.reload.name
+    assert_equal "Thunder", game.reload.opponent_name
+  end
+
+  test "update doesn't change a game with invalid input" do
+    game = create(:game, camp: @camp, name: "Prev")
+
+    patch camp_game_path(@camp, game), params: {
+      game: { name: "", opponent_name: "Pistons" }
+    }
+
+    assert_equal "Prev", game.reload.name
+    assert_response :unprocessable_entity
+  end
+
+  test "logged out users cannot update a game" do
+    game = create(:game, camp: @camp, name: "Prev")
+    log_out_user
+
+    patch camp_game_path(@camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Prev", game.reload.name
+    assert_redirected_to login_path
+  end
+
+  test "camp cannot update another camp's game" do
+    other_camp = create(:camp)
+    game = create(:game, camp: other_camp, name: "Prev")
+
+    patch camp_game_path(other_camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Prev", game.reload.name
+    assert_redirected_to root_path
+  end
+
+  test "admin can update a game's attributes" do
+    game = create(:game, camp: @camp, name: "Prev")
+    log_out_user
+    create_logged_in_admin
+
+    patch camp_game_path(@camp, game), params: {
+      game: { name: "Updated", opponent_name: "Thunder" }
+    }
+
+    assert_equal "Updated", game.reload.name
+  end
 end
