@@ -5,9 +5,37 @@
 @plugin "./daisyui.mjs";
 
 /* Optional for custom themes – Docs: https://daisyui.com/docs/themes/#how-to-add-a-new-custom-theme */
-@plugin "./daisyui-theme.mjs"{
-  /* custom theme here */
+@plugin "./daisyui-theme.mjs" {
+  name: "canada-basketball";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(96.7% 0 0);
+  --color-base-300: oklch(64.3% 0 0);
+  --color-base-content: oklch(32.1% 0 0);
+  --color-primary: oklch(50.2% 0.197 20.6);
+  --color-primary-content: oklch(100% 0 0);
+  --color-neutral: oklch(32.1% 0 0);
+  --color-neutral-content: oklch(100% 0 0);
+  --color-info: oklch(74% 0.16 232.661);
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(71% 0.194 13.428);
+  --color-error-content: oklch(27% 0.105 12.094);
+  --radius-selector: 0rem;
+  --radius-field: 0rem;
+  --radius-box: 0rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 0.5px;
+  --depth: 1;
+  --noise: 0;
 }
+
 
 @keyframes fade-in-out {
   0% {
