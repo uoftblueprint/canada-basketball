@@ -199,4 +199,63 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+
+  test "admin can access the edit player page" do
+    create_logged_in_admin
+    player = create(:player)
+
+    get edit_player_path(player)
+
+    assert_response :success
+    assert_select "input[name='player[name]'][value=?]", player.name
+  end
+
+  test "admin can update a player" do
+    create_logged_in_admin
+    player = create(:player)
+
+    patch player_path(player), params: { player: { name: "New Name" } }
+
+    assert_redirected_to root_path
+    assert_equal "Player updated successfully", flash[:success]
+    assert_equal "New Name", player.reload.name
+  end
+
+  test "admin fails to update a player with no name" do
+    create_logged_in_admin
+    player = create(:player)
+
+    patch player_path(player), params: { player: { name: "" } }
+
+    assert_response :unprocessable_content
+    assert_not_equal "", player.reload.name
+  end
+
+  [
+    { who: "camp users", logged_in: :create_logged_in_camp,
+      message: "You must be logged in as an admin to access this page" },
+    { who: "logged out users", logged_in: nil,
+      message: "You must be logged in to access this page" }
+  ].each do |user|
+    test "edit redirects #{user[:who]}" do
+      send(user[:logged_in]) if user[:logged_in]
+      player = create(:player)
+
+      get edit_player_path(player)
+
+      assert_redirected_to login_path
+      assert_equal user[:message], flash[:error]
+    end
+
+    test "update redirects #{user[:who]}" do
+      send(user[:logged_in]) if user[:logged_in]
+      player = create(:player)
+
+      patch player_path(player), params: { player: { name: "Hacked" } }
+
+      assert_redirected_to login_path
+      assert_not_equal "Hacked", player.reload.name
+      assert_equal user[:message], flash[:error]
+    end
+  end
 end
