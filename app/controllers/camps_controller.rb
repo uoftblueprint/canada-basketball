@@ -1,5 +1,5 @@
 class CampsController < ApplicationController
-  before_action :require_admin, only: %i[index new create destroy]
+  before_action :require_admin, only: %i[index new edit create update destroy]
   scope_to_camp :id, only: :show
 
   def index
@@ -17,6 +17,11 @@ class CampsController < ApplicationController
     load_options
   end
 
+  def edit
+    @camp = Camp.find(params.expect(:id))
+    load_options
+  end
+
   def create
     @camp = Camp.new(camp_params)
 
@@ -26,6 +31,18 @@ class CampsController < ApplicationController
       flash.now[:error] = @camp.errors.full_messages.to_sentence
       load_options
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    @camp = Camp.find(params.expect(:id))
+
+    if @camp.update(camp_params)
+      redirect_to camp_path(@camp), flash: { success: "Camp updated successfully" }, status: :see_other
+    else
+      flash.now[:error] = @camp.errors.full_messages.to_sentence
+      load_options
+      render :edit, status: :unprocessable_content
     end
   end
 
