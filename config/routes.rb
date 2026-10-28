@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
   resources :players, only: %i[index show destroy new create]
   resources :teams
-  resources :admins, only: %i[index destroy]
+  resources :admins, only: %i[index new create destroy]
 
   get "/login", to: "sessions#login"
   post "/login", to: "sessions#create"
