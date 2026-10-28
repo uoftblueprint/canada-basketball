@@ -7,6 +7,50 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     @camp.teams << @team
   end
 
+  test "show displays the right game and edit button" do
+    game = create(:game, camp: @camp, name: "Test Game", opponent_name: "Pacers")
+
+    get camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "h1", text: "Name: Test Game"
+  end
+
+  test "show does not allow a game that doesn't exist in camp" do
+    not_camp_game = create(:game)
+
+    get camp_game_path(@camp, not_camp_game)
+
+    assert_response :not_found
+  end
+
+  test "a camp cannot access another camps's game" do
+    other_camp = create(:camp)
+    game = create(:game, camp: other_camp)
+
+    get camp_game_path(other_camp, game)
+
+    assert_redirected_to root_path
+  end
+
+  test "logged out users cannot access a game" do
+    log_out_user
+    game = create(:game, camp: @camp, name: "Test Game", opponent_name: "Pacers")
+    get camp_game_path(@camp, game)
+    assert_redirected_to login_path
+  end
+
+  test "admin can access a camp game" do
+    log_out_user
+    create_logged_in_admin
+    game = create(:game, camp: @camp, name: "Test Game", opponent_name: "Pacers")
+
+    get camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "h1", text: "Name: Test Game"
+  end
+
   test "create creates a game" do
     assert_difference("Game.count", 1) do
       post camp_games_path(@camp), params: {
@@ -60,7 +104,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  test "admin can create a game for  camp" do
+  test "admin can create a game for a camp" do
     log_out_user
     create_logged_in_admin
 

@@ -1,6 +1,10 @@
 class GamesController < ApplicationController
   scope_to_camp
 
+  def show
+    @game = current_camp.games.find(params.expect(:id))
+  end
+
   def new
     @game = current_camp.games.new
   end
