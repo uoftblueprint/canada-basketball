@@ -25,6 +25,8 @@ module Authentication
   def require_login
     return if logged_in?
 
+    # clear session when identity present but not valid
+    reset_session if current_identity
     redirect_to login_path, flash: { error: "You must be logged in to access this page" }
   end
 
@@ -48,7 +50,10 @@ module Authentication
   end
 
   def logged_in_state
-    current_identity&.dig("type")&.to_sym || :logged_out
+    return :admin if logged_in_admin
+    return :camp if logged_in_camp
+
+    :logged_out
   end
 
   def logged_in_as_admin? = logged_in_state == :admin
@@ -56,10 +61,16 @@ module Authentication
   def logged_in? = logged_in_state != :logged_out
 
   def logged_in_admin
-    @logged_in_admin ||= Admin.find_by(id: current_identity["id"]) if logged_in_as_admin?
+    return unless current_identity&.dig("type") == "admin"
+    return @logged_in_admin if instance_variable_defined?(:@logged_in_admin)
+
+    @logged_in_admin = Admin.find_by(id: current_identity["id"])
   end
 
   def logged_in_camp
-    @logged_in_camp ||= Camp.find_by(id: current_identity["id"]) if logged_in_as_camp?
+    return unless current_identity&.dig("type") == "camp"
+    return @logged_in_camp if instance_variable_defined?(:@logged_in_camp)
+
+    @logged_in_camp = Camp.find_by(id: current_identity["id"])
   end
 end
