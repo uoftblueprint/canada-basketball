@@ -39,6 +39,107 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You must be logged in to access this page", flash[:error]
   end
 
+  test "new is accessible by admins" do
+    create_logged_in_admin
+
+    get new_camp_path
+
+    assert_response :success
+  end
+
+  test "new redirects camp users" do
+    create_logged_in_camp
+
+    get new_camp_path
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+  end
+
+  test "new redirects logged out users" do
+    get new_camp_path
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access this page", flash[:error]
+  end
+
+  test "create creates a camp" do
+    create_logged_in_admin
+
+    assert_difference("Camp.count", 1) do
+      post camps_path, params: {
+        camp: {
+          name: "New Camp",
+          description: "A new camp",
+          password: "password",
+          password_confirmation: "password",
+          active: true
+        }
+      }
+    end
+    created_camp = Camp.order(:id).last
+
+    assert_equal "New Camp", created_camp.name
+    assert_equal "A new camp", created_camp.description
+    assert created_camp.active
+    assert_redirected_to camp_path(created_camp)
+    assert_equal "Camp created successfully", flash[:success]
+  end
+
+  test "create does not create a camp with invalid input" do
+    create_logged_in_admin
+
+    assert_no_difference("Camp.count") do
+      post camps_path, params: {
+        camp: {
+          name: "",
+          description: "A new camp",
+          password: "password",
+          password_confirmation: "password",
+          active: true
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "create redirects camp users" do
+    create_logged_in_camp
+
+    assert_no_difference("Camp.count") do
+      post camps_path, params: {
+        camp: {
+          name: "New Camp",
+          description: "A new camp",
+          password: "password",
+          password_confirmation: "password",
+          active: true
+        }
+      }
+    end
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+  end
+
+  test "create redirects logged out users" do
+    assert_no_difference("Camp.count") do
+      post camps_path, params: {
+        camp: {
+          name: "New Camp",
+          description: "A new camp",
+          password: "password",
+          password_confirmation: "password",
+          active: true
+        }
+      }
+    end
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access this page", flash[:error]
+  end
+
   test "destroy deletes the camp" do
     create_logged_in_admin
     camp = create(:camp)
