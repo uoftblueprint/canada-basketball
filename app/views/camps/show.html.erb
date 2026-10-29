@@ -1,6 +1,24 @@
 <div>
   <h1 class="font-bold text-4xl"><%= @camp.name %></h1>
 
+  <section aria-labelledby="teams-heading">
+    <h2 id="teams-heading">Teams</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @teams.each do |team| %>
+          <tr>
+            <td><%= team.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+
   <section aria-labelledby="players-heading">
     <h2 id="players-heading">Players</h2>
     <table>
@@ -11,10 +29,10 @@
         </tr>
       </thead>
       <tbody>
-        <% @players.each do |player| %>
+        <% @registrations.each do |registration| %>
           <tr>
-            <td><%= player.name %></td>
-            <td><%= player.team.name %></td>
+            <td><%= registration.player.name %></td>
+            <td><%= registration.team&.name || "No team" %></td>
           </tr>
         <% end %>
       </tbody>

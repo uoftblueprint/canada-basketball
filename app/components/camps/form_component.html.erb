@@ -10,11 +10,11 @@
   </div>
 
   <fieldset>
-    <legend>Teams</legend>
-    <%= form.collection_checkboxes :team_ids, teams, :id, :name do |team| %>
+    <legend>Players</legend>
+    <%= form.collection_checkboxes :player_ids, players, :id, :name do |player| %>
       <div>
-        <%= team.checkbox %>
-        <%= team.label %>
+        <%= player.checkbox %>
+        <%= player.label %>
       </div>
     <% end %>
   </fieldset>

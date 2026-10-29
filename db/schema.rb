@@ -20,14 +20,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_195440) do
     t.index ["email"], name: "index_admins_on_email", unique: true
   end
 
-  create_table "camp_assignments", force: :cascade do |t|
-    t.integer "team_id", null: false
+  create_table "camp_registrations", force: :cascade do |t|
     t.integer "camp_id", null: false
+    t.integer "player_id", null: false
+    t.integer "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["camp_id"], name: "index_camp_assignments_on_camp_id"
-    t.index ["team_id", "camp_id"], name: "index_camp_assignments_on_team_id_and_camp_id", unique: true
-    t.index ["team_id"], name: "index_camp_assignments_on_team_id"
+    t.index ["camp_id", "player_id"], name: "index_camp_registrations_on_camp_id_and_player_id", unique: true
+    t.index ["camp_id"], name: "index_camp_registrations_on_camp_id"
+    t.index ["player_id"], name: "index_camp_registrations_on_player_id"
+    t.index ["team_id"], name: "index_camp_registrations_on_team_id"
   end
 
   create_table "camps", force: :cascade do |t|
@@ -57,19 +59,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_195440) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "team_id"
-    t.index ["team_id"], name: "index_players_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
     t.string "name", null: false
+    t.integer "camp_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["camp_id", "name"], name: "index_teams_on_camp_id_and_name", unique: true
+    t.index ["camp_id"], name: "index_teams_on_camp_id"
   end
 
-  add_foreign_key "camp_assignments", "camps"
-  add_foreign_key "camp_assignments", "teams"
+  add_foreign_key "camp_registrations", "camps"
+  add_foreign_key "camp_registrations", "players"
+  add_foreign_key "camp_registrations", "teams"
   add_foreign_key "games", "camps"
   add_foreign_key "games", "teams"
-  add_foreign_key "players", "teams"
+  add_foreign_key "teams", "camps"
 end

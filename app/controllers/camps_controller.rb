@@ -8,8 +8,13 @@ class CampsController < ApplicationController
 
   def show
     @camp = current_camp
-    @players = @camp.players.includes(:team).order(:name)
-    @games = @camp.games.includes(:team).order(:name)
+    # use registrations to get both player and teams
+    @registrations = @camp.camp_registrations
+                          .includes(:player, :team)
+                          .joins(:player)
+                          .order("players.name")
+    @games = @camp.games.includes(:team).order(active: :desc, name: :asc)
+    @teams = @camp.teams.order(:name)
   end
 
   def new
@@ -58,10 +63,10 @@ class CampsController < ApplicationController
   private
 
   def load_options
-    @teams = Team.order(:name)
+    @players = Player.order(:name)
   end
 
   def camp_params
-    params.expect(camp: [:name, :description, :password, :password_confirmation, :active, { team_ids: [] }])
+    params.expect(camp: [:name, :description, :password, :password_confirmation, :active, { player_ids: [] }])
   end
 end

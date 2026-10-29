@@ -17,33 +17,15 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "index lists player names and teams" do
+  test "index lists player names" do
     create_logged_in_admin
-    team1 = create(:team, name: "team1")
-    team2 = create(:team, name: "team2")
-    create(:player, name: "test_player_1", team: team1)
-    create(:player, name: "test_player_2", team: team2)
+    create(:player, name: "test_player_1")
+    create(:player, name: "test_player_2")
 
     get players_path
 
-    assert_select "tbody tr:first-child" do
-      assert_select "td:first-child", text: "test_player_1"
-      assert_select "td:last-child", text: "team1"
-    end
-    assert_select "tbody tr:nth-child(2)" do
-      assert_select "td:first-child", text: "test_player_2"
-      assert_select "td:last-child", text: "team2"
-    end
-  end
-
-  test "index lists player names with no teams" do
-    create_logged_in_admin
-    create(:player, name: "test_player_3", team: nil)
-
-    get players_path
-
-    assert_select "td", text: "test_player_3"
-    assert_select "td", text: "No Team"
+    assert_select "tbody tr:first-child td:first-child", text: "test_player_1"
+    assert_select "tbody tr:nth-child(2) td:first-child", text: "test_player_2"
   end
 
   test "index redirects logged out users" do
@@ -129,7 +111,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
-  test "show player name and team for admins" do
+  test "show player name for admins" do
     create_logged_in_admin
     player = create(:player)
 
@@ -137,7 +119,6 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", text: player.name
-    assert_select "p", text: player.team.name
   end
 
   test "show is accessible by camp users" do
@@ -156,16 +137,6 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
-  test "show handles teamless player" do
-    create_logged_in_admin
-    player = create(:player, team: nil)
-
-    get player_path(player)
-    assert_response :success
-    assert_select "h1", text: player.name
-    assert_select "p", "No Team"
-  end
-
   test "show handles non-existent id" do
     create_logged_in_admin
 
@@ -179,7 +150,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference("Player.count", -1) { delete player_path(player) }
 
-    assert_redirected_to root_path
+    assert_redirected_to players_path
     assert_equal "Player deleted successfully", flash[:success]
   end
 
@@ -216,7 +187,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     patch player_path(player), params: { player: { name: "New Name" } }
 
-    assert_redirected_to root_path
+    assert_redirected_to player_path(player)
     assert_equal "Player updated successfully", flash[:success]
     assert_equal "New Name", player.reload.name
   end

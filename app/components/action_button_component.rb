@@ -26,6 +26,8 @@ class ActionButtonComponent < ViewComponent::Base
     @size = size
   end
 
+  private
+
   def form_data
     { turbo_confirm: @confirm.presence, turbo_stream: (@turbo_stream ? true : nil) }.compact
   end
@@ -33,8 +35,6 @@ class ActionButtonComponent < ViewComponent::Base
   def link_data
     { turbo_stream: (@turbo_stream ? true : nil) }.compact
   end
-
-  private
 
   def small? = @size == :small
   def medium? = @size == :medium

@@ -7,20 +7,12 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Team</th>
         </tr>
       </thead>
       <tbody>
         <% @players.each do |player| %>
           <tr>
             <td><%= player.name %></td>
-            <td>
-              <% if player.team.nil? %>
-                No Team
-              <% else %>
-                <%= player.team.name %>
-              <% end %>
-            </td>
           </tr>
         <% end %>
       </tbody>

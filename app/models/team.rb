@@ -1,13 +1,11 @@
 class Team < ApplicationRecord
-  # Can delete team without games; players become teamless
-  has_many :players, dependent: :nullify
-  # Cannot delete team that has played games
+  belongs_to :camp
   has_many :games, dependent: :restrict_with_error
-  has_many :camp_assignments, dependent: :destroy
-  has_many :camps, through: :camp_assignments
+  has_many :camp_registrations, dependent: :nullify
+  has_many :players, through: :camp_registrations
+
+  validates :name, presence: true, uniqueness: { scope: :camp_id }
 
   searchable_by :name
   sortable_by :name
-
-  validates :name, presence: true
 end

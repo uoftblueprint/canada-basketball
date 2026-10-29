@@ -1,6 +1,4 @@
 class BadgeComponent < ViewComponent::Base
-  attr_reader :text
-
   COLORS = %i[neutral primary secondary accent info success warning error].freeze
   SIZES = %i[xs sm md lg xl].freeze
   STYLES = %i[solid soft outline dash ghost].freeze
@@ -50,6 +48,8 @@ class BadgeComponent < ViewComponent::Base
   end
 
   private
+
+  attr_reader :text
 
   def css_classes
     class_names(

@@ -42,7 +42,7 @@ module Authentication
     return if logged_in_admin
     return if logged_in_camp == current_camp
 
-    redirect_to root_path, flash: { error: "You don't have access to this camp" }
+    redirect_to login_path, flash: { error: "You don't have access to this camp" }
   end
 
   def current_identity

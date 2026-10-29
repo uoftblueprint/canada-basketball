@@ -1,5 +1,6 @@
 class Player < ApplicationRecord
-  belongs_to :team, optional: true
+  has_many :camp_registrations
+  has_many :camps, through: :camp_registrations
 
   searchable_by :name
   sortable_by :name
