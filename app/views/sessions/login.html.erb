@@ -1,14 +1,20 @@
-<div>
-  <h1 class="font-bold text-4xl">Login</h1>
-  <%= form_with url: login_path do |form| %>
-    <div>
-      <%= label_tag :camp_id %>
-      <%= select_tag :camp_id, options_from_collection_for_select(Camp.all, :id, :name), prompt: "Choose a Camp" %>
+<% content_for :title, t(".title") %>
+<div class="flex min-h-screen items-center justify-center p-4">
+  <section class="card w-full max-w-md border border-base-300 bg-base-100" aria-labelledby="login-heading">
+    <%= render "tabs" %>
+    <div class="card-body gap-0 p-10">
+      <h1 id="login-heading" class="mb-8 text-3xl font-semibold"><%= t(".title") %></h1>
+      <%= form_with url: login_path do |form| %>
+        <div class="mb-6">
+          <%= form.label :camp_id, t(".camp") %>
+          <%= form.collection_select :camp_id, @camps, :id, :name, { prompt: t(".camp_prompt") }, required: true %>
+        </div>
+        <div class="mb-12">
+          <%= form.label :password, t(".password") %>
+          <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+        </div>
+        <%= form.submit t(".submit") %>
+      <% end %>
     </div>
-    <div>
-      <%= form.label :password %>
-      <%= form.password_field :password, required: true, placeholder: "Password" %>
-    </div>
-    <%= form.submit "Login" %>
-  <% end %>
+  </section>
 </div>

@@ -1,0 +1,6 @@
+<nav class="tabs divide-x divide-base-300" aria-label="<%= t(".label") %>">
+  <% { t(".admin") => login_admin_path, t(".camp") => login_path }.each do |label, path| %>
+    <% current = current_page?(path) %>
+    <%= link_to label, path, class: class_names("tab h-16 flex-1 border-b text-lg text-base-content", current ? "tab-active border-b-6 border-b-primary" : "border-b-base-300 bg-base-200"), aria: { current: ("page" if current) } %>
+  <% end %>
+</nav>

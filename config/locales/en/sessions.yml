@@ -1,0 +1,17 @@
+en:
+  sessions:
+    create:
+      error: "Invalid camp or password"
+      success: "Logged in successfully"
+    destroy:
+      success: "Logged out successfully"
+    login:
+      camp: "Camp Name"
+      camp_prompt: "Choose a Camp"
+      password: "Password"
+      submit: "Login"
+      title: "Camp Login"
+    tabs:
+      admin: "Admin"
+      camp: "Camp"
+      label: "Login type"
