@@ -204,7 +204,6 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
       assert_select "#modal_title", text: "Edit Player"
       assert_select "input[name='player[name]'][value=?]", player.name
     end
-    
   end
 
   test "admin can update a player" do
