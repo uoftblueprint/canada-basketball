@@ -1,0 +1,7 @@
+en:
+  players:
+    new:
+      title: "New Player"
+    create:
+      success: "Player created successfully"
+      
