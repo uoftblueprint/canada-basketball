@@ -38,7 +38,7 @@
     </div>
     <% if records.empty? %>
       <div class="flex flex-row justify-center items-center">
-        <span>No Entries Found</span>
+        <span><%= t(".no_entries") %></span>
       </div>
     <% end %>
     <%# Controls %>
@@ -48,7 +48,7 @@
       <% else %>
         <%= link_to "<", path_with_page(current_page - 1), class: "btn" %>
       <% end %>
-      <span><%= current_page %> of <%= total_pages %></span>
+      <span><%= t(".page_of", current: current_page, total: total_pages) %></span>
       <% if current_page >= total_pages %>
         <span class="btn btn-disabled">&gt;</span>
       <% else %>
