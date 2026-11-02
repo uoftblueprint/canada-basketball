@@ -11,8 +11,8 @@
         <% end %>
       <% end %>
     <% end %>
-    <%# Header %>
     <div class="grid" style="grid-template-columns: <%= column_sizes %>">
+      <%# Header %>
       <% columns.each do |column| %>
         <div>
           <% if sortable?(column) %>
@@ -28,11 +28,7 @@
         </div>
       <% end %>
       <%# Rows %>
-      <% if records.empty? %>
-        <div class="flex flex-row justify-center items-center">
-          <span>No Entries Found</span>
-        </div>
-      <% else %>
+      <% unless records.empty? %>
         <% records.each do |record| %>
           <% columns.each do |column| %>
             <div><%= render_cell_content(record, column) %></div>
@@ -40,6 +36,11 @@
         <% end %>
       <% end %>
     </div>
+    <% if records.empty? %>
+      <div class="flex flex-row justify-center items-center">
+        <span>No Entries Found</span>
+      </div>
+    <% end %>
     <%# Controls %>
     <div class="flex flex-row">
       <% if current_page <= 1 %>
