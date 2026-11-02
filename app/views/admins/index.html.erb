@@ -22,15 +22,14 @@
     <% table.column :name, header: t("admins.index.columns.name") %>
     <% table.column :email, header: t("admins.index.columns.email") %>
 
-    <% table.column :actions, header: t("admins.index.columns.actions") do |admin| %>
+    <% table.column :actions, header: t("admins.index.columns.actions"), col_size: "auto" do |admin| %>
       <div class="flex items-center gap-2">
         <%= render ActionButtonComponent.new(
               to: edit_admin_path(admin),
-              icon: "pencil-simple",
+              icon: "pencil",
               color: :neutral,
               size: :medium,
-              turbo_stream: true,
-              turbo_frame: "_top"
+              turbo_stream: true
             ) do %>
           <%= t("admins.index.actions.edit") %>
         <% end %>
@@ -41,8 +40,7 @@
               color: :primary,
               method: :delete,
               size: :medium,
-              confirm: t("admins.index.actions.delete_confirmation", name: admin.name),
-              turbo_frame: "_top"
+              confirm: t("admins.index.actions.delete_confirmation", name: admin.name)
             ) do %>
           <%= t("admins.index.actions.delete") %>
         <% end %>
