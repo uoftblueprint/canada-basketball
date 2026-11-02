@@ -5,8 +5,7 @@ class AdminsController < ApplicationController
 
   def index
     @table_state = build_table_state(
-      Admin.order(:name),
-      param_scope: :admins
+      Admin.order(:name)
     )
   end
 
