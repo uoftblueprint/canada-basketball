@@ -27,21 +27,19 @@
           <% end %>
         </div>
       <% end %>
-    </div>
-    <%# Rows %>
-    <% if records.empty? %>
-      <div class="flex flex-row justify-center items-center">
-        <span>No Entries Found</span>
-      </div>
-    <% else %>
-      <% records.each do |record| %>
-        <div class="grid" style="grid-template-columns: <%= column_sizes %>">
+      <%# Rows %>
+      <% if records.empty? %>
+        <div class="flex flex-row justify-center items-center">
+          <span>No Entries Found</span>
+        </div>
+      <% else %>
+        <% records.each do |record| %>
           <% columns.each do |column| %>
             <div><%= render_cell_content(record, column) %></div>
           <% end %>
-        </div>
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
     <%# Controls %>
     <div class="flex flex-row">
       <% if current_page <= 1 %>
