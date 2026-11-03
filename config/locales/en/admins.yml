@@ -1,6 +1,22 @@
 en:
+  activerecord:
+    attributes:
+      admin:
+        name: "Name"
+        email: "Email"
   admins:
+    index:
+      title: "Admins"
+      subtitle: "Create and manage admins"
+      create_admin: "Create admin"
+      actions:
+        edit: "Edit"
+        delete: "Delete"
+        delete_confirmation: "Delete admin %{name}?"
     create:
       success: "Admin created."
     update:
       success: "Admin updated."
+    destroy:
+      success: "Admin deleted successfully"
+      last_admin: "Cannot delete admin because there is only one admin remaining"

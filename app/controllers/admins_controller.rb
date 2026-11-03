@@ -1,8 +1,12 @@
 class AdminsController < ApplicationController
+  include IndexTable
+
   before_action :require_admin
 
   def index
-    @admins = Admin.order(:name)
+    @table_state = build_table_state(
+      Admin.order(:name)
+    )
   end
 
   def new
@@ -39,10 +43,10 @@ class AdminsController < ApplicationController
 
     if Admin.count <= 1
       redirect_back_or_to admins_path, flash: {
-        error: "Cannot delete admin because there is only one admin remaining"
+        error: t(".last_admin")
       }, status: :see_other
     elsif admin.destroy
-      redirect_to admins_path, flash: { success: "Admin deleted successfully" }, status: :see_other
+      redirect_to admins_path, flash: { success: t(".success") }, status: :see_other
     else
       redirect_back_or_to admins_path, flash: { error: admin.errors.full_messages.to_sentence }, status: :see_other
     end
