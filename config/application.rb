@@ -16,6 +16,9 @@ module CanadaBasketball
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # Set here instead of on ApplicationController so forms inside view components use it too.
+    config.action_view.default_form_builder = "DefaultFormBuilder"
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
