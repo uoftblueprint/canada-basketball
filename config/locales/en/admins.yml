@@ -1,13 +1,14 @@
 en:
+  activerecord:
+    attributes:
+      admin:
+        name: "Name"
+        email: "Email"
   admins:
     index:
       title: "Admins"
       subtitle: "Create and manage admins"
       create_admin: "Create admin"
-      columns:
-        email: "Email"
-        name: "Name"
-        actions: "Actions"
       actions:
         edit: "Edit"
         delete: "Delete"

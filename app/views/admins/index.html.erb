@@ -19,10 +19,10 @@
         state: @table_state,
         path_builder: ->(params) { admins_path(params) }
       ) do |table| %>
-    <% table.column :name, header: t("admins.index.columns.name") %>
-    <% table.column :email, header: t("admins.index.columns.email") %>
+    <% table.column :name %>
+    <% table.column :email %>
 
-    <% table.column :actions, header: t("admins.index.columns.actions"), col_size: "auto" do |admin| %>
+    <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto" do |admin| %>
       <div class="flex items-center gap-2">
         <%= render ActionButtonComponent.new(
               to: edit_admin_path(admin),
