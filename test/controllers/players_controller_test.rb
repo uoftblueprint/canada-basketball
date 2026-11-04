@@ -24,8 +24,17 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     get players_path
 
-    assert_select "tbody tr:first-child td:first-child", text: "test_player_1"
-    assert_select "tbody tr:nth-child(2) td:first-child", text: "test_player_2"
+    assert_select "#players_index_table .grid > div", text: "test_player_1"
+    assert_select "#players_index_table .grid > div", text: "test_player_2"
+  end
+
+  test "index links to the full player page" do
+    create_logged_in_admin
+    player = create(:player)
+
+    get players_path
+
+    assert_select 'a[href=?][data-turbo-frame="_top"]', player_path(player), count: 1
   end
 
   test "index redirects logged out users" do
@@ -41,8 +50,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     get players_path
 
     assert_response :success
-    assert_select "p", text: "No players yet."
-    assert_select "tbody tr", count: 0
+    assert_select "#players_index_table span", text: I18n.t("shared.index_table_component.no_entries")
   end
 
   test "new is accessible by admins" do
@@ -63,7 +71,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to players_path
     assert_response :see_other
-    assert_equal "Player created successfully", flash[:success]
+    assert_equal I18n.t("players.create.success"), flash[:success]
     assert_equal "test_name", Player.last.name
   end
 
@@ -76,7 +84,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_select 'input[name="player[name]"]'
-    assert_equal "Name can't be blank", flash[:error]
+    assert_equal "Player Name can't be blank", flash[:error]
   end
 
   test "new redirects camp users" do
@@ -151,7 +159,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Player.count", -1) { delete player_path(player) }
 
     assert_redirected_to players_path
-    assert_equal "Player deleted successfully", flash[:success]
+    assert_equal I18n.t("players.destroy.success"), flash[:success]
   end
 
   test "destroy redirects camp users" do
@@ -188,7 +196,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     patch player_path(player), params: { player: { name: "New Name" } }
 
     assert_redirected_to player_path(player)
-    assert_equal "Player updated successfully", flash[:success]
+    assert_equal I18n.t("players.update.success"), flash[:success]
     assert_equal "New Name", player.reload.name
   end
 
