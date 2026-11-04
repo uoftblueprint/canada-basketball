@@ -1,9 +1,11 @@
 class CampsController < ApplicationController
+  include IndexTable
+
   before_action :require_admin, only: %i[index new edit create update destroy]
   scope_to_camp :id, only: :show
 
   def index
-    @camps = Camp.order(active: :desc, name: :asc)
+    @table_state = build_table_state(Camp.order(active: :desc, name: :asc), per_page: 12, param_scope: :camps)
   end
 
   def show

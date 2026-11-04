@@ -4,3 +4,10 @@ en:
       actions: "Actions"
       no_entries: "No Entries Found"
       page_of: "%{current} of %{total}"
+    index_cards_component:
+      search_placeholder: "Search"
+      search_label: "Search"
+      listings_label: "Listings"
+      pagination_label: "Pages"
+      previous_page: "Previous page"
+      next_page: "Next page"

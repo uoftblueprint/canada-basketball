@@ -1,0 +1,25 @@
+<%= link_to camp_path(camp),
+            class: "block",
+            data: { turbo_frame: "_top" },
+            aria: {
+              labelledby: "#{dom_id(camp, :card_title)} #{dom_id(camp, :card_status)}",
+              describedby: dom_id(camp, :card_description)
+            } do %>
+  <div class="card h-40 w-full border border-base-300 bg-base-200 transition-shadow duration-200 hover:shadow-sm">
+    <div class="card-body">
+      <div class="mb-2 flex items-center justify-between gap-3">
+        <h2 id="<%= dom_id(camp, :card_title) %>" class="card-title truncate text-2xl">
+          <%= title %>
+        </h2>
+
+        <span id="<%= dom_id(camp, :card_status) %>" class="badge badge-sm h-auto shrink-0 px-3 py-0.5 <%= status_class %>">
+          <%= t(status_key) %>
+        </span>
+      </div>
+
+      <p id="<%= dom_id(camp, :card_description) %>" class="line-clamp-3 text-sm font-medium text-base-content">
+        <%= description %>
+      </p>
+    </div>
+  </div>
+<% end %>
