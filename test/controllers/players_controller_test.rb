@@ -54,6 +54,18 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[name="player[name]"]'
   end
 
+  test "new renders the form in a modal for turbo stream requests" do
+    create_logged_in_admin
+
+    get new_player_path, as: :turbo_stream
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal" do
+      assert_select "#modal_title", text: "New Player"
+      assert_select 'input[name="player[name]"]'
+    end
+  end
+
   test "create adds the player" do
     create_logged_in_admin
 
