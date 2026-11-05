@@ -11,17 +11,27 @@ class PlayersController < ApplicationController
 
   def new
     @player = Player.new
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def edit
     @player = Player.find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
     @player = Player.new(player_params)
 
     if @player.save
-      redirect_to players_path, flash: { success: "Player created successfully" }, status: :see_other
+      redirect_to players_path, flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @player.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
@@ -32,7 +42,7 @@ class PlayersController < ApplicationController
     @player = Player.find(params.expect(:id))
 
     if @player.update(player_params)
-      redirect_to player_path(@player), flash: { success: "Player updated successfully" }, status: :see_other
+      redirect_to player_path(@player), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @player.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
