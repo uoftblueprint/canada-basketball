@@ -8,11 +8,11 @@
     aria-modal="true"
     aria-labelledby="modal_title">
     <div class="flex items-center justify-between">
-      <h2 id="modal_title" class="text-lg font-semibold"><%= title %></h2>
+      <h2 id="modal_title" class="text-3xl font-semibold"><%= title %></h2>
       <button type="button"
               class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-error"
               data-action="modal#close"
-              aria-label="Close">
+              aria-label="<%= t("shared.modal_component.close") %>">
         ✕
       </button>
     </div>
