@@ -1,8 +1,12 @@
 class PlayersController < ApplicationController
+  include IndexTable
+
   before_action :require_admin, only: %i[new edit create update destroy]
 
   def index
-    @players = Player.order(:name)
+    @table_state = build_table_state(
+      Player.order(:name)
+    )
   end
 
   def show
@@ -21,7 +25,7 @@ class PlayersController < ApplicationController
     @player = Player.new(player_params)
 
     if @player.save
-      redirect_to players_path, flash: { success: "Player created successfully" }, status: :see_other
+      redirect_to players_path, flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @player.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
@@ -32,7 +36,7 @@ class PlayersController < ApplicationController
     @player = Player.find(params.expect(:id))
 
     if @player.update(player_params)
-      redirect_to player_path(@player), flash: { success: "Player updated successfully" }, status: :see_other
+      redirect_to player_path(@player), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @player.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
@@ -42,7 +46,7 @@ class PlayersController < ApplicationController
   def destroy
     player = Player.find(params.expect(:id))
     if player.destroy
-      redirect_to players_path, flash: { success: "Player deleted successfully" }, status: :see_other
+      redirect_to players_path, flash: { success: t(".success") }, status: :see_other
     else
       redirect_back_or_to players_path, flash: { error: player.errors.full_messages.to_sentence }, status: :see_other
     end

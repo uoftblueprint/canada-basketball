@@ -1,5 +1,6 @@
 class ActionButtonComponent < ViewComponent::Base
   COLOR_CLASSES = {
+    base: "bg-base-100 text-base-content hover:bg-base-200",
     neutral: "btn-neutral",
     primary: "btn-primary",
     secondary: "btn-secondary",
@@ -12,7 +13,8 @@ class ActionButtonComponent < ViewComponent::Base
 
   private_constant :COLOR_CLASSES
 
-  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small)
+  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small,
+                 turbo_frame: nil)
     super()
 
     raise ArgumentError, "Invalid color" unless COLOR_CLASSES.include?(color)
@@ -24,6 +26,7 @@ class ActionButtonComponent < ViewComponent::Base
     @confirm = confirm
     @turbo_stream = turbo_stream
     @size = size
+    @turbo_frame = turbo_frame
   end
 
   private
@@ -33,7 +36,7 @@ class ActionButtonComponent < ViewComponent::Base
   end
 
   def link_data
-    { turbo_stream: (@turbo_stream ? true : nil) }.compact
+    { turbo_stream: (@turbo_stream ? true : nil), turbo_frame: @turbo_frame }.compact
   end
 
   def small? = @size == :small

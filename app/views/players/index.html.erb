@@ -1,21 +1,59 @@
-<div>
-  <h1 class="font-bold text-4xl">Players</h1>
-  <% if @players.empty? %>
-    <p>No players yet.</p>
-  <% else %>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @players.each do |player| %>
-          <tr>
-            <td><%= player.name %></td>
-          </tr>
+<div class="px-6 py-8">
+  <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-4xl font-bold"><%= t(".title") %></h1>
+      <p class="mt-2 text-base-content/70"><%= t(".subtitle") %></p>
+    </div>
+
+    <%= render ActionButtonComponent.new(
+          to: new_player_path,
+          icon: "plus",
+          color: :primary,
+          size: :medium,
+          turbo_stream: true
+        ) do %>
+      <%= t(".create_player") %>
+    <% end %>
+  </header>
+  <%= render Shared::IndexTableComponent.new(
+        state: @table_state,
+        path_builder: ->(params) { players_path(params) }
+      ) do |table| %>
+    <% table.column :name %>
+
+    <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto" do |player| %>
+      <div class="flex items-center gap-2">
+        <%= render ActionButtonComponent.new(
+              to: player_path(player),
+              icon: "eye",
+              color: :base,
+              size: :medium,
+              turbo_frame: "_top"
+            ) do %>
+          <%= t("players.index.actions.view") %>
         <% end %>
-      </tbody>
-    </table>
+
+        <%= render ActionButtonComponent.new(
+              to: edit_player_path(player),
+              icon: "pencil",
+              color: :neutral,
+              size: :medium,
+              turbo_stream: true
+            ) do %>
+          <%= t("players.index.actions.edit") %>
+        <% end %>
+
+        <%= render ActionButtonComponent.new(
+              to: player_path(player),
+              icon: "trash",
+              color: :primary,
+              method: :delete,
+              size: :medium,
+              confirm: t("players.index.actions.delete_confirmation", name: player.name)
+            ) do %>
+          <%= t("players.index.actions.delete") %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
