@@ -12,11 +12,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "Login admin page renders when logged out" do
+    get login_admin_path
+
+    assert_response :success
+  end
+
   test "Create admin redirects to camps path when login is successful and sets identity in session" do
     post login_admin_path, params: { email: "admin@test.com", password: "password" }
 
     assert_redirected_to camps_path
-    assert_equal "Logged in as admin successfully", flash[:success]
+    assert_equal I18n.t("sessions.create_admin.success"), flash[:success]
     assert_equal({ "type" => "admin", "id" => @admin.id }, session[:identity])
   end
 
@@ -32,7 +38,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post login_admin_path, params: { email: "admin@test.com", password: "wrongpassword" }
 
     assert_redirected_to login_admin_path
-    assert_equal "Invalid email or password", flash[:error]
+    assert_equal I18n.t("sessions.create_admin.error"), flash[:error]
     assert_nil session[:identity]
   end
 
