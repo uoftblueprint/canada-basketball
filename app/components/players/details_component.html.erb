@@ -1,0 +1,17 @@
+<section class="card w-full text-sm" aria-labelledby="player-details">
+  <div class="gap-3">
+    <h2 id="player-name" class="mb-2 font-medium"><%= t("players.show.name") %></h2>
+    <div class="border-[0.5px] border-base-300 bg-base-200 p-3"><%= player.name %></div>
+  </div>
+
+  <div class="gap-3">
+    <h2 id="registrations-heading" class="my-2 font-medium"><%= t("players.show.registrations") %></h2>
+    <ul id="registrations" class="space-y-3" aria-labelledby="registrations-heading">
+      <% player.camp_registrations.each do |registration| %>
+        <li class="border-[0.5px] border-base-300 bg-base-200 p-3">
+          <%= registration.camp.name %> / <%= registration.team&.name || t("players.show.no_team") %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>

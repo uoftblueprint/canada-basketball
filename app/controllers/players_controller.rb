@@ -6,7 +6,12 @@ class PlayersController < ApplicationController
   end
 
   def show
-    @player = Player.find(params.expect(:id))
+    @player = Player.includes(camp_registrations: %i[camp team]).find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new
