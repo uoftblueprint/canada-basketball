@@ -1,0 +1,7 @@
+en:
+  players:
+    show:
+      title: "Player Details"
+      name: "Name"
+      registrations: "Registrations"
+      no_team: "No team"
