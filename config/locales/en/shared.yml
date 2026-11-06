@@ -11,3 +11,5 @@ en:
       pagination_label: "Pages"
       previous_page: "Previous page"
       next_page: "Next page"
+    modal_component:
+      close: "Close"

@@ -34,7 +34,11 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
   test "show displays team name and players when logged in as camp" do
     get camp_team_path(@camp, @team)
 
-    assert_select "h1", "T1"
+    assert_select "section[aria-labelledby='team-details-heading']"
+    assert_select "h1#team-details-heading", "Team Details"
+    assert_select "section[aria-labelledby='team-details']"
+    assert_select "h2#team-name", "Name"
+    assert_select "h2#players-heading", "Players"
     assert_select "#players li", "A"
     assert_select "#players li", "B"
   end
@@ -44,9 +48,27 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     get camp_team_path(@camp, @team)
 
-    assert_select "h1", "T1"
+    assert_select "h1#team-details-heading", "Team Details"
+    assert_select "div", text: "T1", count: 1
     assert_select "#players li", "A"
     assert_select "#players li", "B"
+  end
+
+  test "show renders the team details modal for a Turbo Stream request" do
+    get camp_team_path(@camp, @team), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_select "turbo-stream[action='replace'][target='modal']"
+    assert_includes response.body, 'id="modal"'
+    assert_includes response.body, 'role="dialog"'
+    assert_includes response.body, 'aria-modal="true"'
+    assert_includes response.body, 'aria-labelledby="modal_title"'
+    assert_includes response.body, '<h2 id="modal_title"'
+    assert_includes response.body, "Team Details"
+    assert_includes response.body, 'aria-label="Close"'
+    assert_includes response.body, "A"
+    assert_includes response.body, "B"
   end
 
   test "shows team name and no players" do
@@ -54,7 +76,8 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     get camp_team_path(@camp, team)
 
-    assert_select "h1", "T2"
+    assert_select "div", text: "T2", count: 1
+    assert_select "#players"
     assert_select "#players li", count: 0
   end
 
