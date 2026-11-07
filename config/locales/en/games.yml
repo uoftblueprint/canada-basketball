@@ -1,0 +1,10 @@
+en:
+  games:
+    new:
+      title: "New Game"
+    create:
+      success: "Game created successfully"
+    edit:
+      title: "Edit Game"
+    update:
+      success: "Game updated successfully"
