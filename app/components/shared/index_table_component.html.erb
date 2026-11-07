@@ -1,59 +1,91 @@
 <%= turbo_frame_tag frame_id, data: { turbo_action: "advance" } do %>
-  <section>
+  <section class="flex flex-col gap-4">
     <%# Search bar %>
     <% if searchable %>
-      <%= form_with url: path, method: :get, scope: param_scope, data: { turbo: true } do |form| %>
-        <%= form.search_field :q, value: query_params.q %>
+      <%= form_with url: path,
+                    method: :get,
+                    scope: param_scope,
+                    data: { turbo: true, controller: "clearable-input" },
+                    html: { role: "search", aria: { label: t(".search_label") } },
+                    class: "input border-[0.5px] border-base-300 w-full flex flex-row items-center gap-2" do |form| %>
+        <%= form.button type: :submit,
+                        name: nil,
+                        class: "hover:cursor-pointer",
+                        aria: { label: t(".search_label") } do %>
+          <%= render Shared::IconComponent.new(icon: "search", size: :md) %>
+        <% end %>
+        <%= form.search_field :q,
+                              value: query_params.q,
+                              class: "grow",
+                              aria: { label: t(".search_label") },
+                              data: { clearable_input_target: "field", action: "input->clearable-input#toggle" } %>
+        <%= form.button type: :button,
+                        name: nil,
+                        hidden: true,
+                        class: "hover:cursor-pointer",
+                        aria: { label: t(".clear_search") },
+                        data: { clearable_input_target: "clear", action: "clearable-input#clear" } do %>
+          <%= render Shared::IconComponent.new(icon: "x", size: :md) %>
+        <% end %>
         <%= form.hidden_field :order_by, value: query_params.order_by %>
         <%= form.hidden_field :order, value: query_params.order %>
-        <%= form.button type: :submit, name: nil do %>
-          <%= render Shared::IconComponent.new(icon: "search") %>
-        <% end %>
       <% end %>
     <% end %>
-    <div class="grid" style="grid-template-columns: <%= column_sizes %>">
-      <%# Header %>
-      <% columns.each do |column| %>
-        <div>
-          <% if sortable?(column) %>
-            <%= link_to path_with_sort(column), class: "flex flex-row items-center gap-2" do %>
-              <%= column.header %>
-              <% if column.attribute.to_s == query_params.order_by %>
-                <%= render Shared::IconComponent.new(icon: query_params.order == "asc" ? "caret-up" : "caret-down") %>
+    <div>
+      <div class="grid border-t-[0.5px] border-l-[0.5px]" style="grid-template-columns: <%= column_sizes %>">
+        <%# Header %>
+        <% columns.each do |column| %>
+          <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2 flex flex-row items-center">
+            <% if sortable?(column) %>
+              <%= link_to path_with_sort(column), class: "flex flex-row items-center gap-2" do %>
+                <%= column.header %>
+                <% if column.attribute.to_s == query_params.order_by %>
+                  <%= render Shared::IconComponent.new(icon: query_params.order == "asc" ? "caret-up" : "caret-down") %>
+                <% end %>
               <% end %>
+            <% else %>
+              <%= column.header %>
             <% end %>
-          <% else %>
-            <%= column.header %>
+          </div>
+        <% end %>
+        <%# Rows %>
+        <% unless records.empty? %>
+          <% records.each do |record| %>
+            <% columns.each do |column| %>
+              <div class="border-b-[0.5px] border-r-[0.5px] flex flex-row <%= column.fill ? "items-stretch" : "items-center px-3 py-2" %>">
+                <%= render_cell_content(record, column) %>
+              </div>
+            <% end %>
           <% end %>
+        <% end %>
+      </div>
+      <% if records.empty? %>
+        <div class="flex flex-row justify-center items-center border-[0.5px] border-t-0 px-3 py-2">
+          <span><%= t(".no_entries") %></span>
         </div>
       <% end %>
-      <%# Rows %>
-      <% unless records.empty? %>
-        <% records.each do |record| %>
-          <% columns.each do |column| %>
-            <div><%= render_cell_content(record, column) %></div>
+      <%# Controls %>
+      <div class="border-[0.5px] border-t-0 bg-base-200 flex flex-row items-center justify-center p-1">
+        <% if current_page <= 1 %>
+          <span class="btn btn-sm btn-ghost btn-disabled" aria-hidden="true">
+            <%= render Shared::IconComponent.new(icon: "caret-left") %>
+          </span>
+        <% else %>
+          <%= link_to path_with_page(current_page - 1), class: "btn btn-sm btn-circle btn-ghost", aria: { label: t(".previous_page") } do %>
+            <%= render Shared::IconComponent.new(icon: "caret-left") %>
           <% end %>
         <% end %>
-      <% end %>
-    </div>
-    <% if records.empty? %>
-      <div class="flex flex-row justify-center items-center">
-        <span><%= t(".no_entries") %></span>
+        <span><%= t(".page_of", current: current_page, total: total_pages) %></span>
+        <% if current_page >= total_pages %>
+          <span class="btn btn-sm btn-ghost btn-disabled" aria-hidden="true">
+            <%= render Shared::IconComponent.new(icon: "caret-right") %>
+          </span>
+        <% else %>
+          <%= link_to path_with_page(current_page + 1), class: "btn btn-sm btn-circle btn-ghost", aria: { label: t(".next_page") } do %>
+            <%= render Shared::IconComponent.new(icon: "caret-right") %>
+          <% end %>
+        <% end %>
       </div>
-    <% end %>
-    <%# Controls %>
-    <div class="flex flex-row">
-      <% if current_page <= 1 %>
-        <span class="btn btn-disabled">&lt;</span>
-      <% else %>
-        <%= link_to "<", path_with_page(current_page - 1), class: "btn" %>
-      <% end %>
-      <span><%= t(".page_of", current: current_page, total: total_pages) %></span>
-      <% if current_page >= total_pages %>
-        <span class="btn btn-disabled">&gt;</span>
-      <% else %>
-        <%= link_to ">", path_with_page(current_page + 1), class: "btn" %>
-      <% end %>
     </div>
   </section>
 <% end %>
