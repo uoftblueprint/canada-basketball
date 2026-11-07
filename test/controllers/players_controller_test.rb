@@ -146,7 +146,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
   test "show renders the player details modal for a Turbo Stream request" do
     create_logged_in_camp
     player = create(:player, name: "Shai Gilgeous-Alexander")
-    camp = create(:camp, name: "Camp 1")
+    camp = create(:camp, name: "Blue 1")
     team = create(:team, name: "Team 1", camp: camp)
     create(:camp_registration, player: player, camp: camp, team: team)
 
@@ -162,7 +162,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, '<h2 id="modal_title"'
     assert_includes response.body, "Player Details"
     assert_includes response.body, 'aria-label="Close"'
-    assert_includes response.body, "Camp 1 / Team 1"
+    assert_includes response.body, "Blue 1 / Team 1"
   end
 
   test "show is accessible by camp users" do
