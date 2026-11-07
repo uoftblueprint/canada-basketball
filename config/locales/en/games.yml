@@ -11,6 +11,14 @@ en:
       edit_game: "Edit Game"
       delete_game: "Delete Game"
       matchup: "%{team} vs %{opponent}"
+    new:
+      title: "New Game"
+    create:
+      success: "Game created successfully"
+    edit:
+      title: "Edit Game"
+    update:
+      success: "Game updated successfully"
     box_score:
       breadcrumbs: "Breadcrumbs"
       box_score: "Box Score"

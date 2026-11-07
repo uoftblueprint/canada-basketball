@@ -51,6 +51,29 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "new renders the form as HTML" do
+    get new_camp_game_path(@camp)
+
+    assert_response :success
+    assert_select "h1", text: "New Game"
+    assert_select "form"
+    assert_select 'input[name="game[name]"]'
+    assert_select 'select[name="game[team_id]"]'
+    assert_select 'input[name="game[opponent_name]"]'
+  end
+
+  test "new renders the form in a modal for turbo stream requests" do
+    get new_camp_game_path(@camp), as: :turbo_stream
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal" do
+      assert_select "#modal_title", text: "New Game"
+      assert_select 'input[name="game[name]"]'
+      assert_select 'select[name="game[team_id]"]'
+      assert_select 'input[name="game[opponent_name]"]'
+    end
+  end
+
   test "create creates a game" do
     assert_difference("Game.count", 1) do
       post camp_games_path(@camp), params: {
