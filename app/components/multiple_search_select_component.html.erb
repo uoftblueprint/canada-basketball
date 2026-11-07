@@ -9,7 +9,7 @@
   <input type="hidden" name="<%= name %>" value="">
   <ul class="flex flex-wrap gap-2 mt-2" data-search-select-target="selected">
     <% selected.each do |record| %>
-      <li class="badge badge-neutral gap-1" data-id="<%= value_for(record) %>">
+      <li class="badge badge-outline gap-1 p-2" data-id="<%= value_for(record) %>">
         <input
           type="hidden"
           name="<%= name %>"
@@ -19,26 +19,26 @@
           </span>
           <button
             type="button"
-            class="btn btn-ghost btn-xs btn-circle"
+            class="btn btn-ghost btn-xs btn-circle h-4 w-4"
             data-action="search-select#remove"
             data-id="<%= value_for(record) %>"
             aria-label="Remove <%= text_for(record) %>">
-            <%= render Shared::IconComponent.new(icon: "x", size: :sm) %>
+            <%= render Shared::IconComponent.new(icon: "x", size: :xs) %>
           </button>
         </li>
       <% end %>
     </ul>
     <template data-search-select-target="badgeTemplate">
-      <li class="badge badge-outline gap-2" data-id="">
+      <li class="badge badge-outline gap-1 p-2" data-id="">
         <input type="hidden" name="<%= name %>" value="">
         <span></span>
         <button
           type="button"
-          class="hover:cursor-pointer"
+          class="btn btn-ghost btn-xs btn-circle h-4 w-4"
           data-action="search-select#remove"
           data-id=""
           aria-label="Remove">
-          <%= render Shared::IconComponent.new(icon: "x", size: :sm) %>
+          <%= render Shared::IconComponent.new(icon: "x", size: :xs) %>
         </button>
       </li>
     </template>
