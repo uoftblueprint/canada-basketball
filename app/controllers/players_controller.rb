@@ -1,8 +1,19 @@
 class PlayersController < ApplicationController
-  before_action :require_admin, only: %i[new edit create update destroy]
+  include SearchSelect
+
+  before_action :require_admin, only: %i[search new edit create update destroy]
 
   def index
     @players = Player.order(:name)
+  end
+
+  def search
+    state = build_search_select_state(Player.all)
+    render SearchSelectInput::SuggestionsComponent.new(
+      state:,
+      value_method: :id,
+      text_method: :name
+    ), layout: false
   end
 
   def show

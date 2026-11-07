@@ -9,7 +9,9 @@ Rails.application.routes.draw do
     resources :games, except: :index
     resources :teams, except: :index
   end
-  resources :players
+  resources :players do
+    get "search", on: :collection
+  end
   resources :admins, except: :show
 
   get "/login", to: "sessions#login"

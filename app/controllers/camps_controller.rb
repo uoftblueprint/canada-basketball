@@ -21,22 +21,29 @@ class CampsController < ApplicationController
 
   def new
     @camp = Camp.new
-    load_options
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def edit
     @camp = Camp.find(params.expect(:id))
-    load_options
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
     @camp = Camp.new(camp_params)
 
     if @camp.save
-      redirect_to camp_path(@camp), flash: { success: "Camp created successfully" }, status: :see_other
+      redirect_to camp_path(@camp), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @camp.errors.full_messages.to_sentence
-      load_options
       render :new, status: :unprocessable_content
     end
   end
@@ -45,10 +52,9 @@ class CampsController < ApplicationController
     @camp = Camp.find(params.expect(:id))
 
     if @camp.update(camp_params)
-      redirect_to camp_path(@camp), flash: { success: "Camp updated successfully" }, status: :see_other
+      redirect_to camp_path(@camp), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @camp.errors.full_messages.to_sentence
-      load_options
       render :edit, status: :unprocessable_content
     end
   end
@@ -63,10 +69,6 @@ class CampsController < ApplicationController
   end
 
   private
-
-  def load_options
-    @players = Player.order(:name)
-  end
 
   def camp_params
     params.expect(camp: [:name, :description, :password, :password_confirmation, :active, { player_ids: [] }])
