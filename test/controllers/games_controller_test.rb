@@ -13,7 +13,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     get camp_game_path(@camp, game)
 
     assert_response :success
-    assert_select "h1", text: "Name: Test Game"
+    assert_select "h1", text: "Test Game"
   end
 
   test "show does not allow a game that doesn't exist in camp" do
