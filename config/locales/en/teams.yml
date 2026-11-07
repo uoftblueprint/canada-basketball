@@ -5,3 +5,11 @@ en:
       name: "Name"
       players: "Players"
       close: "Close"
+    edit:
+      title: "Edit team"
+      button: "Edit"
+    update:
+      success: "Team updated."
+    form:
+      players: "Players"
+      search_players: "Search players..."

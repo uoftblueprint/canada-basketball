@@ -1,15 +1,19 @@
-<%= form_with model: [camp, team], html: { autocomplete: "off" } do |f| %>
-  <div>
-    <%= f.label :name %>
-    <%= f.text_field :name %>
+<%= form_with model: [camp, team], html: { autocomplete: "off", class: "flex flex-col gap-8" } do |f| %>
+  <div class="flex flex-col gap-1>
+    <%= f.label :name, class: "text-sm" %>
+    <%= f.text_field :name, class: "input w-full bg-base-200" %>
   </div>
 
-  <fieldset>
-    <legend>Players</legend>
-    <%= f.collection_check_boxes :player_ids, players, :id, :name do |b| %>
-      <div><%= b.check_box %> <%= b.label { "#{b.object.name} (#{team_label(b.object)})" } %></div>
-    <% end %>
-  </fieldset>
+  <%= render MultipleSearchSelectComponent.new(
+        name: "#{f.object_name}[player_ids][]",
+        model: Player,
+        param_scope: :players,
+        selected: team.players,
+        label: t("teams.form.players"),
+        value_method: :id,
+        text_method: :name,
+        path_builder: ->(params) { search_players_path(params) }
+      ) %>
 
-  <%= f.submit %>
+  <%= f.submit class: "btn btn-primary w-full font-normal" %>
 <% end %>

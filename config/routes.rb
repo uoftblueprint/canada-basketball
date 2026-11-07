@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   end
   resources :players do
     get "search", on: :collection
+    collection { get :search }
   end
   resources :admins, except: :show
 
