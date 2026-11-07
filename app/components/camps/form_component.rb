@@ -1,13 +1,12 @@
 module Camps
   class FormComponent < ViewComponent::Base
-    def initialize(camp:, players:)
+    def initialize(camp:)
       super()
       @camp = camp
-      @players = players
     end
 
     private
 
-    attr_reader :camp, :players
+    attr_reader :camp
   end
 end
