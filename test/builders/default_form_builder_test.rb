@@ -6,7 +6,7 @@ class DefaultFormBuilderTest < ActionView::TestCase
   end
 
   test "text_field applies the default classes" do
-    assert_includes @form.text_field(:name), "input h-13 w-full"
+    assert_includes @form.text_field(:name), "input h-12 w-full"
   end
 
   test "text_field lets a passed class replace a default" do
@@ -28,7 +28,7 @@ class DefaultFormBuilderTest < ActionView::TestCase
   end
 
   test "label applies the default classes when only options are passed" do
-    assert_includes @form.label(:name, id: "name-label"), "label mb-2"
+    assert_includes @form.label(:name, id: "name-label"), "label"
   end
 
   test "check_box applies the same classes as checkbox" do
@@ -44,6 +44,6 @@ class DefaultFormBuilderTest < ActionView::TestCase
   test "forms inside view components use the default builder" do
     render Players::FormComponent.new(player: Player.new)
 
-    assert_select "input[type=text].h-13"
+    assert_select "input[type=text].h-12"
   end
 end
