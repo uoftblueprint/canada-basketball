@@ -13,6 +13,10 @@ class Game < ApplicationRecord
   validates :active, inclusion: { in: [true, false] }
   validate :team_assigned_to_camp
 
+  def team_totals
+    game_stat_lines.individual_and_team_stats.totals
+  end
+
   private
 
   def team_assigned_to_camp
