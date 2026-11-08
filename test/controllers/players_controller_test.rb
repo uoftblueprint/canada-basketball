@@ -257,7 +257,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     patch player_path(player), params: { player: { name: "New Name" } }
 
     assert_redirected_to player_path(player)
-    assert_equal "Player updated successfully", flash[:success]
+    assert_equal I18n.t("players.update.success"), flash[:success]
     assert_equal "New Name", player.reload.name
   end
 
