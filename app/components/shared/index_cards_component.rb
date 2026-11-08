@@ -31,7 +31,6 @@ module Shared
       path_builder:,
       searchable: true,
       search_label: nil,
-      search_placeholder: nil,
       listings_label: nil,
       pagination_label: nil
     )
@@ -40,7 +39,6 @@ module Shared
       @path_builder = path_builder
       @searchable = searchable
       @search_label = search_label
-      @search_placeholder = search_placeholder
       @listings_label = listings_label
       @pagination_label = pagination_label
       @card_renderer = nil
@@ -54,12 +52,8 @@ module Shared
 
     attr_reader :state, :path_builder, :searchable, :card_renderer
 
-    def search_placeholder
-      @search_placeholder || t("shared.index_cards_component.search_placeholder")
-    end
-
     def search_label
-      @search_label || t("shared.index_cards_component.search_label")
+      @search_label || t("shared.index_cards_component.search_label", model: model_class.model_name.human(count: 2))
     end
 
     def listings_label
@@ -80,6 +74,16 @@ module Shared
 
     def frame_id
       "#{param_scope || 'index'}_index_cards"
+    end
+
+    def model_class
+      return @model_class if instance_variable_defined?(:@model_class)
+
+      @model_class = if records.respond_to?(:model)
+                       records.model
+                     elsif records.respond_to?(:klass)
+                       records.klass
+                     end
     end
 
     def path_with(**overrides)

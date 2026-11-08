@@ -1,10 +1,15 @@
 en:
   activerecord:
+    models:
+      player:
+        one: "Player"
+        other: "Players"
     attributes:
-      team:
-        players: "Players"
       player:
         name: "Name"
+        team: "Team"
+      team:
+        players: "Players"
   players:
     index:
       title: "Players"

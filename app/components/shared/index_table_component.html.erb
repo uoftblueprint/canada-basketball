@@ -6,18 +6,19 @@
                     method: :get,
                     scope: param_scope,
                     data: { turbo: true, controller: "clearable-input" },
-                    html: { role: "search", aria: { label: t(".search_label") } },
+                    html: { role: "search", aria: { label: search_label } },
                     class: "input border-[0.5px] border-base-300 w-full flex flex-row items-center gap-2" do |form| %>
         <%= form.button type: :submit,
                         name: nil,
                         class: "hover:cursor-pointer",
-                        aria: { label: t(".search_label") } do %>
+                        aria: { label: search_label } do %>
           <%= render Shared::IconComponent.new(icon: "search", size: :md) %>
         <% end %>
         <%= form.search_field :q,
                               value: query_params.q,
+                              placeholder: search_label,
                               class: "grow",
-                              aria: { label: t(".search_label") },
+                              aria: { label: search_label },
                               data: { clearable_input_target: "field", action: "input->clearable-input#toggle" } %>
         <%= form.button type: :button,
                         name: nil,

@@ -1,5 +1,9 @@
 en:
   activerecord:
+    models:
+      admin:
+        one: "Admin"
+        other: "Admins"
     attributes:
       admin:
         name: "Name"
