@@ -1,0 +1,15 @@
+en:
+  sidebar_component:
+    brand_line_1: "Canada"
+    brand_line_2: "Basketball"
+    home_link: "Canada Basketball home"
+    nav_label: "Main navigation"
+    logout: "Logout"
+    admin:
+      camps: "Camps"
+      players: "Players"
+      admins: "Admins"
+    camp:
+      camp: "Camp"
+      teams: "Teams"
+      games: "Games"

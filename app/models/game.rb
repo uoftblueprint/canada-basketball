@@ -2,6 +2,9 @@ class Game < ApplicationRecord
   belongs_to :camp
   belongs_to :team
 
+  has_many :game_events, dependent: :destroy
+  has_many :game_stat_lines, dependent: :destroy
+
   searchable_by :name, :opponent_name
   sortable_by :name, :opponent_name
 

@@ -12,9 +12,9 @@ class SessionsController < ApplicationController
       reset_session
       # Use strings to prevent serialization confusion
       session[:identity] = { "type" => "camp", "id" => camp.id }
-      redirect_to camp_path(camp), flash: { success: "Logged in successfully" }, status: :see_other
+      redirect_to camp_path(camp), flash: { success: t(".success") }, status: :see_other
     else
-      redirect_to login_path, flash: { error: "Invalid camp or password" }, status: :see_other
+      redirect_to login_path, flash: { error: t(".error") }, status: :see_other
     end
   end
 
@@ -27,14 +27,14 @@ class SessionsController < ApplicationController
       reset_session
       # Use strings to prevent serialization confusion
       session[:identity] = { "type" => "admin", "id" => admin.id }
-      redirect_to camps_path, flash: { success: "Logged in as admin successfully" }, status: :see_other
+      redirect_to camps_path, flash: { success: t(".success") }, status: :see_other
     else
-      redirect_to login_admin_path, flash: { error: "Invalid email or password" }, status: :see_other
+      redirect_to login_admin_path, flash: { error: t(".error") }, status: :see_other
     end
   end
 
   def destroy
     reset_session
-    redirect_to login_path, flash: { success: "Logged out successfully" }, status: :see_other
+    redirect_to login_path, flash: { success: t(".success") }, status: :see_other
   end
 end

@@ -1,0 +1,16 @@
+en:
+  activerecord:
+    models:
+      game:
+        one: "Game"
+        other: "Games"
+  games:
+    show:
+      breadcrumbs: "Breadcrumbs"
+      track_box_score: "Track Box Score"
+      edit_game: "Edit Game"
+      delete_game: "Delete Game"
+      matchup: "%{team} vs %{opponent}"
+    box_score:
+      breadcrumbs: "Breadcrumbs"
+      box_score: "Box Score"

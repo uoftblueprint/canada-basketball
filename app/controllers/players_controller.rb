@@ -1,12 +1,28 @@
 class PlayersController < ApplicationController
-  before_action :require_admin, only: %i[new edit create update destroy]
+  include SearchSelect
+
+  before_action :require_admin, only: %i[search new edit create update destroy]
 
   def index
     @players = Player.order(:name)
   end
 
+  def search
+    state = build_search_select_state(Player.all)
+    render SearchSelectInput::SuggestionsComponent.new(
+      state:,
+      value_method: :id,
+      text_method: :name
+    ), layout: false
+  end
+
   def show
-    @player = Player.find(params.expect(:id))
+    @player = Player.includes(camp_registrations: %i[camp team]).find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new

@@ -6,10 +6,14 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :camps do
-    resources :games, except: :index
+    resources :games, except: :index do
+      get "box-score", on: :member
+    end
     resources :teams, except: :index
   end
-  resources :players
+  resources :players do
+    get "search", on: :collection
+  end
   resources :admins, except: :show
 
   get "/login", to: "sessions#login"

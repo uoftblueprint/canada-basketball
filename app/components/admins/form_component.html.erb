@@ -1,23 +1,21 @@
-<%= form_with model: admin do |f| %>
-  <div>
-    <%= f.label :email %>
-    <%= f.email_field :email %>
+<%= form_with model: admin, class: "flex flex-col gap-8" do |f| %>
+  <div class="flex flex-col gap-2">
+    <fieldset class="fieldset">
+      <%= f.label :email %>
+      <%= f.email_field :email, autocomplete: "email", aria: { invalid: admin.errors[:email].any? } %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :name %>
+      <%= f.text_field :name, autocomplete: "name", aria: { invalid: admin.errors[:name].any? } %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :password %>
+      <%= f.password_field :password, autocomplete: "new-password", aria: { invalid: admin.errors[:password].any? } %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", aria: { invalid: admin.errors[:password_confirmation].any? } %>
+    </fieldset>
   </div>
-
-  <div>
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-
-  <div>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-  </div>
-
-  <div>
-    <%= f.label :password_confirmation, "Confirm password" %>
-    <%= f.password_field :password_confirmation %>
-  </div>
-
   <%= f.submit %>
 <% end %>

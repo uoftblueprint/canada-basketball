@@ -1,17 +1,17 @@
 <fieldset
-  class="fieldset w-full"
+  class="fieldset w-full gap-1"
   data-controller="search-select"
   data-search-select-multiple-value="<%= multiple? %>"
   data-search-select-url-value="<%= url %>"
   data-search-select-param-scope-value="<%= param_scope_value %>"
   data-search-select-min-chars-value="<%= min_chars %>"
-  data-action="click@window->search-select#closeOnOutsideClick keydown.esc@window->search-select#close">
+  data-action="click@window->search-select#closeOnOutsideClick">
   <% if label %>
-    <legend class="fieldset-legend"><%= label %></legend>
+    <legend class="fieldset-legend p-0 <%= DefaultFormBuilder::LABEL_CLASSES %>"><%= label %></legend>
   <% end %>
 
   <div class="relative w-full">
-    <label class="input w-full">
+    <label class="<%= DefaultFormBuilder::INPUT_CLASSES %>">
       <%= render Shared::IconComponent.new(icon: "search", size: :sm, classes: "shrink-0") %>
       <input
         type="text"
@@ -36,7 +36,7 @@
     </label>
 
     <%= turbo_frame_tag frame_id,
-                        class: "absolute top-full left-0 z-20 w-full mt-2 shadow-lg rounded-xl bg-base-100 border border-base-300 hidden",
+                        class: "absolute top-full left-0 z-20 w-full mt-2 shadow-lg bg-base-100 border-[0.5px] border-base-300 hidden",
                         data: { search_select_target: "results" } %>
   </div>
 

@@ -15,8 +15,8 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
 
     get admins_path
 
-    assert_select "td", text: "Jane Doe"
-    assert_select "td", text: "jane@test.com"
+    assert_select "#admins_index_table .grid > div", text: "Jane Doe"
+    assert_select "#admins_index_table .grid > div", text: "jane@test.com"
   end
 
   test "index redirects camp users" do
@@ -226,7 +226,7 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Admin.count", -1) { delete admin_path(admin) }
 
     assert_redirected_to admins_path
-    assert_equal "Admin deleted successfully", flash[:success]
+    assert_equal I18n.t("admins.destroy.success"), flash[:success]
   end
 
   test "destroy redirects camp users" do
@@ -252,7 +252,7 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference("Admin.count") { delete admin_path(admin) }
 
     assert_redirected_to admins_path
-    assert_equal "Cannot delete admin because there is only one admin remaining", flash[:error]
+    assert_equal I18n.t("admins.destroy.last_admin"), flash[:error]
   end
 
   test "admin who deletes their own account is logged out on the next request" do
@@ -283,5 +283,27 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     get admins_path
 
     assert_nil session[:identity]
+  end
+
+  test "new renders the modal as a turbo stream" do
+    create_logged_in_admin
+
+    get new_admin_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal"
+  end
+
+  test "create re-renders the modal with invalid params" do
+    create_logged_in_admin
+
+    assert_no_difference("Admin.count") do
+      post admins_path,
+           params: { admin: { name: "", email: "bad" } },
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
+
+    assert_response :unprocessable_content
+    assert_turbo_stream status: :unprocessable_content, action: :replace, target: "modal"
   end
 end

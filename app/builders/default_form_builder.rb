@@ -1,4 +1,69 @@
 class DefaultFormBuilder < ActionView::Helpers::FormBuilder
+  MERGER = TailwindMerge::Merger.new
+
+  INPUT_CLASSES = "input h-12 w-full border-base-300 bg-base-200".freeze
+  SELECT_CLASSES = "select h-12 w-full border-base-300 bg-base-200".freeze
+  CHECKBOX_CLASSES = "checkbox border-base-300 not-checked:bg-base-200".freeze
+  LABEL_CLASSES = "label text-lg font-medium whitespace-normal text-base-content".freeze
+
+  FIELD_CLASSES = {
+    email_field: INPUT_CLASSES,
+    number_field: INPUT_CLASSES,
+    password_field: INPUT_CLASSES,
+    text_field: INPUT_CLASSES,
+    textarea: "textarea w-full border-base-300 bg-base-200"
+  }.freeze
+
+  FIELD_CLASSES.each do |method_name, default_class|
+    define_method(method_name) do |method, options = {}|
+      add_class_to_options(options, default_class)
+      super(method, options)
+    end
+  end
+
+  def checkbox(method, options = {}, checked_value = "1", unchecked_value = "0")
+    add_class_to_options(options, CHECKBOX_CLASSES)
+    super
+  end
+
+  def collection_checkboxes(method, collection, value_method, text_method, options = {}, html_options = {}, &)
+    add_class_to_options(html_options, CHECKBOX_CLASSES)
+    super
+  end
+
+  def collection_select(method, collection, value_method, text_method, options = {}, html_options = {})
+    add_class_to_options(html_options, SELECT_CLASSES)
+    super
+  end
+
+  def label(method, text = nil, options = {}, &)
+    if text.is_a?(Hash)
+      options = text
+      text = nil
+    end
+    add_class_to_options(options, LABEL_CLASSES)
+    super
+  end
+
+  def select(method, choices = nil, options = {}, html_options = {}, &)
+    add_class_to_options(html_options, SELECT_CLASSES)
+    super
+  end
+
+  def submit(value = nil, options = {})
+    if value.is_a?(Hash)
+      options = value
+      value = nil
+    end
+    add_class_to_options(options, "btn btn-primary h-12 w-full text-lg font-normal")
+    super
+  end
+
+  # Rails aliases these to the original methods, so they would skip the styles above.
+  alias text_area textarea
+  alias check_box checkbox
+  alias collection_check_boxes collection_checkboxes
+
   # Renders a MultipleSearchSelectComponent, inferring the field name, model,
   # label, and preselected records from the form object.
   # Pass a plural *_ids attribute, value_method, and text_method just like collection_check_boxes.
@@ -54,6 +119,11 @@ class DefaultFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   private
+
+  # the caller's classes go last so they win over the defaults, e.g. class: "w-1/2" replaces w-full.
+  def add_class_to_options(options, default_class)
+    options[:class] = MERGER.merge(@template.class_names(default_class, options[:class]))
+  end
 
   # finds the associated model class for an association name, e.g. "players" -> Player.
   def reflected_model(assoc)
