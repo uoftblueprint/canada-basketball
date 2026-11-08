@@ -12,7 +12,8 @@ class ActionButtonComponent < ViewComponent::Base
 
   private_constant :COLOR_CLASSES
 
-  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small)
+  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small,
+                 classes: nil)
     super()
 
     raise ArgumentError, "Invalid color" unless COLOR_CLASSES.include?(color)
@@ -24,6 +25,7 @@ class ActionButtonComponent < ViewComponent::Base
     @confirm = confirm
     @turbo_stream = turbo_stream
     @size = size
+    @classes = classes
   end
 
   private
@@ -54,7 +56,8 @@ class ActionButtonComponent < ViewComponent::Base
       COLOR_CLASSES[@color],
       small? && "btn-xs btn-square btn-soft",
       medium? && "btn-sm px-3 py-2 gap-2 font-semibold",
-      large? && "btn-md px-4 py-3 gap-2 font-semibold shadow-sm"
+      large? && "btn-md px-4 py-3 gap-2 font-semibold shadow-sm",
+      @classes
     )
   end
 end

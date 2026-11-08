@@ -66,6 +66,10 @@ export default class extends Controller {
   }
 
   open() {
+    if (!this.resultsTarget.classList.contains("hidden")) {
+      return;
+    }
+
     const query = this.inputTarget.value.trim();
 
     if (this.minCharsValue > 0 && query.length < this.minCharsValue) {
@@ -134,7 +138,10 @@ export default class extends Controller {
         }
         break;
       case "Escape":
-        this.close();
+        if (!this.resultsTarget.classList.contains("hidden")) {
+          event.stopPropagation();
+          this.close();
+        }
         break;
     }
   }
@@ -169,17 +176,23 @@ export default class extends Controller {
   }
 
   choose(option) {
-    if (option.disabled) {
-      return;
-    }
     const { id, label } = option.dataset;
 
     if (this.multipleValue) {
-      this.addBadge(id, label);
-      this.selectedIds.add(id);
-      this.inputTarget.value = "";
-      this.reload("");
+      if (this.selectedIds.has(id)) {
+        this.deselect(id);
+      } else {
+        this.addBadge(id, label);
+        this.selectedIds.add(id);
+        this.markOption(id, true);
+      }
+
       this.inputTarget.focus();
+    } else if (this.selectedIds.has(id)) {
+      this.inputTarget.value = "";
+      this.valueTarget.value = "";
+      this.selectedIds.clear();
+      this.close();
     } else {
       this.inputTarget.value = label;
       this.valueTarget.value = id;
@@ -210,13 +223,20 @@ export default class extends Controller {
 
   remove(event) {
     const { id } = event.currentTarget.dataset;
+    this.deselect(id);
+  }
 
+  deselect(id) {
     this.selectedTarget.querySelector(`li[data-id="${id}"]`)?.remove();
     this.selectedIds.delete(id);
+    this.markOption(id, false);
+  }
 
-    if (!this.resultsTarget.classList.contains("hidden")) {
-      this.reload(this.inputTarget.value.trim());
-    }
+  markOption(id, selected) {
+    const option = this.optionTargets.find((o) => o.dataset.id === id);
+    option
+      ?.querySelector("[data-check]")
+      ?.classList.toggle("hidden", !selected);
   }
 
   clear() {

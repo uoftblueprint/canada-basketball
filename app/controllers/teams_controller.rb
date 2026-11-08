@@ -4,6 +4,11 @@ class TeamsController < ApplicationController
 
   def show
     @team = current_camp.teams.includes(:players).find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new

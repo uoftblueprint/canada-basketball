@@ -1,9 +1,10 @@
 class DefaultFormBuilder < ActionView::Helpers::FormBuilder
   MERGER = TailwindMerge::Merger.new
 
-  INPUT_CLASSES = "input h-13 w-full border-base-300 bg-base-200".freeze
-  SELECT_CLASSES = "select h-13 w-full border-base-300 bg-base-200".freeze
+  INPUT_CLASSES = "input h-12 w-full border-base-300 bg-base-200".freeze
+  SELECT_CLASSES = "select h-12 w-full border-base-300 bg-base-200".freeze
   CHECKBOX_CLASSES = "checkbox border-base-300 not-checked:bg-base-200".freeze
+  LABEL_CLASSES = "label text-lg font-medium whitespace-normal text-base-content".freeze
 
   FIELD_CLASSES = {
     email_field: INPUT_CLASSES,
@@ -40,7 +41,7 @@ class DefaultFormBuilder < ActionView::Helpers::FormBuilder
       options = text
       text = nil
     end
-    add_class_to_options(options, "label mb-2 text-lg font-medium whitespace-normal text-base-content")
+    add_class_to_options(options, LABEL_CLASSES)
     super
   end
 
@@ -54,7 +55,7 @@ class DefaultFormBuilder < ActionView::Helpers::FormBuilder
       options = value
       value = nil
     end
-    add_class_to_options(options, "btn btn-primary h-13 w-full text-lg font-normal")
+    add_class_to_options(options, "btn btn-primary h-12 w-full text-lg font-normal")
     super
   end
 

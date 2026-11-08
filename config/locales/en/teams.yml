@@ -1,0 +1,7 @@
+en:
+  teams:
+    show:
+      title: "Team Details"
+      name: "Name"
+      players: "Players"
+      close: "Close"

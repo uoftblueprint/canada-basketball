@@ -1,38 +1,26 @@
-<%= form_with model: camp do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name, required: true %>
+<%= form_with model: camp, html: { autocomplete: "off" }, class: "flex flex-col gap-8" do |form| %>
+  <div class="flex flex-col gap-2">
+      <fieldset class="fieldset">
+        <%= form.label :name %>
+        <%= form.text_field :name, required: true %>
+      </fieldset>
+      <fieldset class="fieldset">
+        <%= form.label :description %>
+        <%= form.textarea :description, required: true %>
+      </fieldset>
+      <%= form.multiple_search_select :player_ids, :id, :name %>
+      <fieldset class="flex flex-row justify-between">
+        <%= form.label :active %>
+        <%= form.checkbox :active %>
+      </fieldset>
+      <fieldset class="fieldset">
+        <%= form.label :password %>
+        <%= form.password_field :password, required: camp.new_record?, autocomplete: "new-password" %>
+      </fieldset>
+      <fieldset class="fieldset">
+        <%= form.label :password_confirmation %>
+        <%= form.password_field :password_confirmation, required: camp.new_record?, autocomplete: "new-password" %>
+      </fieldset>
   </div>
-
-  <div>
-    <%= form.label :description %>
-    <%= form.textarea :description, required: true %>
-  </div>
-
-  <fieldset>
-    <legend>Players</legend>
-    <%= form.collection_checkboxes :player_ids, players, :id, :name do |player| %>
-      <div>
-        <%= player.checkbox %>
-        <%= player.label %>
-      </div>
-    <% end %>
-  </fieldset>
-
-  <div>
-    <%= form.checkbox :active %>
-    <%= form.label :active %>
-  </div>
-
-  <div>
-    <%= form.label :password %>
-    <%= form.password_field :password, required: camp.new_record?, autocomplete: "new-password" %>
-  </div>
-
-  <div>
-    <%= form.label :password_confirmation %>
-    <%= form.password_field :password_confirmation, required: camp.new_record?, autocomplete: "new-password" %>
-  </div>
-
   <%= form.submit %>
 <% end %>

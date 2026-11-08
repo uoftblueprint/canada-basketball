@@ -6,3 +6,4 @@ Seeds::Admins.run
 Seeds::Camps.run
 Seeds::Teams.run
 Seeds::Games.run
+Seeds::GameEvents.run

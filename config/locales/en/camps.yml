@@ -1,0 +1,20 @@
+en:
+  camps:
+    index:
+      title: "Camps"
+      add_camp: "Add Camp"
+      search_label: "Search camps"
+      search_placeholder: "Search Camps"
+      listings_label: "Camp listings"
+      pagination_label: "Camp pages"
+    new:
+      title: "New Camp"
+    edit:
+      title: "Edit Camp"
+    create:
+      success: "Camp created successfully"
+    update:
+      success: "Camp updated successfully"
+    card:
+      active: "Active"
+      inactive: "Inactive"

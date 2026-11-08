@@ -1,0 +1,49 @@
+<%= turbo_frame_tag frame_id, data: { turbo_action: "advance" } do %>
+  <section>
+    <% if searchable %>
+      <%= form_with url: path, method: :get, scope: param_scope, class: "relative mb-6", data: { turbo: true } do |form| %>
+        <%= form.label :q, search_label, class: "sr-only" %>
+        <%= form.search_field :q,
+                              value: query_params.q,
+                              placeholder: search_placeholder,
+                              class: "input input-bordered w-full pl-12" %>
+        <%= form.button type: :submit,
+                        name: nil,
+                        class: "absolute left-3 top-1/2 -translate-y-1/2",
+                        aria: { label: search_label } do %>
+          <%= render Shared::IconComponent.new(icon: "search", classes: "text-base-content/50") %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if records.empty? %>
+      <div class="flex min-h-40 items-center justify-center border border-base-300 bg-base-200" role="status">
+        <span><%= t("shared.index_table_component.no_entries") %></span>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+           aria-label="<%= listings_label %>"
+           role="list">
+        <% records.each do |record| %>
+          <div role="listitem">
+            <%= render_card(record) %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <nav class="mt-8 flex items-center justify-center gap-4" aria-label="<%= pagination_label %>">
+      <% if current_page <= 1 %>
+        <span class="btn btn-sm btn-disabled" aria-disabled="true">&lt;</span>
+      <% else %>
+        <%= link_to "<", path_with_page(current_page - 1), class: "btn btn-sm", aria: { label: previous_page_label } %>
+      <% end %>
+      <span class="text-sm text-base-content/70"><%= t("shared.index_table_component.page_of", current: current_page, total: total_pages) %></span>
+      <% if current_page >= total_pages %>
+        <span class="btn btn-sm btn-disabled" aria-disabled="true">&gt;</span>
+      <% else %>
+        <%= link_to ">", path_with_page(current_page + 1), class: "btn btn-sm", aria: { label: next_page_label } %>
+      <% end %>
+    </nav>
+  </section>
+<% end %>

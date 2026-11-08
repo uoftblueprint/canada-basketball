@@ -30,7 +30,7 @@ module Shared
   #              path_builder: ->(params) { camps_path(params) }) do |table| %>
   #          <% table.column :name %>
   #          <% table.column :description %>
-  #          <% table.column :active do |camp| %>
+  #          <% table.column :active, fill: true do |camp| %>
   #            <%= camp.active? ? "Active" : "Inactive" %>
   #          <% end %>
   #        <% end %>
@@ -47,7 +47,7 @@ module Shared
 
     delegate :records, :current_page, :total_pages, :query_params, :param_scope, to: :state
 
-    Column = Data.define(:attribute, :header, :col_size, :cell_renderer)
+    Column = Data.define(:attribute, :header, :col_size, :fill, :cell_renderer)
 
     def initialize(state:, path_builder:, searchable: true)
       super()
@@ -57,11 +57,12 @@ module Shared
       @columns = []
     end
 
-    def column(attribute, header: nil, col_size: nil, &cell_renderer)
+    def column(attribute, header: nil, col_size: nil, fill: false, &cell_renderer)
       @columns << Column.new(
         attribute: attribute,
         header: header || default_header_for(attribute),
         col_size: col_size,
+        fill: fill,
         cell_renderer: cell_renderer
       )
     end

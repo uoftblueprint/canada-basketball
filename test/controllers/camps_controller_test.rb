@@ -19,8 +19,36 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_operator response.body.index("B Camp"), :<, response.body.index("C Camp")
     assert_operator response.body.index("C Camp"), :<, response.body.index("A Camp")
-    assert_select "td", text: "B description"
-    assert_select "td", text: "Inactive"
+    assert_select "h2", count: 3
+    assert_select "h2", text: "B Camp"
+    assert_select "h2", text: "C Camp"
+    assert_select "h2", text: "A Camp"
+    assert_select "span.badge", text: "Active", count: 2
+    assert_select "span.badge", text: "Inactive", count: 1
+  end
+
+  test "index renders accessible search, pagination, and add camp controls" do
+    create_logged_in_admin
+    create(:camp)
+
+    get camps_path
+
+    assert_select "turbo-frame#camps_index_cards"
+    assert_select "form label.sr-only", text: "Search camps"
+    assert_select "input[type='search'][placeholder='Search Camps']"
+    assert_select "nav[aria-label='Camp pages']"
+    assert_select "a[href='#{new_camp_path}']", text: /Add Camp/
+  end
+
+  test "index filters camps by search query" do
+    create_logged_in_admin
+    matching_camp = create(:camp, name: "Summer Camp")
+    create(:camp, name: "Winter Camp")
+
+    get camps_path, params: { camps: { q: "Summer" } }
+
+    assert_select "h2", text: matching_camp.name
+    assert_not_includes response.body, "Winter Camp"
   end
 
   test "index redirects camp users" do

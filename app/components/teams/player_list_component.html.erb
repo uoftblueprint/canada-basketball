@@ -1,0 +1,15 @@
+<section class="card w-full text-sm" aria-labelledby="team-details">
+  <div class="gap-3">
+    <h2 id="team-name" class="mb-2 font-medium"><%= t("teams.show.name") %></h2>
+    <div class="border-[0.5px] border-base-300 bg-base-200 p-3"><%= team.name %></div>
+  </div>
+
+  <div class="gap-3">
+    <h2 id="players-heading" class="my-2 font-medium"><%= t("teams.show.players") %></h2>
+    <ul id="players" class="space-y-3" aria-labelledby="players-heading">
+      <% team.players.each do |player| %>
+        <li class="border-[0.5px] border-base-300 bg-base-200 p-3"><%= player.name %></li>
+      <% end %>
+    </ul>
+  </div>
+</section>
