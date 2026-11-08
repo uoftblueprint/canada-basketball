@@ -5,3 +5,11 @@ en:
       name: "Name"
       players: "Players"
       close: "Close"
+    new:
+      title: "New Team"
+    create:
+      success: "Team created successfully"
+    update:
+      success: "Team updated successfully"
+    destroy:
+      success: "Team deleted successfully"

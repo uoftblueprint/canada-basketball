@@ -229,19 +229,19 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     get edit_camp_team_path(@camp, team)
 
     assert_select "input[name='team[name]'][value='One']"
-    assert_select "input[type=checkbox][name='team[player_ids][]'][value='#{player.id}'][checked]"
+    assert_select "[name='team[player_ids][]'][value='#{player.id}']"
   end
 
-  test "edit team form labels each player with their current team in the camp" do
+  test "edit team form shows the team's current players as selected" do
     create_logged_in_admin
-    other_team = create(:team, name: "T2", camp: @camp)
-    create(:camp_registration, camp: @camp, team: other_team, player: create(:player, name: "Other Team Player"))
-    create(:camp_registration, camp: @camp, player: create(:player, name: "Pool Player"))
+    player = create(:player, name: "Rostered Player")
+    team = create(:team, name: "One", camp: @camp)
+    create(:camp_registration, camp: @camp, team: team, player: player)
 
-    get edit_camp_team_path(@camp, @team)
+    get edit_camp_team_path(@camp, team)
 
-    assert_select "label", text: /Other Team Player.*T2/
-    assert_select "label", text: /Pool Player.*No team/
+    assert_select "input[name='team[name]'][value='One']"
+    assert_select "input[name='team[player_ids][]'][value=?]", player.id.to_s
   end
 
   test "Admin can update a team name and roster" do
@@ -267,5 +267,29 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_equal "T1", @team.reload.name
+  end
+
+  test "Admin new renders the modal for a Turbo Stream request" do
+    create_logged_in_admin
+
+    get new_camp_team_path(@camp), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_select "turbo-stream[action='replace'][target='modal']"
+  end
+
+  test "new renders the form in a modal for turbo stream requests" do
+    create_logged_in_admin
+
+    get new_camp_team_path(@camp), as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_turbo_stream action: :replace, target: "modal" do
+      assert_select "#modal_title"
+      assert_select "form[action=?]", camp_teams_path(@camp)
+      assert_select "input[name='team[name]']"
+    end
   end
 end
