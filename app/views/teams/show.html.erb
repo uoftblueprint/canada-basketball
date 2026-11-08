@@ -1,10 +1,4 @@
-<div>
-    <h1 class="font-bold text-4xl"><%= @team.name %></h1>
-    <br>
-    <h2 class="font-bold size-10">Players</h2>
-    <ul id="players">
-        <% @team.players.each do |player| %>
-            <li><%= player.name %></li>
-        <% end %>
-    </ul>
-</div>
+<section class="w-full px-6 py-4" aria-labelledby="team-details-heading">
+  <h1 id="team-details-heading" class="mb-6 text-4xl font-bold"><%= t("teams.show.title") %></h1>
+  <%= render Teams::PlayerListComponent.new(team: @team) %>
+</section>

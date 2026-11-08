@@ -75,7 +75,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to players_path
     assert_response :see_other
-    assert_equal "Player created successfully", flash[:success]
+    assert_equal I18n.t("players.create.success"), flash[:success]
     assert_equal "test_name", Player.last.name
   end
 
@@ -123,14 +123,58 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
-  test "show player name for admins" do
+  test "show displays player details for admins" do
     create_logged_in_admin
     player = create(:player)
 
     get player_path(player)
 
     assert_response :success
-    assert_select "h1", text: player.name
+    assert_select "section[aria-labelledby='player-details-heading']"
+    assert_select "h1#player-details-heading", "Player Details"
+    assert_select "section[aria-labelledby='player-details']"
+    assert_select "h2#player-name", "Name"
+    assert_select "div", text: player.name, count: 1
+    assert_select "h2#registrations-heading", "Registrations"
+    assert_select "#registrations li", count: 0
+  end
+
+  test "show displays registrations with their camps and teams" do
+    create_logged_in_admin
+    player = create(:player, name: "Shai Gilgeous-Alexander")
+    camp_one = create(:camp, name: "Camp 1")
+    camp_two = create(:camp, name: "Camp 2")
+    team = create(:team, name: "Team 1", camp: camp_one)
+    create(:camp_registration, player: player, camp: camp_one, team: team)
+    create(:camp_registration, player: player, camp: camp_two)
+
+    get player_path(player)
+
+    assert_select "#registrations li", count: 2
+    assert_select "#registrations li", text: "Camp 1 / Team 1"
+    assert_select "#registrations li", text: "Camp 2 / No team"
+  end
+
+  test "show renders the player details modal for a Turbo Stream request" do
+    create_logged_in_camp
+    player = create(:player, name: "Shai Gilgeous-Alexander")
+    camp = create(:camp, name: "Blue 1")
+    team = create(:team, name: "Team 1", camp: camp)
+    create(:camp_registration, player: player, camp: camp, team: team)
+
+    get player_path(player), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_select "turbo-stream[action='replace'][target='modal']"
+    assert_includes response.body, 'id="modal"'
+    assert_includes response.body, 'role="dialog"'
+    assert_includes response.body, 'aria-modal="true"'
+    assert_includes response.body, 'aria-labelledby="modal_title"'
+    assert_includes response.body, '<h2 id="modal_title"'
+    assert_includes response.body, "Player Details"
+    assert_includes response.body, 'aria-label="Close"'
+    assert_includes response.body, "Blue 1 / Team 1"
   end
 
   test "show is accessible by camp users" do

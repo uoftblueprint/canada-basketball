@@ -1,17 +1,60 @@
-<div>
-  <h1>
-    Name:
-    <%= @game.name %>
-  </h1>
-  <h2>
-    Team:
-    <%= @game.team.name %>
-  </h2>
-  <h2>
-    Opponent Team:
-    <%= @game.opponent_name %>
-  </h2>
-  <%= button_to "Edit", edit_camp_game_path(current_camp, @game), method: :get %>
-  <%= button_to "Delete", camp_game_path(current_camp, @game), method: :delete %>
-
-</div>
+<% content_for :title, @game.name %>
+<section class="px-6 py-4 flex flex-col gap-2" aria-labelledby="game-heading">
+  <nav class="breadcrumbs mb-2 py-0 text-sm uppercase" aria-label="<%= t(".breadcrumbs") %>">
+    <ul>
+      <li>
+        <% if logged_in_as_admin? %>
+          <%= link_to Camp.model_name.human(count: 2), camps_path, class: "link link-primary" %>
+        <% else %>
+          <%= Camp.model_name.human(count: 2) %>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to current_camp.name, camp_path(current_camp), class: "link link-primary" %>
+      </li>
+      <li>
+        <%= link_to Game.model_name.human(count: 2), camp_path(current_camp, anchor: "games-heading"), class: "link link-primary" %>
+      </li>
+      <li aria-current="page">
+        <%= @game.name %>
+      </li>
+    </ul>
+  </nav>
+  <header>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h1 id="game-heading" class="min-w-0 wrap-break-word text-4xl font-bold"><%= @game.name %></h1>
+      <div class="flex shrink-0 flex-wrap items-center gap-2">
+        <%= render ActionButtonComponent.new(
+              to: box_score_camp_game_path(current_camp, @game),
+              icon: "basketball-court",
+              color: :primary,
+              turbo_stream: true,
+              size: :medium
+            ) do %>
+          <%= t(".track_box_score") %>
+        <% end %>
+        <%= render ActionButtonComponent.new(
+              to: edit_camp_game_path(current_camp, @game),
+              icon: "pencil",
+              color: :primary,
+              turbo_stream: true,
+              size: :medium
+            ) do %>
+          <%= t(".edit_game") %>
+        <% end %>
+        <%= render ActionButtonComponent.new(
+              to: camp_game_path(current_camp, @game),
+              icon: "trash",
+              color: :primary,
+              method: :delete,
+              size: :medium
+            ) do %>
+          <%= t(".delete_game") %>
+        <% end %>
+      </div>
+    </div>
+    <h2 class="mt-4 border-b border-base-300 pb-1 text-2xl font-semibold wrap-break-word">
+      <%= t(".matchup", team: @game.team.name, opponent: @game.opponent_name) %>
+    </h2>
+  </header>
+</section>

@@ -1,0 +1,12 @@
+en:
+  teams:
+    show:
+      title: "Team Details"
+      name: "Name"
+      players: "Players"
+      close: "Close"
+    edit:
+      title: "Edit team"
+      button: "Edit"
+    update:
+      success: "Team updated."

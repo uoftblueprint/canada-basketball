@@ -1,6 +1,4 @@
-<div class="flex min-h-screen items-center justify-center bg-base-200 p-4">
-  <section class="card w-full max-w-md border border-base-300 bg-base-100 p-10" aria-labelledby="new_player_title">
-    <h1 id="new_player_title" class="mb-4 text-3xl font-semibold"><%= t(".title") %></h1>
-    <%= render Players::FormComponent.new(player: @player) %>
-  </section>
-</div>
+<section class="px-6 py-4" aria-labelledby="new_player_title">
+  <h1 id="new_player_title" class="mb-4 text-3xl font-semibold"><%= t(".title") %></h1>
+  <%= render Players::FormComponent.new(player: @player) %>
+</section>

@@ -1,6 +1,10 @@
 class SidebarComponent < ViewComponent::Base
   SidebarSection = Data.define(:title, :items)
-  SidebarItem = Data.define(:name, :icon, :path)
+  SidebarItem = Data.define(:name, :icon, :path, :anchor) do
+    def initialize(name:, icon:, path:, anchor: false)
+      super
+    end
+  end
 
   def initialize(logged_in_state:)
     super()
@@ -20,12 +24,41 @@ class SidebarComponent < ViewComponent::Base
 
   attr_reader :logged_in_state, :sections
 
-  def build_admin_section; end
+  def build_admin_section
+    sections << SidebarSection.new(
+      title: nil,
+      items: [
+        nav_item(:admin, :camps, "trophy", helpers.camps_path),
+        nav_item(:admin, :players, "user", helpers.players_path),
+        nav_item(:admin, :admins, "star", helpers.admins_path)
+      ]
+    )
+  end
 
-  def build_camp_section; end
+  def build_camp_section
+    camp = helpers.logged_in_camp
+    sections << SidebarSection.new(
+      title: nil,
+      items: [
+        nav_item(:camp, :camp, "trophy", helpers.camp_path(camp)),
+        nav_item(:camp, :teams, "users-three", helpers.camp_path(camp, anchor: "teams"), anchor: true),
+        nav_item(:camp, :games, "basketball", helpers.camp_path(camp, anchor: "games"), anchor: true)
+      ]
+    )
+  end
+
+  def nav_item(scope, key, icon, path, anchor: false)
+    SidebarItem.new(name: t("sidebar_component.#{scope}.#{key}"), icon:, path:, anchor:)
+  end
 
   def logout_item
-    @logout_item ||= SidebarItem.new(name: "Logout", path: helpers.logout_path, icon: "sign-out")
+    @logout_item ||= SidebarItem.new(name: t("sidebar_component.logout"), path: helpers.logout_path, icon: "sign-out")
+  end
+
+  def active?(item)
+    return false if item.anchor
+
+    request.path == item.path || request.path.start_with?("#{item.path}/")
   end
 
   def render?

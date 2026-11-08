@@ -1,21 +1,47 @@
-<div>
-  <h1 class="font-bold text-4xl">Admins</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @admins.each do |admin| %>
-        <tr>
-          <td><%= admin.name %></td>
-          <td><%= admin.email %></td>
-          <td><%= button_to "Delete", admin_path(admin), method: :delete %></td>
-          <td><%= button_to "Delete", admin_path(admin), method: :delete %></td>
-        </tr>
+<div class="px-6 py-8">
+  <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-4xl font-bold"><%= t(".title") %></h1>
+      <p class="mt-2 text-base-content/70"><%= t(".subtitle") %></p>
+    </div>
+    <%= render ActionButtonComponent.new(
+          to: new_admin_path,
+          icon: "plus",
+          color: :primary,
+          size: :medium,
+          turbo_stream: true
+        ) do %>
+      <%= t(".create_admin") %>
+    <% end %>
+  </header>
+  <%= render Shared::IndexTableComponent.new(
+        state: @table_state,
+        path_builder: ->(params) { admins_path(params) }
+      ) do |table| %>
+    <% table.column :name %>
+    <% table.column :email %>
+    <% table.column :actions, header: t("shared.index_table_component.actions"), fill: true, col_size: "auto" do |admin| %>
+      <%= render ActionButtonComponent.new(
+            to: edit_admin_path(admin),
+            icon: "pencil",
+            color: :neutral,
+            size: :medium,
+            turbo_stream: true,
+            classes: "!h-full"
+          ) do %>
+        <%= t("admins.index.actions.edit") %>
       <% end %>
-    </tbody>
-  </table>
+      <%= render ActionButtonComponent.new(
+            to: admin_path(admin),
+            icon: "trash",
+            color: :primary,
+            method: :delete,
+            size: :medium,
+            confirm: t("admins.index.actions.delete_confirmation", name: admin.name),
+            classes: "!h-full"
+          ) do %>
+        <%= t("admins.index.actions.delete") %>
+      <% end %>
+    <% end %>
+  <% end %>
 </div>
