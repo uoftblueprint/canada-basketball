@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_011634) do
     t.integer "player_id"
     t.boolean "is_opponent", default: false, null: false
     t.string "kind", null: false
+    t.string "period", default: "Q1", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id", "created_at", "id"], name: "index_game_events_on_game_id_and_created_at_and_id"
@@ -77,6 +78,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_011634) do
     t.integer "pf", default: 0, null: false
     t.integer "stl", default: 0, null: false
     t.integer "blk", default: 0, null: false
+    t.virtual "two_p_pct", type: :decimal, precision: 5, scale: 4, as: "CASE WHEN two_pa = 0 THEN 0 ELSE CAST(two_pm AS REAL) / two_pa END", stored: true
+    t.virtual "three_p_pct", type: :decimal, precision: 5, scale: 4, as: "CASE WHEN three_pa = 0 THEN 0 ELSE CAST(three_pm AS REAL) / three_pa END", stored: true
+    t.virtual "fg_pct", type: :decimal, precision: 5, scale: 4, as: "CASE WHEN fga = 0 THEN 0 ELSE CAST(fgm AS REAL) / fga END", stored: true
+    t.virtual "ft_pct", type: :decimal, precision: 5, scale: 4, as: "CASE WHEN fta = 0 THEN 0 ELSE CAST(ftm AS REAL) / fta END", stored: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id", "is_opponent"], name: "index_game_stat_lines_on_game_id_and_is_opponent", unique: true, where: "player_id IS NULL"
