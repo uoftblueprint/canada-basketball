@@ -10,6 +10,3 @@ en:
       button: "Edit"
     update:
       success: "Team updated."
-    form:
-      players: "Players"
-      search_players: "Search players..."

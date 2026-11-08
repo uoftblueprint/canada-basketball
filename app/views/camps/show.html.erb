@@ -12,17 +12,7 @@
       <tbody>
         <% @teams.each do |team| %>
           <tr>
-            <td class="pr-4"><%= team.name %></td>
-              <td>
-                <%= render ActionButtonComponent.new(
-                      to: edit_camp_team_path(@camp, team),
-                      icon: :pencil,
-                      size: :medium,
-                      turbo_stream: true
-                    ) do %>
-                  <%= t("teams.edit.button") %>
-                <% end %>
-              </td>
+            <td><%= team.name %></td>
           </tr>
         <% end %>
       </tbody>

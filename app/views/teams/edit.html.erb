@@ -1,2 +1,4 @@
- <h1 id="edit_team_title" class="mb-4 text-3xl font-semibold"><%= t(".title") %></h1>
-<%= render Teams::FormComponent.new(camp: @camp, team: @team) %>
+<section class="w-full px-6 py-4" aria-labelledby="camp-new-heading">
+  <h1 id="camp-new-heading" class="mb-6 text-4xl font-bold"><%= t(".title") %></h1>
+  <%= render Teams::FormComponent.new(camp: @camp, team: @team) %>
+</section>

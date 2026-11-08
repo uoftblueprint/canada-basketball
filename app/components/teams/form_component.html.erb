@@ -1,19 +1,8 @@
 <%= form_with model: [camp, team], html: { autocomplete: "off", class: "flex flex-col gap-8" } do |f| %>
-  <div class="flex flex-col gap-1>
-    <%= f.label :name, class: "text-sm" %>
-    <%= f.text_field :name, class: "input w-full bg-base-200" %>
-  </div>
-
-  <%= render MultipleSearchSelectComponent.new(
-        name: "#{f.object_name}[player_ids][]",
-        model: Player,
-        param_scope: :players,
-        selected: team.players,
-        label: t("teams.form.players"),
-        value_method: :id,
-        text_method: :name,
-        path_builder: ->(params) { search_players_path(params) }
-      ) %>
-
-  <%= f.submit class: "btn btn-primary w-full font-normal" %>
+  <fieldset class="fieldset">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </fieldset>
+  <%= f.multiple_search_select :player_ids, :id, :name %>
+  <%= f.submit %>
 <% end %>
