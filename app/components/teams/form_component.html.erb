@@ -1,8 +1,10 @@
 <%= form_with model: [camp, team], html: { autocomplete: "off", class: "flex flex-col gap-8" } do |f| %>
-  <fieldset class="fieldset">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </fieldset>
-  <%= f.multiple_search_select :player_ids, :id, :name %>
+  <div class="flex flex-col gap-2">
+    <fieldset class="fieldset">
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+    </fieldset>
+    <%= f.multiple_search_select :player_ids, :id, :name %>
+  </div>
   <%= f.submit %>
 <% end %>
