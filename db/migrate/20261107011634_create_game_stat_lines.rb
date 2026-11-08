@@ -23,12 +23,24 @@ class CreateGameStatLines < ActiveRecord::Migration[8.1]
       t.integer :stl, null: false, default: 0
       t.integer :blk, null: false, default: 0
 
+      t.virtual :two_p_pct, type: :decimal, precision: 5, scale: 4, as: pct("two_pm", "two_pa"), stored: true
+      t.virtual :three_p_pct, type: :decimal, precision: 5, scale: 4, as: pct("three_pm", "three_pa"), stored: true
+      t.virtual :fg_pct, type: :decimal, precision: 5, scale: 4, as: pct("fgm", "fga"), stored: true
+      t.virtual :ft_pct, type: :decimal, precision: 5, scale: 4, as: pct("ftm", "fta"), stored: true
+
       t.timestamps
     end
 
-    add_index :game_stat_lines, [:game_id, :player_id], unique: true, where: "player_id IS NOT NULL"
-    add_index :game_stat_lines, [:game_id, :is_opponent], unique: true, where: "player_id IS NULL"
+    add_index :game_stat_lines, %i[game_id player_id], unique: true, where: "player_id IS NOT NULL"
+    add_index :game_stat_lines, %i[game_id is_opponent], unique: true, where: "player_id IS NULL"
 
-    add_check_constraint :game_stat_lines, "NOT (is_opponent AND player_id IS NOT NULL)", name: "opponent_stat_lines_have_no_player"
+    add_check_constraint :game_stat_lines, "NOT (is_opponent AND player_id IS NOT NULL)",
+                         name: "opponent_stat_lines_have_no_player"
+  end
+
+  private
+
+  def pct(makes, attempts)
+    "CASE WHEN #{attempts} = 0 THEN 0 ELSE CAST(#{makes} AS REAL) / #{attempts} END"
   end
 end

@@ -3,6 +3,7 @@ FactoryBot.define do
     game
     is_opponent { false }
     kind { "two_point_made" }
+    period { "q1" }
 
     # defaults to a player on the game's team
     player do

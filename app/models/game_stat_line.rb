@@ -16,28 +16,7 @@ class GameStatLine < ApplicationRecord
   }.freeze
 
   COLUMNS = (BASE_COLUMNS + DERIVED_COLUMNS.keys).freeze
+  PERCENTAGE_COLUMNS = %i[fg_pct two_p_pct three_p_pct ft_pct].freeze
 
-  def fg_pct
-    return 0.0 if fga.zero?
-
-    fgm.fdiv(fga)
-  end
-
-  def two_p_pct
-    return 0.0 if two_pa.zero?
-
-    two_pm.fdiv(two_pa)
-  end
-
-  def three_p_pct
-    return 0.0 if three_pa.zero?
-
-    three_pm.fdiv(three_pa)
-  end
-
-  def ft_pct
-    return 0.0 if fta.zero?
-
-    ftm.fdiv(fta)
-  end
+  sortable_by(*COLUMNS, *PERCENTAGE_COLUMNS)
 end

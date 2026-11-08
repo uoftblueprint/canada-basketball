@@ -23,6 +23,10 @@ class TeamsController < ApplicationController
   def edit
     @team = current_camp.teams.find(params.expect(:id))
     load_options
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
@@ -39,13 +43,13 @@ class TeamsController < ApplicationController
   end
 
   def update
+    @camp = current_camp
     @team = current_camp.teams.find(params.expect(:id))
     if @team.update(team_params)
       assign_players(@team)
       redirect_to camp_path(current_camp), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @team.errors.full_messages.to_sentence
-      load_options
       render :edit, status: :unprocessable_content
     end
   end

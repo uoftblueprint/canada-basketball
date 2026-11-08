@@ -13,3 +13,6 @@ en:
       success: "Team updated successfully"
     destroy:
       success: "Team deleted successfully"
+    edit:
+      title: "Edit team"
+      button: "Edit"
