@@ -1,0 +1,31 @@
+<% content_for :title, "Box Score | #{@game.name}" %>
+<section class="px-6 py-4 flex flex-col gap-2" aria-labelledby="game-heading">
+  <nav class="breadcrumbs mb-2 py-0 text-sm uppercase" aria-label="<%= t(".breadcrumbs") %>">
+    <ul>
+      <li>
+        <% if logged_in_as_admin? %>
+          <%= link_to Camp.model_name.human(count: 2), camps_path, class: "link link-primary" %>
+        <% else %>
+          <%= Camp.model_name.human(count: 2) %>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to current_camp.name, camp_path(current_camp), class: "link link-primary" %>
+      </li>
+      <li>
+        <%= link_to Game.model_name.human(count: 2), camp_path(current_camp, anchor: "games-heading"), class: "link link-primary" %>
+      </li>
+      <li>
+        <%= link_to @game.name, camp_game_path(current_camp, @game), class: "link link-primary" %>
+      </li>
+      <li aria-current="page">
+        <%= t(".box_score") %>
+      </li>
+    </ul>
+  </nav>
+  <header>
+    <div class="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
+      <h1 id="game-heading" class="min-w-0 wrap-break-word text-4xl font-bold"><%= @game.name %></h1>
+    </div>
+  </header>
+</section>
