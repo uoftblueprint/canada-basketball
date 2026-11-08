@@ -1,4 +1,9 @@
 en:
+  activerecord:
+    models:
+      camp:
+        one: "Camp"
+        other: "Camps"
   camps:
     index:
       title: "Camps"

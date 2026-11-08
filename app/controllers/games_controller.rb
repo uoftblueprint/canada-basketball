@@ -5,6 +5,10 @@ class GamesController < ApplicationController
     @game = current_camp.games.find(params.expect(:id))
   end
 
+  def box_score
+    @game = current_camp.games.find(params.expect(:id))
+  end
+
   def new
     @game = current_camp.games.new
   end
