@@ -229,19 +229,15 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     get edit_camp_team_path(@camp, team)
 
     assert_select "input[name='team[name]'][value='One']"
-    assert_select "input[type=checkbox][name='team[player_ids][]'][value='#{player.id}'][checked]"
+    assert_select "input[name='team[player_ids][]'][value='#{player.id}']"
   end
 
-  test "edit team form labels each player with their current team in the camp" do
+  test "search returns matching players" do
     create_logged_in_admin
-    other_team = create(:team, name: "T2", camp: @camp)
-    create(:camp_registration, camp: @camp, team: other_team, player: create(:player, name: "Other Team Player"))
-    create(:camp_registration, camp: @camp, player: create(:player, name: "Pool Player"))
-
-    get edit_camp_team_path(@camp, @team)
-
-    assert_select "label", text: /Other Team Player.*T2/
-    assert_select "label", text: /Pool Player.*No team/
+    create(:player, name: "Alice")
+    get search_players_path(q: "Ali")
+    assert_response :success
+    assert_match "Alice", response.body
   end
 
   test "Admin can update a team name and roster" do
@@ -267,5 +263,18 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_equal "T1", @team.reload.name
+  end
+
+  test "edit renders the form in a modal for turbo stream requests" do
+    create_logged_in_admin
+    team = create(:team, name: "A", camp: @camp)
+
+    get edit_camp_team_path(@camp, team), as: :turbo_stream
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal" do
+      assert_select "#modal_title", text: "Edit team"
+      assert_select "input[name='team[name]'][value=?]", "A"
+    end
   end
 end

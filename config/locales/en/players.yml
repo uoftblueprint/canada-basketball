@@ -1,4 +1,8 @@
 en:
+  activerecord:
+      attributes:
+        team:
+          players: "Players"
   players:
     show:
       title: "Player Details"
