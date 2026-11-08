@@ -75,7 +75,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to players_path
     assert_response :see_other
-    assert_equal "Player created successfully", flash[:success]
+    assert_equal I18n.t("players.create.success"), flash[:success]
     assert_equal "test_name", Player.last.name
   end
 

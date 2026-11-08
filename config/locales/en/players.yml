@@ -1,7 +1,15 @@
 en:
+  activerecord:
+      attributes:
+        team:
+          players: "Players"
   players:
+    show:
+      title: "Player Details"
+      name: "Name"
+      registrations: "Registrations"
+      no_team: "No team"
     new:
       title: "New Player"
     create:
       success: "Player created successfully"
-      
