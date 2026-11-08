@@ -284,4 +284,26 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
 
     assert_nil session[:identity]
   end
+
+  test "new renders the modal as a turbo stream" do
+    create_logged_in_admin
+
+    get new_admin_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal"
+  end
+
+  test "create re-renders the modal with invalid params" do
+    create_logged_in_admin
+
+    assert_no_difference("Admin.count") do
+      post admins_path,
+           params: { admin: { name: "", email: "bad" } },
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
+
+    assert_response :unprocessable_content
+    assert_turbo_stream status: :unprocessable_content, action: :replace, target: "modal"
+  end
 end
