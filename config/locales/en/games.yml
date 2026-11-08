@@ -1,0 +1,9 @@
+en:
+  games:
+    show:
+      breadcrumbs: "Breadcrumbs"
+      camps: "Camps"
+      games: "Games"
+      edit_game: "Edit Game"
+      delete_game: "Delete Game"
+      matchup: "%{team} vs %{opponent}"
