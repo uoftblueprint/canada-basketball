@@ -18,7 +18,13 @@ class GameEvent < ApplicationRecord
     block: { blk: 1 }
   }.freeze
 
+  PERIODS = {
+    q1: "Q1", q2: "Q2", q3: "Q3", q4: "Q4",
+    ot: "OT", ot2: "2OT", ot3: "3OT", other: "Other"
+  }.freeze
+
   enum :kind, STAT_DELTAS.keys.index_with(&:to_s), validate: true
+  enum :period, PERIODS, default: :q1, validate: true
 
   validates :kind, presence: true
   validates :is_opponent, inclusion: { in: [true, false] }

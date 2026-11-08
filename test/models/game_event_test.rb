@@ -29,6 +29,16 @@ class GameEventTest < ActiveSupport::TestCase
     assert build(:game_event, :team, game: @game).valid?
   end
 
+  test "defaults to the first quarter" do
+    assert_equal "q1", GameEvent.new.period
+  end
+
+  test "rejects an unknown period" do
+    event = build(:game_event, game: @game, player: @player, period: "halftime")
+
+    assert_not event.valid?
+  end
+
   test "creating an event builds a stat line for its key" do
     create(:game_event, game: @game, player: @player, kind: :two_point_made)
 
