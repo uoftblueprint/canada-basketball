@@ -20,6 +20,11 @@ class AdminsController < ApplicationController
 
   def edit
     @admin = Admin.find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create

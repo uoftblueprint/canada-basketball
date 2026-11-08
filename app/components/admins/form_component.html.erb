@@ -10,7 +10,17 @@
     </fieldset>
     <fieldset class="fieldset">
       <%= f.label :password %>
-      <%= f.password_field :password, autocomplete: "new-password", aria: { invalid: admin.errors[:password].any? } %>
+      <%= f.password_field :password,
+                           autocomplete: "new-password",
+                           aria: {
+                             invalid: admin.errors[:password].any?,
+                             describedby: ("admin_password_hint" if admin.persisted?)
+                           } %>
+      <% if admin.persisted? %>
+        <p id="admin_password_hint" class="label text-sm text-base-content/60">
+          <%= t(".password_hint") %>
+        </p>
+      <% end %>
     </fieldset>
     <fieldset class="fieldset">
       <%= f.label :password_confirmation %>
