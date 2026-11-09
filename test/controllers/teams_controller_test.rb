@@ -265,6 +265,20 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "T1", @team.reload.name
   end
 
+  test "new renders the form in a modal for turbo stream requests" do
+    create_logged_in_admin
+
+    get new_camp_team_path(@camp), as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_turbo_stream action: :replace, target: "modal" do
+      assert_select "#modal_title"
+      assert_select "form[action=?]", camp_teams_path(@camp)
+      assert_select "input[name='team[name]']"
+    end
+  end
+
   test "edit renders the form in a modal for turbo stream requests" do
     create_logged_in_admin
     team = create(:team, name: "A", camp: @camp)
