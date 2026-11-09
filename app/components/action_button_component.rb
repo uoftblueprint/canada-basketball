@@ -14,7 +14,7 @@ class ActionButtonComponent < ViewComponent::Base
   private_constant :COLOR_CLASSES
 
   def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small,
-                 classes: nil, turbo_frame: nil)
+                 classes: nil)
     super()
 
     raise ArgumentError, "Invalid color" unless COLOR_CLASSES.include?(color)
@@ -27,7 +27,6 @@ class ActionButtonComponent < ViewComponent::Base
     @turbo_stream = turbo_stream
     @size = size
     @classes = classes
-    @turbo_frame = turbo_frame
   end
 
   private
@@ -37,7 +36,7 @@ class ActionButtonComponent < ViewComponent::Base
   end
 
   def link_data
-    { turbo_stream: (@turbo_stream ? true : nil), turbo_frame: @turbo_frame }.compact
+    { turbo_stream: (@turbo_stream ? true : nil) }.compact
   end
 
   def small? = @size == :small

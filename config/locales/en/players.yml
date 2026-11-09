@@ -4,11 +4,10 @@ en:
       team:
         players: "Players"
       player:
-        name: "Player Name"
+        name: "Name"
   players:
     index:
       title: "Players"
-      subtitle: "Create and manage players"
       create_player: "Create Player"
       actions:
         view: "View"

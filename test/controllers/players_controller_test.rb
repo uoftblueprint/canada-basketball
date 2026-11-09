@@ -28,13 +28,13 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "#players_index_table .grid > div", text: "test_player_2"
   end
 
-  test "index links to the full player page" do
+  test "index links to the player details modal" do
     create_logged_in_admin
     player = create(:player)
 
     get players_path
 
-    assert_select 'a[href=?][data-turbo-frame="_top"]', player_path(player), count: 1
+    assert_select 'a[href=?][data-turbo-stream="true"]', player_path(player), count: 1
   end
 
   test "index redirects logged out users" do
@@ -84,7 +84,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_select 'input[name="player[name]"]'
-    assert_equal "Player Name can't be blank", flash[:error]
+    assert_equal "Name can't be blank", flash[:error]
   end
 
   test "new redirects camp users" do

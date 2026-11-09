@@ -1,8 +1,12 @@
-<div class="px-6 py-8">
+<div class="px-6 py-4">
+  <nav class="breadcrumbs text-sm" aria-label="<%= t(".title") %>">
+    <ul>
+      <li aria-current="page"><%= t(".title") %></li>
+    </ul>
+  </nav>
   <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
       <h1 class="text-4xl font-bold"><%= t(".title") %></h1>
-      <p class="mt-2 text-base-content/70"><%= t(".subtitle") %></p>
     </div>
 
     <%= render ActionButtonComponent.new(
@@ -20,7 +24,6 @@
         path_builder: ->(params) { players_path(params) }
       ) do |table| %>
     <% table.column :name %>
-
     <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto" do |player| %>
       <div class="flex items-center gap-2">
         <%= render ActionButtonComponent.new(
@@ -28,7 +31,7 @@
               icon: "eye",
               color: :base,
               size: :medium,
-              turbo_frame: "_top"
+              turbo_stream: true
             ) do %>
           <%= t("players.index.actions.view") %>
         <% end %>
