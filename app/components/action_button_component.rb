@@ -1,5 +1,6 @@
 class ActionButtonComponent < ViewComponent::Base
   COLOR_CLASSES = {
+    base: "bg-base-100 text-base-content hover:bg-base-200",
     neutral: "btn-neutral",
     primary: "btn-primary",
     secondary: "btn-secondary",
