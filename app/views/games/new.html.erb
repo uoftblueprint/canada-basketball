@@ -1,7 +1,7 @@
-<div class="p-6">
-  <h1 class="text-2xl font-semibold mb-4">
+<section class="px-6 py-4" aria-labelledby="new-game-heading">
+  <h1 id="new-game-heading" class="mb-6 text-4xl font-bold">
     <%= t(".title") %>
   </h1>
 
   <%= render Games::FormComponent.new(game: @game, camp: current_camp) %>
-</div>
+</section>

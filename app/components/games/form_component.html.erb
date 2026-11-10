@@ -1,28 +1,26 @@
-<%= form_with model: [camp, game] do |form| %>
-  <div class="flex flex-col gap-3">
+<%= form_with model: [camp, game], class: "flex flex-col gap-4" do |form| %>
+  <div class="flex flex-col gap-2">
 
-    <div class="flex flex-col">
+    <fieldset class="fieldset">
       <%= form.label :name %>
       <%= form.text_field :name, required: true, autocomplete: "off", class: "input" %>
-    </div>
+    </fieldset>
 
-    <div class="flex flex-col">
+    <fieldset class="fieldset">
       <%= form.label :team_id, "Team" %>
       <%= form.collection_select :team_id, camp.teams, :id, :name, { include_blank: true }, class: "select" %>
-    </div>
+    </fieldset>
 
-    <div class="flex flex-col">
+    <fieldset class="fieldset">
       <%= form.label :opponent_name %>
       <%= form.text_field :opponent_name, required: true, autocomplete: "off", class: "input" %>
-    </div>
+    </fieldset>
 
-    <div>
+    <fieldset class="fieldset flex flex-row justify-between">
       <%= form.label :active, "Active" %>
       <%= form.check_box :active, class: "checkbox checkbox-primary" %>
-    </div>
+    </fieldset>
 
-    <div>
-      <%= form.submit(game.persisted? ? "Update Game" : "Create Game", class: "btn btn-primary") %>
-    </div>
   </div>
+  <%= form.submit %>
 <% end %>

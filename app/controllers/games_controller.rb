@@ -29,10 +29,7 @@ class GamesController < ApplicationController
                                                        status: :see_other
     else
       flash.now[:error] = @game.errors.full_messages.to_sentence
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_content }
-        format.turbo_stream { render :new, status: :unprocessable_content }
-      end
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -43,10 +40,7 @@ class GamesController < ApplicationController
                                                        status: :see_other
     else
       flash.now[:error] = @game.errors.full_messages.to_sentence
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_content }
-        format.turbo_stream { render :new, status: :unprocessable_content }
-      end
+      render :new, status: :unprocessable_content
     end
   end
 
