@@ -1,0 +1,21 @@
+---
+en:
+  game_events:
+    form_component:
+      events: Events
+      period: Period
+      subject: Subject
+    kinds:
+      assist: AST
+      block: BLK
+      defensive_rebound: DREB
+      foul: FOUL
+      free_throw_made: FT Made
+      free_throw_missed: FT Missed
+      offensive_rebound: OREB
+      steal: STL
+      three_point_made: 3PT Made
+      three_point_missed: 3PT Missed
+      turnover: TO
+      two_point_made: 2PT Made
+      two_point_missed: 2PT Missed

@@ -259,4 +259,29 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :see_other
   end
+
+  test "box score form submits to the game's events" do
+    game = create(:game, camp: @camp, team: @team)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "form[action=?]", camp_game_game_events_path(@camp, game)
+  end
+
+  test "box score has a subject for each player, the team, and the opponent" do
+    create_list(:camp_registration, 2, camp: @camp, team: @team)
+    game = create(:game, camp: @camp, team: @team)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "input[type=radio][name='game_event[subject]']", count: 4
+  end
+
+  test "box score has a button for each event kind" do
+    game = create(:game, camp: @camp, team: @team)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "button[name='game_event[kind]']", count: GameEvent.kinds.size
+  end
 end

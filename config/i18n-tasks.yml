@@ -164,6 +164,7 @@ search:
 ignore_unused:
   - 'activerecord.*'
   - 'sidebar_component.*'
+  - 'game_events.kinds.*'
 
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:

@@ -13,6 +13,7 @@ en:
   games:
     box_score:
       box_score: Box Score
+      box_score_tracker: Box Score Tracker
       breadcrumbs: Breadcrumbs
       page_title: Games · %{name} · Box Score
     create:
