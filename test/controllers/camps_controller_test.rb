@@ -9,6 +9,14 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index renders breadcrumbs" do
+    create_logged_in_admin
+
+    get camps_path
+
+    assert_select ".breadcrumbs", count: 1
+  end
+
   test "index lists camps with active camps first, then by name" do
     create_logged_in_admin
     create(:camp, :inactive, name: "A Camp")

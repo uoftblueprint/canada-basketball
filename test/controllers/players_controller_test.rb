@@ -135,6 +135,15 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "#registrations li", count: 0
   end
 
+  test "show renders breadcrumbs" do
+    create_logged_in_admin
+    player = create(:player)
+
+    get player_path(player)
+
+    assert_select ".breadcrumbs", count: 1
+  end
+
   test "show displays registrations with their camps and teams" do
     create_logged_in_admin
     player = create(:player, name: "Shai Gilgeous-Alexander")
