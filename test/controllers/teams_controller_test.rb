@@ -31,6 +31,12 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show renders breadcrumbs" do
+    get camp_team_path(@camp, @team)
+
+    assert_select ".breadcrumbs", count: 1
+  end
+
   test "show displays team name and players when logged in as camp" do
     get camp_team_path(@camp, @team)
 
