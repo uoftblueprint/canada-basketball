@@ -10,13 +10,10 @@ class CampsController < ApplicationController
 
   def show
     @camp = current_camp
-    # use registrations to get both player and teams
-    @registrations = @camp.camp_registrations
-                          .includes(:player, :team)
-                          .joins(:player)
-                          .order("players.name")
-    @games = @camp.games.includes(:team).order(active: :desc, name: :asc)
-    @teams = @camp.teams.order(:name)
+    @teams = build_table_state(@camp.teams.order(:name), param_scope: :teams)
+    @players = build_table_state(@camp.players.order(:name), param_scope: :players)
+    @games = build_table_state(@camp.games.includes(:team).order(active: :desc, name: :asc), param_scope: :games)
+    @player_teams = @camp.camp_registrations.includes(:team).index_by(&:player_id)
   end
 
   def new

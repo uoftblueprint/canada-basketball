@@ -19,8 +19,6 @@
     <%= render Shared::IndexCardsComponent.new(
           state: @table_state,
           path_builder: ->(params) { camps_path(params) },
-          search_label: t("camps.index.search_label"),
-          search_placeholder: t("camps.index.search_placeholder"),
           listings_label: t("camps.index.listings_label"),
           pagination_label: t("camps.index.pagination_label")
         ) do |cards| %>

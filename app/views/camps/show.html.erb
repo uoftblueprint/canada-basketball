@@ -1,65 +1,143 @@
-<div>
-  <h1 class="font-bold text-4xl"><%= @camp.name %></h1>
+<div class="px-6 py-4">
+  <div class="mx-auto max-w-7xl">
+    <nav class="breadcrumbs text-sm uppercase" aria-label="Breadcrumb">
+      <ul>
+        <li>
+          <% if logged_in_as_admin? %>
+            <%= link_to Camp.model_name.human(count: 2), camps_path, class: "link link-primary" %>
+          <% else %>
+            <%= Camp.model_name.human(count: 2) %>
+          <% end %>
+        </li>
+        <li><%= @camp.name %></li>
+      </ul>
+    </nav>
 
-  <section aria-labelledby="teams-heading">
-    <h2 id="teams-heading">Teams</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Team</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @teams.each do |team| %>
-          <tr>
-            <td><%= team.name %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </section>
+    <div class="mb-6 flex items-end justify-between gap-4">
+      <h1 class="text-4xl font-bold"><%= @camp.name %></h1>
 
-  <section aria-labelledby="players-heading">
-    <h2 id="players-heading">Players</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Team</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @registrations.each do |registration| %>
-          <tr>
-            <td><%= registration.player.name %></td>
-            <td><%= registration.team&.name || "No team" %></td>
-          </tr>
+      <div class="flex gap-2" role="group" aria-label="<%= t(".camp_actions") %>">
+        <%= render ActionButtonComponent.new(
+              to: new_camp_team_path(@camp),
+              icon: "plus",
+              size: :large
+            ) do %>
+          <%= t(".add_team") %>
         <% end %>
-      </tbody>
-    </table>
-  </section>
+        <%= render ActionButtonComponent.new(
+              to: new_camp_game_path(@camp),
+              icon: "plus",
+              size: :large
+            ) do %>
+          <%= t(".add_game") %>
+        <% end %>
+        <%= render ActionButtonComponent.new(
+              to: edit_camp_path(@camp),
+              icon: "pencil",
+              size: :large
+            ) do %>
+          <%= t(".edit_camp") %>
+        <% end %>
+        <%= render ActionButtonComponent.new(
+              to: camp_path(@camp),
+              icon: "trash",
+              color: :primary,
+              method: :delete,
+              confirm: t(".delete_confirmation"),
+              size: :large
+            ) do %>
+          <%= t(".delete_camp") %>
+        <% end %>
+      </div>
+    </div>
 
-  <section aria-labelledby="games-heading">
-    <h2 id="games-heading">Games</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Team</th>
-          <th>Opponent</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @games.each do |game| %>
-          <tr>
-            <td><%= game.name %></td>
-            <td><%= game.team.name %></td>
-            <td><%= game.opponent_name %></td>
-            <td><%= game.active? ? "Active" : "Inactive" %></td>
-          </tr>
+    <section class="mb-4" aria-labelledby="teams-heading">
+      <h2 id="teams-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Team.model_name.human(count: 2) %></h2>
+      <%= render Shared::IndexTableComponent.new(
+            state: @teams,
+            path_builder: ->(params) { camp_path(@camp, params) }
+          ) do |table| %>
+        <% table.column :name %>
+        <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |team| %>
+          <div class="flex h-full" role="group" aria-label="<%= t(".actions") %>">
+            <%= render(ActionButtonComponent.new(
+                         to: camp_team_path(@camp, team),
+                         icon: "eye",
+                         color: :white,
+                         turbo_stream: true,
+                         size: :large
+                       )) { t(".view") } %>
+            <%= render(ActionButtonComponent.new(
+                         to: edit_camp_team_path(@camp, team),
+                         icon: "pencil",
+                         color: :neutral,
+                         turbo_stream: true,
+                         size: :large
+                       )) { t(".edit") } %>
+            <%= render(ActionButtonComponent.new(
+                         to: camp_team_path(@camp, team),
+                         icon: "trash",
+                         method: :delete,
+                         confirm: t(".delete_confirmation"),
+                         size: :large
+                       )) { t(".delete") } %>
+          </div>
         <% end %>
-      </tbody>
-    </table>
-  </section>
+      <% end %>
+    </section>
+
+    <section class="mb-4" aria-labelledby="players-heading">
+      <h2 id="players-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Player.model_name.human(count: 2) %></h2>
+      <%= render Shared::IndexTableComponent.new(
+            state: @players,
+            path_builder: ->(params) { camp_path(@camp, params) }
+          ) do |table| %>
+        <% table.column :name %>
+        <% table.column :team do |player| %>
+          <%= @player_teams[player.id]&.team&.name || t(".no_team") %>
+        <% end %>
+        <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |player| %>
+          <div class="flex h-full" role="group" aria-label="<%= t(".actions") %>">
+            <%= render(ActionButtonComponent.new(to: player_path(player), icon: "eye", color: :white, turbo_stream: true, size: :large)) { t(".view") } %>
+          </div>
+        <% end %>
+      <% end %>
+    </section>
+
+    <section aria-labelledby="games-heading">
+      <h2 id="games-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Game.model_name.human(count: 2) %></h2>
+      <%= render Shared::IndexTableComponent.new(
+            state: @games,
+            path_builder: ->(params) { camp_path(@camp, params) }
+          ) do |table| %>
+        <% table.column :team do |game| %>
+          <%= game.team.name %>
+        <% end %>
+        <% table.column :opponent_name %>
+        <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |game| %>
+          <div class="flex h-full" role="group" aria-label="<%= t(".actions") %>">
+            <%= render(ActionButtonComponent.new(
+                         to: camp_game_path(@camp, game),
+                         icon: "eye",
+                         color: :white,
+                         size: :large
+                       )) { t(".view") } %>
+            <%= render(ActionButtonComponent.new(
+                         to: edit_camp_game_path(@camp, game),
+                         icon: "pencil",
+                         color: :neutral,
+                         size: :large
+                       )) { t(".edit") } %>
+            <%= render(ActionButtonComponent.new(
+                         to: camp_game_path(@camp, game),
+                         icon: "trash",
+                         method: :delete,
+                         confirm: t(".delete_confirmation"),
+                         size: :large
+                       )) { t(".delete") } %>
+          </div>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
 </div>

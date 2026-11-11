@@ -1,4 +1,12 @@
 en:
+  activerecord:
+    models:
+      team:
+        one: "Team"
+        other: "Teams"
+    attributes:
+      team:
+        name: "Team Name"
   teams:
     show:
       title: "Team Details"

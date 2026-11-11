@@ -34,7 +34,7 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get camps_path
 
     assert_select "turbo-frame#camps_index_cards"
-    assert_select "form label.sr-only", text: "Search camps"
+    assert_select "form label.sr-only", text: "Search Camps"
     assert_select "input[type='search'][placeholder='Search Camps']"
     assert_select "nav[aria-label='Camp pages']"
     assert_select "a[href='#{new_camp_path}']", text: /Add Camp/
@@ -212,6 +212,24 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "camp show page renders breadcrumbs" do
+    camp = create_logged_in_camp
+
+    get camp_path(camp)
+
+    assert_select ".breadcrumbs", count: 1
+    assert_select "a[href='#{camps_path}']", count: 0
+  end
+
+  test "admin camp show page links to camps" do
+    camp = create(:camp)
+    create_logged_in_admin
+
+    get camp_path(camp)
+
+    assert_select "a[href='#{camps_path}']", text: "Camps"
+  end
+
   test "camp page shows players from every assigned team" do
     camp = create_logged_in_camp
     teams = create_list(:team, 2, camp: camp)
@@ -222,14 +240,14 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     registrations.each do |registration|
-      assert_select "td", text: registration.player.name
-      assert_select "td", text: registration.team.name
+      assert_select "turbo-frame#players_index_table div", text: registration.player.name
+      assert_select "turbo-frame#players_index_table div", text: registration.team.name
     end
-    assert_select "td", text: unrelated_player.name, count: 0
+    assert_select "turbo-frame#players_index_table div", text: unrelated_player.name, count: 0
     assert_not_includes response.body, camp.password_digest
   end
 
-  test "camp page shows only its games with teams opponents and statuses" do
+  test "camp page shows only its games with teams and opponents" do
     camp = create_logged_in_camp
     active_game = create(:game, team: create(:team, camp: camp))
     inactive_game = create(:game, :inactive, team: create(:team, camp: camp))
@@ -239,13 +257,34 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     [active_game, inactive_game].each do |game|
-      assert_select "td", text: game.name
-      assert_select "td", text: game.team.name
-      assert_select "td", text: game.opponent_name
+      assert_includes response.body, game.team.name
+      assert_includes response.body, game.opponent_name
     end
-    assert_select "td", text: "Active"
-    assert_select "td", text: "Inactive"
-    assert_select "td", text: unrelated_game.name, count: 0
+    assert_not_includes response.body, unrelated_game.name
+  end
+
+  test "camp page renders searchable tables with row actions" do
+    camp = create_logged_in_camp
+    team = create(:team, camp: camp, name: "Team One")
+    player = create(:player, name: "Player One")
+    create(:camp_registration, camp: camp, player: player, team: team)
+    game = create(:game, camp: camp, team: team, name: "Game One")
+
+    get camp_path(camp)
+
+    assert_response :success
+    assert_select "section[aria-labelledby='teams-heading'] input[type='search'][aria-label='Search Teams']"
+    assert_select "section[aria-labelledby='players-heading'] input[type='search'][aria-label='Search Players']"
+    assert_select "section[aria-labelledby='games-heading'] input[type='search'][aria-label='Search Games']"
+
+    assert_select "a[href='#{camp_team_path(camp, team)}']", text: "View"
+    assert_select "a[href='#{edit_camp_team_path(camp, team)}']", text: "Edit"
+    assert_select "form[action='#{camp_team_path(camp, team)}'][method='post'] input[name='_method'][value='delete']"
+
+    assert_select "a[href='#{player_path(player)}']", text: "View"
+    assert_select "a[href='#{camp_game_path(camp, game)}']", text: "View"
+    assert_select "a[href='#{edit_camp_game_path(camp, game)}']", text: "Edit"
+    assert_select "form[action='#{camp_game_path(camp, game)}'][method='post'] input[name='_method'][value='delete']"
   end
 
   test "camp page renders without players or games" do

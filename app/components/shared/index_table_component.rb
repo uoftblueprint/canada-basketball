@@ -49,11 +49,12 @@ module Shared
 
     Column = Data.define(:attribute, :header, :col_size, :fill, :cell_renderer)
 
-    def initialize(state:, path_builder:, searchable: true)
+    def initialize(state:, path_builder:, searchable: true, search_label: nil)
       super()
       @state = state
       @path_builder = path_builder
       @searchable = searchable
+      @search_label = search_label
       @columns = []
     end
 
@@ -70,6 +71,10 @@ module Shared
     private
 
     attr_reader :state, :path_builder, :searchable, :columns
+
+    def search_label
+      @search_label || helpers.t(".search_label", model: model_class.model_name.human(count: 2))
+    end
 
     def frame_id
       "#{param_scope || model_class.model_name.plural}_index_table"

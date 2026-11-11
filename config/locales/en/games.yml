@@ -4,6 +4,10 @@ en:
       game:
         one: "Game"
         other: "Games"
+    attributes:
+      game:
+        opponent_name: "Opponent"
+        team: "Team"
   games:
     show:
       breadcrumbs: "Breadcrumbs"

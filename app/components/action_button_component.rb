@@ -8,7 +8,8 @@ class ActionButtonComponent < ViewComponent::Base
     info: "btn-info",
     success: "btn-success",
     warning: "btn-warning",
-    error: "btn-error"
+    error: "btn-error",
+    white: "bg-base-100"
   }.freeze
 
   private_constant :COLOR_CLASSES
