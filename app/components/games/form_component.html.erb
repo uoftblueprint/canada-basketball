@@ -3,22 +3,22 @@
 
     <fieldset class="fieldset">
       <%= form.label :name %>
-      <%= form.text_field :name, required: true, autocomplete: "off", class: "input" %>
+      <%= form.text_field :name, required: true, autocomplete: "off" %>
     </fieldset>
 
     <fieldset class="fieldset">
       <%= form.label :team_id, "Team" %>
-      <%= form.collection_select :team_id, camp.teams, :id, :name, { include_blank: true }, class: "select" %>
+      <%= form.collection_select :team_id, camp.teams, :id, :name, { include_blank: true } %>
     </fieldset>
 
     <fieldset class="fieldset">
       <%= form.label :opponent_name %>
-      <%= form.text_field :opponent_name, required: true, autocomplete: "off", class: "input" %>
+      <%= form.text_field :opponent_name, required: true, autocomplete: "off" %>
     </fieldset>
 
     <fieldset class="fieldset flex flex-row justify-between">
       <%= form.label :active, "Active" %>
-      <%= form.check_box :active, class: "checkbox checkbox-primary" %>
+      <%= form.check_box :active %>
     </fieldset>
 
   </div>
