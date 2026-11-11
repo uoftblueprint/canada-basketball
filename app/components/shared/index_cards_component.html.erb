@@ -5,7 +5,7 @@
         <%= form.label :q, search_label, class: "sr-only" %>
         <%= form.search_field :q,
                               value: query_params.q,
-                              placeholder: search_placeholder,
+                              placeholder: search_label,
                               class: "input input-bordered w-full pl-12" %>
         <%= form.button type: :submit,
                         name: nil,

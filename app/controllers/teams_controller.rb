@@ -14,6 +14,10 @@ class TeamsController < ApplicationController
   def new
     @team = current_camp.teams.new
     load_options
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def edit
@@ -30,7 +34,7 @@ class TeamsController < ApplicationController
 
     if @team.save
       assign_players(@team)
-      redirect_to camp_path(current_camp), flash: { success: "Team created successfully" }, status: :see_other
+      redirect_to camp_path(current_camp), flash: { success: t(".success") }, status: :see_other
     else
       flash.now[:error] = @team.errors.full_messages.to_sentence
       load_options
@@ -53,7 +57,7 @@ class TeamsController < ApplicationController
   def destroy
     team = current_camp.teams.find(params.expect(:id))
     if team.destroy
-      redirect_to camp_path(current_camp), flash: { success: "Team deleted successfully" }, status: :see_other
+      redirect_to camp_path(current_camp), flash: { success: t(".success") }, status: :see_other
     else
       redirect_back_or_to camp_path(current_camp), flash: { error: team.errors.full_messages.to_sentence },
                                                    status: :see_other

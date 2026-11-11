@@ -1,10 +1,13 @@
 class PlayersController < ApplicationController
   include SearchSelect
+  include IndexTable
 
   before_action :require_admin, only: %i[search new edit create update destroy]
 
   def index
-    @players = Player.order(:name)
+    @table_state = build_table_state(
+      Player.order(:name)
+    )
   end
 
   def search
@@ -68,7 +71,7 @@ class PlayersController < ApplicationController
   def destroy
     player = Player.find(params.expect(:id))
     if player.destroy
-      redirect_to players_path, flash: { success: "Player deleted successfully" }, status: :see_other
+      redirect_to players_path, flash: { success: t(".success") }, status: :see_other
     else
       redirect_back_or_to players_path, flash: { error: player.errors.full_messages.to_sentence }, status: :see_other
     end

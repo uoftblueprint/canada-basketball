@@ -8,8 +8,6 @@ en:
     index:
       title: "Camps"
       add_camp: "Add Camp"
-      search_label: "Search camps"
-      search_placeholder: "Search Camps"
       listings_label: "Camp listings"
       pagination_label: "Camp pages"
     new:
@@ -20,6 +18,17 @@ en:
       success: "Camp created successfully"
     update:
       success: "Camp updated successfully"
+    show:
+      add_team: "New Team"
+      add_game: "New Game"
+      edit_camp: "Edit Camp"
+      delete_camp: "Delete Camp"
+      delete_confirmation: "Are you sure?"
+      camp_actions: "Actions"
+      no_team: "No team"
+      view: "View"
+      edit: "Edit"
+      delete: "Delete"
     card:
       active: "Active"
       inactive: "Inactive"

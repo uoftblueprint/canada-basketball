@@ -19,4 +19,16 @@ class GameStatLine < ApplicationRecord
   PERCENTAGE_COLUMNS = %i[fg_pct two_p_pct three_p_pct ft_pct].freeze
 
   sortable_by(*COLUMNS, *PERCENTAGE_COLUMNS)
+
+  def self.totals
+    sum_exprs = COLUMNS.map { |c| "COALESCE(SUM(#{c}), 0) AS #{c}" }
+    pct_exprs = {
+      fg_pct: %w[fgm fga],
+      two_p_pct: %w[two_pm two_pa],
+      three_p_pct: %w[three_pm three_pa],
+      ft_pct: %w[ftm fta]
+    }.map { |name, (made, attempted)| "SUM(#{made}) * 1.0 / NULLIF(SUM(#{attempted}), 0) AS #{name}" }
+
+    select(Arel.sql((sum_exprs + pct_exprs).join(", "))).take
+  end
 end

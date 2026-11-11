@@ -1,5 +1,9 @@
 en:
   activerecord:
+    models:
+      admin:
+        one: "Admin"
+        other: "Admins"
     attributes:
       admin:
         name: "Name"
@@ -20,6 +24,10 @@ en:
         edit: "Edit"
         delete: "Delete"
         delete_confirmation: "Delete admin %{name}?"
+    form_component:
+      password_hint: "Leave blank to keep the current password"
+    edit:
+      title: "Edit Admin"
     new:
       title: "Create Admin"
     create:

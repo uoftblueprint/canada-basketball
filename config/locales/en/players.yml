@@ -1,9 +1,24 @@
 en:
   activerecord:
-      attributes:
-        team:
-          players: "Players"
+    models:
+      player:
+        one: "Player"
+        other: "Players"
+    attributes:
+      player:
+        name: "Name"
+        team: "Team"
+      team:
+        players: "Players"
   players:
+    index:
+      title: "Players"
+      create_player: "Create Player"
+      actions:
+        view: "View"
+        edit: "Edit"
+        delete: "Delete"
+        delete_confirmation: "Delete player %{name}?"
     show:
       title: "Player Details"
       name: "Name"
@@ -17,3 +32,5 @@ en:
       title: "Edit Player"
     update:
       success: "Player updated successfully"
+    destroy:
+      success: "Player deleted successfully"
