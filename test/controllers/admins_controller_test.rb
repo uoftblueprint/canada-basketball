@@ -306,4 +306,37 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_turbo_stream status: :unprocessable_content, action: :replace, target: "modal"
   end
+
+  test "edit renders the modal as a turbo stream" do
+    create_logged_in_admin
+    admin = create(:admin)
+
+    get edit_admin_path(admin), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_turbo_stream action: :replace, target: "modal"
+  end
+
+  test "update re-renders the modal with invalid params" do
+    create_logged_in_admin
+    admin = create(:admin)
+
+    patch admin_path(admin),
+          params: { admin: { name: "", email: "bad" } },
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :unprocessable_content
+    assert_turbo_stream status: :unprocessable_content, action: :replace, target: "modal"
+  end
+
+  test "edit shows the password hint but new does not" do
+    create_logged_in_admin
+    admin = create(:admin)
+
+    get edit_admin_path(admin)
+    assert_select "#admin_password_hint", text: I18n.t("admins.form_component.password_hint")
+
+    get new_admin_path
+    assert_select "#admin_password_hint", count: 0
+  end
 end
