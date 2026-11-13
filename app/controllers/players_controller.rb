@@ -30,10 +30,20 @@ class PlayersController < ApplicationController
 
   def new
     @player = Player.new
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def edit
     @player = Player.find(params.expect(:id))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create

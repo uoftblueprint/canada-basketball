@@ -24,8 +24,12 @@ en:
       name: "Name"
       registrations: "Registrations"
       no_team: "No team"
+    new:
+      title: "New Player"
     create:
       success: "Player created successfully"
+    edit:
+      title: "Edit Player"
     update:
       success: "Player updated successfully"
     destroy:
