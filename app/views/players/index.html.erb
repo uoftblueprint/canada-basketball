@@ -21,37 +21,35 @@
         path_builder: ->(params) { players_path(params) }
       ) do |table| %>
     <% table.column :name %>
-    <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto" do |player| %>
-      <div class="flex items-center gap-2">
+    <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |player| %>
+      <div class="flex h-full" role="group" aria-label="<%= t("shared.index_table_component.actions") %>">
         <%= render ActionButtonComponent.new(
               to: player_path(player),
               icon: "eye",
               color: :base,
-              size: :medium,
+              size: :large,
               turbo_stream: true
             ) do %>
-          <%= t("players.index.actions.view") %>
+          <%= t("shared.index_table_component.view") %>
         <% end %>
-
         <%= render ActionButtonComponent.new(
               to: edit_player_path(player),
               icon: "pencil",
               color: :neutral,
-              size: :medium,
+              size: :large,
               turbo_stream: true
             ) do %>
-          <%= t("players.index.actions.edit") %>
+          <%= t("shared.index_table_component.edit") %>
         <% end %>
-
         <%= render ActionButtonComponent.new(
               to: player_path(player),
               icon: "trash",
               color: :primary,
               method: :delete,
-              size: :medium,
-              confirm: t("players.index.actions.delete_confirmation", name: player.name)
+              size: :large,
+              confirm: t("players.index.delete_confirmation", name: player.name)
             ) do %>
-          <%= t("players.index.actions.delete") %>
+          <%= t("shared.index_table_component.delete") %>
         <% end %>
       </div>
     <% end %>

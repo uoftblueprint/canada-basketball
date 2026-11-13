@@ -5,14 +5,13 @@
 # from inside the camps index frame loads the camp show page normally.
 module Camps
   class CardComponent < ViewComponent::Base
-    attr_reader :camp, :title, :description, :status_key, :status_class
+    attr_reader :camp, :title, :description, :status_class
 
     def initialize(camp:)
       super()
       @camp = camp
       @title = camp.name
       @description = camp.description
-      @status_key = camp.active? ? "camps.card.active" : "camps.card.inactive"
       @status_class = camp.active? ? "badge-primary" : "badge-neutral"
     end
   end

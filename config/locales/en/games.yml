@@ -1,28 +1,32 @@
+---
 en:
   activerecord:
-    models:
-      game:
-        one: "Game"
-        other: "Games"
     attributes:
       game:
-        opponent_name: "Opponent"
-        team: "Team"
+        name: Name
+        opponent_name: Opponent
+        team: Team
+    models:
+      game:
+        one: Game
+        other: Games
   games:
-    show:
-      breadcrumbs: "Breadcrumbs"
-      track_box_score: "Track Box Score"
-      edit_game: "Edit Game"
-      delete_game: "Delete Game"
-      matchup: "%{team} vs %{opponent}"
-    new:
-      title: "New Game"
-    create:
-      success: "Game created successfully"
-    edit:
-      title: "Edit Game"
-    update:
-      success: "Game updated successfully"
     box_score:
-      breadcrumbs: "Breadcrumbs"
-      box_score: "Box Score"
+      box_score: Box Score
+      breadcrumbs: Breadcrumbs
+    create:
+      success: Game created successfully
+    destroy:
+      success: Game deleted successfully
+    edit:
+      title: Edit Game
+    new:
+      title: New Game
+    show:
+      breadcrumbs: Breadcrumbs
+      delete_game: Delete Game
+      edit_game: Edit Game
+      matchup: "%{team} vs %{opponent}"
+      track_box_score: Track Box Score
+    update:
+      success: Game updated successfully

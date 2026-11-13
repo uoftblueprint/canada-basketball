@@ -59,7 +59,7 @@ class CampsController < ApplicationController
   def destroy
     camp = Camp.find(params.expect(:id))
     if camp.destroy
-      redirect_to camps_path, flash: { success: "Camp deleted successfully" }, status: :see_other
+      redirect_to camps_path, flash: { success: t(".success") }, status: :see_other
     else
       redirect_back_or_to camps_path, flash: { error: camp.errors.full_messages.to_sentence }, status: :see_other
     end

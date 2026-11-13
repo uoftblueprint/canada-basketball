@@ -1,18 +1,22 @@
+---
 en:
   shared:
-    index_table_component:
-      actions: "Actions"
-      no_entries: "No Entries Found"
-      page_of: "%{current} of %{total}"
-      search_label: "Search %{model}"
-      clear_search: "Clear search"
-      previous_page: "Previous page"
-      next_page: "Next page"
     index_cards_component:
-      search_label: "Search %{model}"
-      listings_label: "Listings"
-      pagination_label: "Pages"
-      previous_page: "Previous page"
-      next_page: "Next page"
+      listings_label: Listings
+      next_page: Next page
+      pagination_label: Pages
+      previous_page: Previous page
+      search_label: Search %{model}
+    index_table_component:
+      actions: Actions
+      clear_search: Clear search
+      delete: Delete
+      edit: Edit
+      next_page: Next page
+      no_entries: No Entries Found
+      page_of: "%{current} of %{total}"
+      previous_page: Previous page
+      search_label: Search %{model}
+      view: View
     modal_component:
-      close: "Close"
+      close: Close

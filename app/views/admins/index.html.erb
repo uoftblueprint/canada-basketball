@@ -1,9 +1,6 @@
 <div class="px-6 py-8">
   <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <h1 class="text-4xl font-bold"><%= t(".title") %></h1>
-      <p class="mt-2 text-base-content/70"><%= t(".subtitle") %></p>
-    </div>
+    <h1 class="text-4xl font-bold"><%= t(".title") %></h1>
     <%= render ActionButtonComponent.new(
           to: new_admin_path,
           icon: "plus",
@@ -20,28 +17,28 @@
       ) do |table| %>
     <% table.column :name %>
     <% table.column :email %>
-    <% table.column :actions, header: t("shared.index_table_component.actions"), fill: true, col_size: "auto" do |admin| %>
-      <%= render ActionButtonComponent.new(
-            to: edit_admin_path(admin),
-            icon: "pencil",
-            color: :neutral,
-            size: :medium,
-            turbo_stream: true,
-            classes: "!h-full"
-          ) do %>
-        <%= t("admins.index.actions.edit") %>
-      <% end %>
-      <%= render ActionButtonComponent.new(
-            to: admin_path(admin),
-            icon: "trash",
-            color: :primary,
-            method: :delete,
-            size: :medium,
-            confirm: t("admins.index.actions.delete_confirmation", name: admin.name),
-            classes: "!h-full"
-          ) do %>
-        <%= t("admins.index.actions.delete") %>
-      <% end %>
+    <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |admin| %>
+      <div class="flex h-full" role="group" aria-label="<%= t("shared.index_table_component.actions") %>">
+        <%= render ActionButtonComponent.new(
+              to: edit_admin_path(admin),
+              icon: "pencil",
+              color: :neutral,
+              size: :large,
+              turbo_stream: true
+            ) do %>
+          <%= t("shared.index_table_component.edit") %>
+        <% end %>
+        <%= render ActionButtonComponent.new(
+              to: admin_path(admin),
+              icon: "trash",
+              color: :primary,
+              method: :delete,
+              size: :large,
+              confirm: t("admins.index.delete_confirmation", name: admin.name)
+            ) do %>
+          <%= t("shared.index_table_component.delete") %>
+        <% end %>
+      </div>
     <% end %>
   <% end %>
 </div>

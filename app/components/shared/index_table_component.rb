@@ -73,7 +73,8 @@ module Shared
     attr_reader :state, :path_builder, :searchable, :columns
 
     def search_label
-      @search_label || helpers.t(".search_label", model: model_class.model_name.human(count: 2))
+      @search_label || t("shared.index_table_component.search_label",
+                         model: model_class.model_name.human(count: 2))
     end
 
     def frame_id

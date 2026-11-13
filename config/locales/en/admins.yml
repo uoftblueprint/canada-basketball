@@ -1,39 +1,31 @@
+---
 en:
   activerecord:
-    models:
-      admin:
-        one: "Admin"
-        other: "Admins"
     attributes:
       admin:
-        name: "Name"
-        email: "Email"
-        password: "Password"
-        password_confirmation: "Confirm password"
-  helpers:
-    submit:
+        email: Email
+        name: Name
+        password: Password
+        password_confirmation: Confirm password
+    models:
       admin:
-        create: "Create Admin"
-        update: "Update Admin"
+        one: Admin
+        other: Admins
   admins:
-    index:
-      title: "Admins"
-      subtitle: "Create and manage admins"
-      create_admin: "Create Admin"
-      actions:
-        edit: "Edit"
-        delete: "Delete"
-        delete_confirmation: "Delete admin %{name}?"
-    form_component:
-      password_hint: "Leave blank to keep the current password"
-    edit:
-      title: "Edit Admin"
-    new:
-      title: "Create Admin"
     create:
-      success: "Admin created."
-    update:
-      success: "Admin updated."
+      success: Admin created successfully
     destroy:
-      success: "Admin deleted successfully"
-      last_admin: "Cannot delete admin because there is only one admin remaining"
+      last_admin: Cannot delete admin because there is only one admin remaining
+      success: Admin deleted successfully
+    edit:
+      title: Edit Admin
+    form_component:
+      password_hint: Leave blank to keep the current password
+    index:
+      create_admin: Create Admin
+      delete_confirmation: Are you sure you want to delete admin %{name}?
+      title: Admins
+    new:
+      title: Create Admin
+    update:
+      success: Admin updated successfully
