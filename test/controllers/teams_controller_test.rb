@@ -293,7 +293,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_turbo_stream action: :replace, target: "modal" do
-      assert_select "#modal_title", text: "Edit team"
+      assert_select "#modal_title", text: "Edit Team"
       assert_select "input[name='team[name]'][value=?]", "A"
     end
   end

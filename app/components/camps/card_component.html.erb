@@ -13,7 +13,7 @@
         </h2>
 
         <span id="<%= dom_id(camp, :card_status) %>" class="badge badge-sm h-auto shrink-0 px-3 py-0.5 <%= status_class %>">
-          <%= t(status_key) %>
+          <%= camp.active? ? t("camps.card.active") : t("camps.card.inactive") %>
         </span>
       </div>
 

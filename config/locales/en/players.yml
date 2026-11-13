@@ -1,37 +1,31 @@
+---
 en:
   activerecord:
-    models:
-      player:
-        one: "Player"
-        other: "Players"
     attributes:
       player:
-        name: "Name"
-        team: "Team"
-      team:
-        players: "Players"
+        name: Name
+        team: Team
+    models:
+      player:
+        one: Player
+        other: Players
   players:
-    index:
-      title: "Players"
-      create_player: "Create Player"
-      actions:
-        view: "View"
-        edit: "Edit"
-        delete: "Delete"
-        delete_confirmation: "Delete player %{name}?"
-    show:
-      title: "Player Details"
-      name: "Name"
-      registrations: "Registrations"
-      no_team: "No team"
-    new:
-      title: "New Player"
     create:
-      success: "Player created successfully"
-    edit:
-      title: "Edit Player"
-    update:
-      success: "Player updated successfully"
+      success: Player created successfully
     destroy:
-      success: "Player deleted successfully"
-      
+      success: Player deleted successfully
+    edit:
+      title: Edit Player
+    index:
+      create_player: Create Player
+      delete_confirmation: Are you sure you want to delete player %{name}?
+      title: Players
+    new:
+      title: New Player
+    show:
+      name: Name
+      no_team: No team
+      registrations: Registrations
+      title: Player Details
+    update:
+      success: Player updated successfully

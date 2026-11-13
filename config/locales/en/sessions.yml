@@ -1,25 +1,26 @@
+---
 en:
   sessions:
     create:
-      error: "Invalid camp or password"
-      success: "Logged in successfully"
+      error: Invalid camp or password
+      success: Logged in successfully
     create_admin:
-      error: "Invalid email or password"
-      success: "Logged in as admin successfully"
+      error: Invalid email or password
+      success: Logged in as admin successfully
     destroy:
-      success: "Logged out successfully"
+      success: Logged out successfully
     login:
-      camp: "Camp Name"
-      camp_prompt: "Choose a Camp"
-      password: "Password"
-      submit: "Login"
-      title: "Camp Login"
+      camp: Camp Name
+      camp_prompt: Choose a Camp
+      password: Password
+      submit: Login
+      title: Camp Login
     login_admin:
-      email: "Email"
-      password: "Password"
-      submit: "Login"
-      title: "Admin Login"
+      email: Email
+      password: Password
+      submit: Login
+      title: Admin Login
     tabs:
-      admin: "Admin"
-      camp: "Camp"
-      label: "Login type"
+      admin: Admin
+      camp: Camp
+      label: Login type

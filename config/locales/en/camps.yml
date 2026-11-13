@@ -1,34 +1,41 @@
+---
 en:
   activerecord:
+    attributes:
+      camp:
+        active: Active
+        description: Description
+        name: Name
     models:
       camp:
-        one: "Camp"
-        other: "Camps"
+        one: Camp
+        other: Camps
   camps:
-    index:
-      title: "Camps"
-      add_camp: "Add Camp"
-      listings_label: "Camp listings"
-      pagination_label: "Camp pages"
-    new:
-      title: "New Camp"
-    edit:
-      title: "Edit Camp"
-    create:
-      success: "Camp created successfully"
-    update:
-      success: "Camp updated successfully"
-    show:
-      add_team: "New Team"
-      add_game: "New Game"
-      edit_camp: "Edit Camp"
-      delete_camp: "Delete Camp"
-      delete_confirmation: "Are you sure?"
-      camp_actions: "Actions"
-      no_team: "No team"
-      view: "View"
-      edit: "Edit"
-      delete: "Delete"
     card:
-      active: "Active"
-      inactive: "Inactive"
+      active: Active
+      inactive: Inactive
+    create:
+      success: Camp created successfully
+    destroy:
+      success: Camp deleted successfully
+    edit:
+      title: Edit Camp
+    index:
+      add_camp: Add Camp
+      listings_label: Camp listings
+      pagination_label: Camp pages
+      title: Camps
+    new:
+      title: New Camp
+    show:
+      add_game: New Game
+      add_team: New Team
+      camp_actions: Actions
+      delete_camp: Delete Camp
+      delete_confirmation: Are you sure you want to delete camp %{name}?
+      delete_game_confirmation: Are you sure you want to delete game %{name}?
+      delete_team_confirmation: Are you sure you want to delete team %{name}?
+      edit_camp: Edit Camp
+      no_team: No team
+    update:
+      success: Camp updated successfully
