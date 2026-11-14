@@ -18,14 +18,17 @@ en:
       last_admin: Cannot delete admin because there is only one admin remaining
       success: Admin deleted successfully
     edit:
+      page_title: Edit Admin
       title: Edit Admin
     form_component:
       password_hint: Leave blank to keep the current password
     index:
       create_admin: Create Admin
       delete_confirmation: Are you sure you want to delete admin %{name}?
+      page_title: Admins
       title: Admins
     new:
+      page_title: Create Admin
       title: Create Admin
     update:
       success: Admin updated successfully

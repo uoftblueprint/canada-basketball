@@ -19,13 +19,16 @@ en:
     destroy:
       success: Camp deleted successfully
     edit:
+      page_title: Edit Camp
       title: Edit Camp
     index:
       add_camp: Add Camp
       listings_label: Camp listings
+      page_title: Camps
       pagination_label: Camp pages
       title: Camps
     new:
+      page_title: New Camp
       title: New Camp
     show:
       add_game: New Game
@@ -37,5 +40,6 @@ en:
       delete_team_confirmation: Are you sure you want to delete team %{name}?
       edit_camp: Edit Camp
       no_team: No team
+      page_title: Camps · %{name}
     update:
       success: Camp updated successfully

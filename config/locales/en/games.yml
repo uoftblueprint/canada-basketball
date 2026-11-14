@@ -14,19 +14,23 @@ en:
     box_score:
       box_score: Box Score
       breadcrumbs: Breadcrumbs
+      page_title: Games · %{name} · Box Score
     create:
       success: Game created successfully
     destroy:
       success: Game deleted successfully
     edit:
+      page_title: Edit Game
       title: Edit Game
     new:
+      page_title: New Game
       title: New Game
     show:
       breadcrumbs: Breadcrumbs
       delete_game: Delete Game
       edit_game: Edit Game
       matchup: "%{team} vs %{opponent}"
+      page_title: Games · %{name}
       track_box_score: Track Box Score
     update:
       success: Game updated successfully

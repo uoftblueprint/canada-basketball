@@ -15,16 +15,20 @@ en:
     destroy:
       success: Player deleted successfully
     edit:
+      page_title: Edit Player
       title: Edit Player
     index:
       create_player: Create Player
       delete_confirmation: Are you sure you want to delete player %{name}?
+      page_title: Players
       title: Players
     new:
+      page_title: New Player
       title: New Player
     show:
       name: Name
       no_team: No team
+      page_title: Players · %{name}
       registrations: Registrations
       title: Player Details
     update:

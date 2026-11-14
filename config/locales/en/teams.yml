@@ -15,11 +15,14 @@ en:
     destroy:
       success: Team deleted successfully
     edit:
+      page_title: Edit Team
       title: Edit Team
     new:
+      page_title: New Team
       title: New Team
     show:
       name: Name
+      page_title: Teams · %{name}
       players: Players
       title: Team Details
     update:

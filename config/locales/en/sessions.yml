@@ -12,11 +12,13 @@ en:
     login:
       camp: Camp Name
       camp_prompt: Choose a Camp
+      page_title: Camp Login
       password: Password
       submit: Login
       title: Camp Login
     login_admin:
       email: Email
+      page_title: Admin Login
       password: Password
       submit: Login
       title: Admin Login

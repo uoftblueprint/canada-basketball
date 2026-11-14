@@ -1,4 +1,4 @@
-<% content_for :title, "Box Score | #{@game.name}" %>
+<% content_for :title, t(".page_title", name: @game.name) %>
 <section class="px-6 py-4 flex flex-col gap-2" aria-labelledby="game-heading">
   <nav class="breadcrumbs mb-2 py-0 text-sm uppercase" aria-label="<%= t(".breadcrumbs") %>">
     <ul>
