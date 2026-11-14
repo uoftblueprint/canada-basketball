@@ -28,4 +28,8 @@
       <h1 id="game-heading" class="min-w-0 wrap-break-word text-4xl font-bold"><%= @game.name %></h1>
     </div>
   </header>
+  <section aria-labelledby="box-score-tracker-heading">
+    <h2 id="box-score-tracker-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold"><%= t(".box_score_tracker") %></h2>
+    <%= render GameEvents::FormComponent.new(game: @game, camp: current_camp) %>
+  </section>
 </section>

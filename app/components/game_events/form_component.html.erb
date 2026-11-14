@@ -1,0 +1,24 @@
+<%= form_with scope: :game_event, url: camp_game_game_events_path(camp, game), class: "flex flex-col gap-6" do |form| %>
+  <fieldset class="fieldset max-w-40">
+    <%= form.label :period, t(".period") %>
+    <%= form.select :period, GameEvent::PERIODS.invert %>
+  </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend text-lg font-medium"><%= t(".subject") %></legend>
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <% game.team.players.order(:name).each do |player| %>
+        <%= form.radio_button :subject, player.id, class: "btn btn-outline btn-primary", aria: { label: player.name }, required: true %>
+      <% end %>
+      <%= form.radio_button :subject, "team", class: "btn btn-outline btn-primary", aria: { label: game.team.name }, required: true %>
+      <%= form.radio_button :subject, "opponent", class: "btn btn-outline btn-primary", aria: { label: game.opponent_name }, required: true %>
+    </div>
+  </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend text-lg font-medium"><%= t(".events") %></legend>
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <% GameEvent.kinds.each_key do |kind| %>
+        <%= form.button t("game_events.kinds.#{kind}"), name: form.field_name(:kind), value: kind, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </fieldset>
+<% end %>
