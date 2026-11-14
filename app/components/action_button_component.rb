@@ -13,8 +13,8 @@ class ActionButtonComponent < ViewComponent::Base
 
   private_constant :COLOR_CLASSES
 
-  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, size: :small,
-                 classes: nil)
+  def initialize(to:, icon:, color: :primary, method: :get, confirm: nil, turbo_stream: false, full_page: false,
+                 size: :small, classes: nil)
     super()
 
     raise ArgumentError, "Invalid color" unless COLOR_CLASSES.include?(color)
@@ -25,6 +25,7 @@ class ActionButtonComponent < ViewComponent::Base
     @method = method
     @confirm = confirm
     @turbo_stream = turbo_stream
+    @full_page = full_page
     @size = size
     @classes = classes
   end
@@ -32,11 +33,12 @@ class ActionButtonComponent < ViewComponent::Base
   private
 
   def form_data
-    { turbo_confirm: @confirm.presence, turbo_stream: (@turbo_stream ? true : nil) }.compact
+    { turbo_confirm: @confirm.presence, turbo_stream: (@turbo_stream ? true : nil),
+      turbo_frame: (@full_page ? "_top" : nil) }.compact
   end
 
   def link_data
-    { turbo_stream: (@turbo_stream ? true : nil) }.compact
+    { turbo_stream: (@turbo_stream ? true : nil), turbo_frame: (@full_page ? "_top" : nil) }.compact
   end
 
   def small? = @size == :small

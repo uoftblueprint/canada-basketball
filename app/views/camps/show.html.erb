@@ -115,7 +115,8 @@
                          to: camp_game_path(@camp, game),
                          icon: "eye",
                          color: :base,
-                         size: :large
+                         size: :large,
+                         full_page: true
                        )) { t("shared.index_table_component.view") } %>
             <%= render(ActionButtonComponent.new(
                          to: edit_camp_game_path(@camp, game),
