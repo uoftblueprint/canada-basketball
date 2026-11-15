@@ -1,6 +1,8 @@
 ---
 en:
   game_events:
+    create:
+      success: Event recorded successfully
     form_component:
       events: Events
       period: Period
