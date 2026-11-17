@@ -281,9 +281,12 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get camp_path(camp)
 
     assert_response :success
-    assert_select "section[aria-labelledby='teams-heading'] input[type='search'][aria-label='Search Teams']"
-    assert_select "section[aria-labelledby='players-heading'] input[type='search'][aria-label='Search Players']"
-    assert_select "section[aria-labelledby='games-heading'] input[type='search'][aria-label='Search Games']"
+    assert_select "section[aria-labelledby='teams-heading'] label", text: "Search Teams"
+    assert_select "section[aria-labelledby='teams-heading'] input[type='search']"
+    assert_select "section[aria-labelledby='players-heading'] label", text: "Search Players"
+    assert_select "section[aria-labelledby='players-heading'] input[type='search']"
+    assert_select "section[aria-labelledby='games-heading'] label", text: "Search Games"
+    assert_select "section[aria-labelledby='games-heading'] input[type='search']"
 
     assert_select "a[href='#{camp_team_path(camp, team)}']", text: "View"
     assert_select "a[href='#{edit_camp_team_path(camp, team)}']", text: "Edit"

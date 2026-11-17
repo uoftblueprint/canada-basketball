@@ -21,6 +21,8 @@ en:
     edit:
       page_title: Edit Camp
       title: Edit Camp
+    form_component:
+      password_hint: Leave blank to keep the current password
     index:
       add_camp: Add Camp
       listings_label: Camp listings

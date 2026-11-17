@@ -15,7 +15,15 @@
       </fieldset>
       <fieldset class="fieldset">
         <%= form.label :password %>
-        <%= form.password_field :password, required: camp.new_record?, autocomplete: "new-password" %>
+        <%= form.password_field :password,
+                                required: camp.new_record?,
+                                autocomplete: "new-password",
+                                aria: { describedby: ("camp_password_hint" if camp.persisted?) } %>
+        <% if camp.persisted? %>
+          <p id="camp_password_hint" class="label text-sm text-base-content/60">
+            <%= t(".password_hint") %>
+          </p>
+        <% end %>
       </fieldset>
       <fieldset class="fieldset">
         <%= form.label :password_confirmation %>
