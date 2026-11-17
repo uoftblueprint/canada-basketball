@@ -1,12 +1,16 @@
 class GamesController < ApplicationController
+  include IndexTable
+
   scope_to_camp
 
   def show
     @game = current_camp.games.find(params.expect(:id))
+    @stat_lines_state = build_stat_lines_state
   end
 
   def box_score
     @game = current_camp.games.find(params.expect(:id))
+    @stat_lines_state = build_stat_lines_state
   end
 
   def new
@@ -63,5 +67,9 @@ class GamesController < ApplicationController
 
   def games_params
     params.expect(game: %i[name opponent_name team_id active])
+  end
+
+  def build_stat_lines_state
+    build_table_state(@game.player_and_opponent_stat_lines, per_page: 50, param_scope: :stat_lines)
   end
 end

@@ -17,6 +17,13 @@ class Game < ApplicationRecord
     game_stat_lines.individual_and_team_stats.totals
   end
 
+  def player_and_opponent_stat_lines
+    lines = game_stat_lines
+    lines.individual_stats.or(lines.opponent)
+         .includes(:player)
+         .order(:is_opponent)
+  end
+
   private
 
   def team_assigned_to_camp

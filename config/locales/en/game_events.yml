@@ -1,6 +1,28 @@
 ---
 en:
   game_events:
+    abbreviations:
+      ast: AST
+      blk: BLK
+      drb: DRB
+      fg_pct: FG%
+      fga: FGA
+      fgm: FGM
+      ft_pct: FT%
+      fta: FTA
+      ftm: FTM
+      orb: ORB
+      pf: PF
+      pts: PTS
+      stl: STL
+      three_p_pct: 3P%
+      three_pa: 3PA
+      three_pm: 3PM
+      tov: TOV
+      trb: TRB
+      two_p_pct: 2P%
+      two_pa: 2PA
+      two_pm: 2PM
     create:
       success: Event recorded successfully
     form_component:

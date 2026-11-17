@@ -284,4 +284,66 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "button[name='game_event[kind]']", count: GameEvent.kinds.size
   end
+
+  test "box score shows player and opponent stat lines" do
+    game = create(:game, camp: @camp, team: @team, opponent_name: "Pacers")
+    player = create(:game_event, game: game, kind: "two_point_made").player
+    create(:game_event, game: game, player: player, kind: "two_point_missed")
+    create(:game_event, :opponent, game: game, kind: "three_point_made")
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "#stat_lines_index_table div", text: player.name
+    assert_select "#stat_lines_index_table div", text: "Pacers"
+    assert_select "#stat_lines_index_table div", text: "50%"
+  end
+
+  test "box score excludes the team stat line" do
+    game = create(:game, camp: @camp, team: @team)
+    create(:game_event, :team, game: game, kind: "offensive_rebound")
+
+    get box_score_camp_game_path(@camp, game)
+
+    # the team row has no player, so rendering it would raise on player.name
+    assert_response :success
+  end
+
+  test "box score table can be sorted by a stat" do
+    game = create(:game, camp: @camp, team: @team)
+    create(:game_event, game: game)
+
+    get box_score_camp_game_path(@camp, game), params: { stat_lines: { order_by: "pts", order: "desc" } }
+
+    assert_response :success
+  end
+
+  test "box score renders with no stat lines" do
+    game = create(:game, camp: @camp, team: @team)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_response :success
+  end
+
+  test "show also displays the stat lines table" do
+    game = create(:game, camp: @camp, team: @team)
+    player = create(:game_event, game: game).player
+
+    get camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "#stat_lines_index_table div", text: player.name
+  end
+
+  test "camp cannot view another camp's box score" do
+    other_camp = create(:camp)
+    other_team = create(:team)
+    other_camp.teams << other_team
+    game = create(:game, camp: other_camp, team: other_team)
+
+    get box_score_camp_game_path(other_camp, game)
+
+    assert_redirected_to login_path
+  end
 end

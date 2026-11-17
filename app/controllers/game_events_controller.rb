@@ -1,4 +1,6 @@
 class GameEventsController < ApplicationController
+  include IndexTable
+
   scope_to_camp
 
   def create
@@ -13,6 +15,8 @@ class GameEventsController < ApplicationController
                   status: :see_other
     else
       flash.now[:error] = @game_event.errors.full_messages.to_sentence
+      @stat_lines_state = build_table_state(@game.player_and_opponent_stat_lines,
+                                            per_page: 50, param_scope: :stat_lines)
       render "games/box_score", status: :unprocessable_content
     end
   end

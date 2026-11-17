@@ -32,4 +32,12 @@
     <h2 id="box-score-tracker-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold"><%= t(".box_score_tracker") %></h2>
     <%= render GameEvents::FormComponent.new(game: @game, camp: current_camp) %>
   </section>
+  <section class="mt-6" aria-labelledby="stats-heading">
+    <h2 id="stats-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold"><%= t(".stats") %></h2>
+    <%= render Games::StatLinesTableComponent.new(
+          state: @stat_lines_state,
+          game: @game,
+          path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) }
+        ) %>
+  </section>
 </section>
