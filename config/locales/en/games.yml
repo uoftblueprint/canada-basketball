@@ -16,6 +16,7 @@ en:
       box_score_tracker: Box Score Tracker
       breadcrumbs: Breadcrumbs
       page_title: Games · %{name} · Box Score
+      stats: Stats
     create:
       success: Game created successfully
     destroy:

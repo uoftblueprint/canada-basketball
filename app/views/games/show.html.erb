@@ -57,4 +57,11 @@
       <%= t(".matchup", team: @game.team.name, opponent: @game.opponent_name) %>
     </h2>
   </header>
+  <div class="mt-6">
+    <%= render Games::StatLinesTableComponent.new(
+          state: @stat_lines_state,
+          game: @game,
+          path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
+        ) %>
+  </div>
 </section>

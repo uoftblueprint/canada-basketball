@@ -1,0 +1,6 @@
+---
+en:
+  activerecord:
+    attributes:
+      game_stat_line:
+        player: Player
