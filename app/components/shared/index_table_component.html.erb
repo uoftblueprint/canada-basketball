@@ -5,9 +5,10 @@
       <%= form_with url: path,
                     method: :get,
                     scope: param_scope,
-                    data: { turbo: true, controller: "clearable-input" },
+                    class: "input border-[0.5px] border-base-300 w-full flex flex-row items-center gap-2",
                     html: { role: "search", aria: { label: search_label } },
-                    class: "input border-[0.5px] border-base-300 w-full flex flex-row items-center gap-2" do |form| %>
+                    data: { turbo: true, controller: "clearable-input" } do |form| %>
+        <%= form.label :q, search_label, class: "sr-only" %>
         <%= form.button type: :submit,
                         name: nil,
                         class: "hover:cursor-pointer",
@@ -18,7 +19,6 @@
                               value: query_params.q,
                               placeholder: search_label,
                               class: "grow",
-                              aria: { label: search_label },
                               data: { clearable_input_target: "field", action: "input->clearable-input#toggle" } %>
         <%= form.button type: :button,
                         name: nil,

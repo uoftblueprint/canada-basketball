@@ -19,21 +19,24 @@
         <%= render ActionButtonComponent.new(
               to: new_camp_team_path(@camp),
               icon: "plus",
-              size: :large
+              size: :large,
+              turbo_stream: true
             ) do %>
           <%= t(".add_team") %>
         <% end %>
         <%= render ActionButtonComponent.new(
               to: new_camp_game_path(@camp),
               icon: "plus",
-              size: :large
+              size: :large,
+              turbo_stream: true
             ) do %>
           <%= t(".add_game") %>
         <% end %>
         <%= render ActionButtonComponent.new(
               to: edit_camp_path(@camp),
               icon: "pencil",
-              size: :large
+              size: :large,
+              turbo_stream: true
             ) do %>
           <%= t(".edit_camp") %>
         <% end %>
@@ -123,7 +126,8 @@
                          to: edit_camp_game_path(@camp, game),
                          icon: "pencil",
                          color: :neutral,
-                         size: :large
+                         size: :large,
+                         turbo_stream: true
                        )) { t("shared.index_table_component.edit") } %>
             <%= render(ActionButtonComponent.new(
                          to: camp_game_path(@camp, game),
