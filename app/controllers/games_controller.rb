@@ -6,11 +6,13 @@ class GamesController < ApplicationController
   def show
     @game = current_camp.games.find(params.expect(:id))
     @stat_lines_state = build_stat_lines_state
+    @game_events_state = build_events_table
   end
 
   def box_score
     @game = current_camp.games.find(params.expect(:id))
     @stat_lines_state = build_stat_lines_state
+    @game_events_state = build_events_table
   end
 
   def new
@@ -71,5 +73,11 @@ class GamesController < ApplicationController
 
   def build_stat_lines_state
     build_table_state(@game.player_and_opponent_stat_lines, per_page: 50, param_scope: :stat_lines)
+  end
+
+  def build_events_table
+    build_table_state(@game.game_events.includes(:player).order(created_at: :desc, id: :desc),
+                      per_page: 20,
+                      param_scope: :game_events)
   end
 end

@@ -14,6 +14,7 @@ class GameEventsController < ApplicationController
                   flash: { success: t(".success") },
                   status: :see_other
     else
+      @game_events_state = build_events_table
       flash.now[:error] = @game_event.errors.full_messages.to_sentence
       @stat_lines_state = build_table_state(@game.player_and_opponent_stat_lines,
                                             per_page: 50, param_scope: :stat_lines)
@@ -41,5 +42,11 @@ class GameEventsController < ApplicationController
       @game_event.player_id = subject
       @game_event.is_opponent = false
     end
+  end
+
+  def build_events_table
+    build_table_state(@game.game_events.includes(:player).order(created_at: :desc, id: :desc),
+                      per_page: 20,
+                      param_scope: :game_events)
   end
 end

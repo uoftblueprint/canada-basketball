@@ -1,5 +1,13 @@
 ---
 en:
+  activerecord:
+    attributes:
+      game_event:
+        created_at: Created at
+        kind: Kind
+        period: Period
+        player: Player
+        team: Team
   game_events:
     abbreviations:
       ast: AST

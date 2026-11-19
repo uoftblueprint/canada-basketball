@@ -1,0 +1,32 @@
+<div class="overflow-x-auto text-xs">
+  <%= render Shared::IndexTableComponent.new(state:, path_builder:, searchable: false) do |table| %>
+    <% table.column :created_at do |event| %>
+      <%= event.created_at.strftime("%H:%M:%S") %>
+    <% end %>
+    <% table.column :period do |event| %>
+      <%= event.period %>
+    <% end %>
+    <% table.column :kind do |event| %>
+      <%= event.kind.humanize %>
+    <% end %>
+    <% table.column :player, col_size: "2fr" do |event| %>
+      <%= event.player&.name %>
+    <% end %>
+    <% table.column :team, col_size: "2fr" do |event| %>
+      <%= event.is_opponent? ? game.opponent_name : game.team.name %>
+    <% end %>
+    <% if show_actions? %>
+      <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |event| %>
+        <%= render ActionButtonComponent.new(
+              to: delete_path_builder.call(event),
+              icon: :trash,
+              color: :primary,
+              method: :delete,
+              size: :medium
+            ) do %>
+          <%= t("shared.index_table_component.delete") %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

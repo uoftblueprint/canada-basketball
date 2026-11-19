@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :camps do
     resources :games, except: :index do
       get "box-score", on: :member
-      resources :game_events, only: :create
+      resources :game_events, only: %i[create destroy]
     end
     resources :teams, except: :index
   end
