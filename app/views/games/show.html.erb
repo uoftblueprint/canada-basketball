@@ -53,20 +53,22 @@
         <% end %>
       </div>
     </div>
-    <h2 class="mt-4 border-b border-base-300 pb-1 text-2xl font-semibold wrap-break-word">
+  </header>
+  <section class="mt-4">
+    <h2 class="mb-4 border-b border-base-300 pb-1 text-2xl font-semibold wrap-break-word">
       <%= t(".matchup", team: @game.team.name, opponent: @game.opponent_name) %>
     </h2>
-  </header>
-  <section class="flex flex-col gap-6">
-    <%= render Games::EventsTableComponent.new(
-          state: @game_events_state,
-          game: @game,
-          path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
-        ) %>
-    <%= render Games::StatLinesTableComponent.new(
-          state: @stat_lines_state,
-          game: @game,
-          path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
-        ) %>
+      <div class="flex flex-col gap-6">
+        <%= render Games::EventsTableComponent.new(
+              state: @game_events_state,
+              game: @game,
+              path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
+            ) %>
+        <%= render Games::StatLinesTableComponent.new(
+              state: @stat_lines_state,
+              game: @game,
+              path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
+            ) %>
+    </div>
   </section>
 </section>

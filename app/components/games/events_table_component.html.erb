@@ -6,7 +6,7 @@
     <% table.column :period do |event| %>
       <%= event.period %>
     <% end %>
-    <% table.column :kind do |event| %>
+    <% table.column :kind, col_size: "2fr" do |event| %>
       <%= event.kind.humanize %>
     <% end %>
     <% table.column :player, col_size: "2fr" do |event| %>
