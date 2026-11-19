@@ -32,6 +32,7 @@ class GameEventsController < ApplicationController
   def build_box_score_tables
     @game_events_state = build_events_table
     @stat_lines_state = build_stat_lines_state
+    @team_stat_rows = @game.team_stat_rows
   end
 
   def game_event_params
