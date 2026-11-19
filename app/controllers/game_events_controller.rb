@@ -17,6 +17,7 @@ class GameEventsController < ApplicationController
       flash.now[:error] = @game_event.errors.full_messages.to_sentence
       @stat_lines_state = build_table_state(@game.player_and_opponent_stat_lines,
                                             per_page: 50, param_scope: :stat_lines)
+      @team_stat_rows = @game.team_stat_rows
       render "games/box_score", status: :unprocessable_content
     end
   end

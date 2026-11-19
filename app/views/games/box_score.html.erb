@@ -40,4 +40,5 @@
           path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) }
         ) %>
   </section>
+  <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
 </section>
