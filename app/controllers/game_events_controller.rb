@@ -10,6 +10,8 @@ class GameEventsController < ApplicationController
     resolve_subject
 
     if @game_event.save
+      build_box_score_tables
+      broadcast_tables
       respond_to do |format|
         format.html do
           redirect_to box_score_camp_game_path(current_camp, @game),
@@ -17,7 +19,7 @@ class GameEventsController < ApplicationController
                       status: :see_other
         end
         format.turbo_stream do
-          build_box_score_tables
+          head :no_content
         end
       end
     else
@@ -30,8 +32,9 @@ class GameEventsController < ApplicationController
   def destroy
     @game = current_camp.games.find(params.expect(:game_id))
     game_event = @game.game_events.find(params.expect(:id))
-
     if game_event.destroy
+      build_box_score_tables
+      broadcast_tables
       redirect_to box_score_camp_game_path(current_camp, @game),
                   flash: { success: t(".success") },
                   status: :see_other
@@ -79,4 +82,67 @@ class GameEventsController < ApplicationController
                       per_page: 20,
                       param_scope: :game_events)
   end
+  def broadcast_replace(target:, component:)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @game,
+      target:,
+      renderable: component
+    )
+  rescue StandardError => e
+    Rails.logger.error(
+      "Failed to broadcast #{target}: #{e.class} - #{e.message}"
+    )
+  end
+
+  def broadcast_tables
+    broadcast_replace(
+      target: dom_id(@game, :box_score_game_events),
+      component: Games::EventsTableComponent.new(
+        state: @game_events_state,
+        game: @game,
+        path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
+        delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) },
+        table_id: dom_id(@game, :box_score_game_events)
+      )
+    )
+
+    broadcast_replace(
+      target: dom_id(@game, :show_game_events),
+      component: Games::EventsTableComponent.new(
+        state: @game_events_state,
+        game: @game,
+        path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+        delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) },
+        table_id: ActionView::RecordIdentifier.dom_id(@game, :show_game_events)
+      )
+    )
+
+    broadcast_replace(
+      target: dom_id(@game, :box_score_stat_lines),
+      component: Games::StatLinesTableComponent.new(
+        state: @stat_lines_state,
+        game: @game,
+        path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
+        table_id: dom_id(@game, :box_score_stat_lines),
+      )
+    )
+
+    broadcast_replace(
+      target: dom_id(@game, :show_stat_lines),
+      component: Games::StatLinesTableComponent.new(
+        state: @stat_lines_state,
+        game: @game,
+        path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+        table_id: dom_id(@game, :show_stat_lines),
+      )
+    )
+
+    broadcast_replace(
+      target: dom_id(@game, :team_stats_table),
+      component: Games::TeamStatsTableComponent.new(
+        rows: @team_stat_rows
+      )
+    )
+  end
+
 end

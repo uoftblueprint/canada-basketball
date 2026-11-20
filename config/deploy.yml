@@ -40,9 +40,11 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - REDIS_URL
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
+    
     SOLID_QUEUE_IN_PUMA: true
 
     # Set number of processes dedicated to Solid Queue (default: 1)
@@ -95,7 +97,7 @@ builder:
 #   user: app
 
 # Use accessory services (secrets come from .kamal/secrets).
-# accessories:
+accessories:
 #   db:
 #     image: mysql:8.0
 #     host: 192.168.0.2
@@ -111,9 +113,12 @@ builder:
 #       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
 #     directories:
 #       - data:/var/lib/mysql
-#   redis:
-#     image: valkey/valkey:8
-#     host: 192.168.0.2
-#     port: 6379
-#     directories:
-#       - data:/data
+  redis:
+    image: redis:8
+    host: 192.168.0.1 # set to web IP address
+    env:
+      secret:
+        - REDIS_PASSWORD
+    cmd: 'sh -c ''exec redis-server --appendonly yes --requirepass "$REDIS_PASSWORD"'''
+    directories:
+      - data:/data
