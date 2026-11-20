@@ -215,4 +215,43 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to box_score_camp_game_path(@camp, @game)
   end
+
+  test "create broadcasts updated stat lines and game events to both game views" do
+    targets = [
+      dom_id(@game, :box_score_stat_lines),
+      dom_id(@game, :show_stat_lines),
+      dom_id(@game, :box_score_game_events),
+      dom_id(@game, :show_game_events)
+    ]
+
+    broadcasts = capture_turbo_stream_broadcasts(@game) do
+      post camp_game_game_events_path(@camp, @game), params: {
+        game_event: { kind: "two_point_made", period: "q1", subject: @player.id }
+      }
+    end
+
+    assert_equal 4, broadcasts.size
+    targets.each do |target|
+      assert(
+        broadcasts.any? { |html| html.to_s.include?(%(target="#{target}")) },
+        "Expected broadcast targeting #{target}"
+      )
+    end
+  end
+
+  test "redirects after successful HTML request" do
+    post camp_game_game_events_path(@camp, @game),
+         params: { game_event: { kind: "two_point_made", period: "q1", subject: @player.id } }
+
+    assert_response :see_other
+    assert_redirected_to box_score_camp_game_path(@camp, @game)
+  end
+
+  test "returns no content after successful turbo stream request" do
+    post camp_game_game_events_path(@camp, @game),
+         params: { game_event: { kind: "two_point_made", period: "q1", subject: @player.id } },
+         as: :turbo_stream
+
+    assert_response :no_content
+  end
 end
