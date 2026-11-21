@@ -1,36 +1,32 @@
-<section class="mt-6 min-w-0" aria-labelledby="team-stats-heading">
-  <h2 id="team-stats-heading" class="mb-4 border-b pb-2 text-3xl font-semibold">
-    <%= t("games.team_stats") %>
-  </h2>
+<div class="overflow-x-auto text-xs">
+  <div
+    id="team-stats-table"
+    class="grid w-max min-w-full whitespace-nowrap border-t-[0.5px] border-l-[0.5px]"
+    style="grid-template-columns: minmax(8rem, 2fr) repeat(<%= STAT_COLUMNS.length %>, minmax(3.5rem, 1fr))"
+    role="table"
+    aria-label="<%= t("games.team_stats") %>">
+    <div class="col-span-full grid grid-cols-subgrid" role="row">
+      <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
+        <%= Game.human_attribute_name(:team) %>
+      </div>
+      <% STAT_COLUMNS.each do |column| %>
+        <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
+          <%= t("game_events.abbreviations.#{column}") %>
+        </div>
+      <% end %>
+    </div>
 
-  <div class="overflow-x-auto text-xs">
-    <table class="w-full border-collapse whitespace-nowrap">
-      <thead class="bg-base-200">
-        <tr>
-          <th scope="col" class="border px-3 py-2 text-left">
-            <%= Game.human_attribute_name(:team) %>
-          </th>
-          <% STAT_COLUMNS.each do |column| %>
-            <th scope="col" class="border px-3 py-2 text-right">
-              <%= t("game_events.abbreviations.#{column}") %>
-            </th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% rows.each do |row| %>
-          <tr>
-            <th scope="row" class="border px-3 py-2 text-left font-normal">
-              <%= row.fetch(:name) %>
-            </th>
-            <% STAT_COLUMNS.each do |column| %>
-              <td class="border px-3 py-2 text-right">
-                <%= format_stat(row.fetch(:stats), column) %>
-              </td>
-            <% end %>
-          </tr>
+    <% rows.each do |row| %>
+      <div class="col-span-full grid grid-cols-subgrid" role="row">
+        <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="rowheader">
+          <%= row.fetch(:name) %>
+        </div>
+        <% STAT_COLUMNS.each do |column| %>
+          <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="cell">
+            <%= format_stat(row.fetch(:stats), column) %>
+          </div>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    <% end %>
   </div>
-</section>
+</div>

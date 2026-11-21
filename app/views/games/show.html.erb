@@ -53,16 +53,16 @@
         <% end %>
       </div>
     </div>
-    <h2 class="mt-4 border-b border-base-300 pb-1 text-2xl font-semibold wrap-break-word">
+    <h2 id="matchup-heading" class="mt-4 border-b border-base-300 pb-1 text-2xl font-semibold wrap-break-word">
       <%= t(".matchup", team: @game.team.name, opponent: @game.opponent_name) %>
     </h2>
   </header>
-  <div class="mt-6">
+  <section class="mt-6 flex min-w-0 flex-col gap-4" aria-labelledby="matchup-heading">
     <%= render Games::StatLinesTableComponent.new(
           state: @stat_lines_state,
           game: @game,
           path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
         ) %>
-  </div>
-  <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
+    <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
+  </section>
 </section>
