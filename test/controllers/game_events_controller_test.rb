@@ -218,10 +218,10 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
 
   test "create broadcasts updated stat lines and game events to both game views" do
     targets = [
-      dom_id(@game, :box_score_stat_lines),
-      dom_id(@game, :show_stat_lines),
-      dom_id(@game, :box_score_game_events),
-      dom_id(@game, :show_game_events)
+      ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines),
+      ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines),
+      ActionView::RecordIdentifier.dom_id(@game, :box_score_game_events),
+      ActionView::RecordIdentifier.dom_id(@game, :show_game_events)
     ]
 
     broadcasts = capture_turbo_stream_broadcasts(@game) do
