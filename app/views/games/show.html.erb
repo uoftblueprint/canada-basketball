@@ -1,4 +1,5 @@
 <% content_for :title, t(".page_title", name: @game.name) %>
+<%= turbo_stream_from @game %>
 <section class="px-6 py-4 flex flex-col gap-2" aria-labelledby="game-heading">
   <nav class="breadcrumbs mb-2 py-0 text-sm uppercase" aria-label="<%= t(".breadcrumbs") %>">
     <ul>
@@ -67,7 +68,8 @@
         <%= render Games::StatLinesTableComponent.new(
               state: @stat_lines_state,
               game: @game,
-              path_builder: ->(params) { camp_game_path(current_camp, @game, params) }
+              path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+              table_id: dom_id(@game, :show_stat_lines)
             ) %>
     </div>
   </section>

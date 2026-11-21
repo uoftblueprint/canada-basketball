@@ -99,4 +99,19 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to box_score_camp_game_path(@camp, @game)
   end
+
+  test "create broadcasts updated stat lines to both game views" do
+    box_score_target = ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines)
+    show_target = ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines)
+
+    broadcasts = capture_turbo_stream_broadcasts(@game) do
+      post camp_game_game_events_path(@camp, @game), params: {
+        game_event: { kind: "two_point_made", period: "q1", subject: @player.id }
+      }
+    end
+
+    assert_equal 2, broadcasts.size
+    assert(broadcasts.any? { |html| html.to_s.include?(%(target="#{box_score_target}")) })
+    assert(broadcasts.any? { |html| html.to_s.include?(%(target="#{show_target}")) })
+  end
 end
