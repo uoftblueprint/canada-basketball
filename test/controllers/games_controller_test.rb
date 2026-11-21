@@ -346,4 +346,66 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to login_path
   end
+  test "box score lists events newest first" do
+    game = create(:game, camp: @camp, team: @team)
+    older = create(:game_event, game: game, kind: "steal", created_at: 2.hours.ago)
+    newer = create(:game_event, game: game, kind: "assist", created_at: 1.hour.ago)
+
+    get box_score_camp_game_path(@camp, game)
+
+    table = css_select("#game_events_index_table").first.to_s
+    assert_operator table.index(newer.kind.humanize), :<, table.index(older.kind.humanize)
+  end
+  test "box score events table shows time, period, player, team, and kind" do
+    game = create(:game, camp: @camp, team: @team)
+    event = create(:game_event, game: game, kind: "two_point_made", period: "q2",
+                                created_at: Time.zone.local(2026, 1, 1, 14, 5, 9))
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "#game_events_index_table div", text: event.created_at.strftime("%H:%M:%S")
+    assert_select "#game_events_index_table div", text: event.period
+    assert_select "#game_events_index_table div", text: event.player.name
+    assert_select "#game_events_index_table div", text: @team.name
+    assert_select "#game_events_index_table div", text: "Two point made"
+  end
+  test "box score events table shows the opponent name for opponent events" do
+    game = create(:game, camp: @camp, team: @team, opponent_name: "Pacers")
+    create(:game_event, :opponent, game: game)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "#game_events_index_table div", text: "Pacers"
+  end
+
+  test "box score events table has a delete button for each event" do
+    game = create(:game, camp: @camp, team: @team)
+    create_list(:game_event, 2, game: game)
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "#game_events_index_table input[name='_method'][value='delete']", count: 2
+  end
+
+  test "box score events table excludes events from other games" do
+    game = create(:game, camp: @camp, team: @team)
+    other_game = create(:game, camp: @camp, team: @team)
+    other_event = create(:game_event, game: other_game, kind: "steal")
+
+    get box_score_camp_game_path(@camp, game)
+
+    assert_select "#game_events_index_table div", text: other_event.kind.humanize, count: 0
+  end
+
+  test "show displays the events table without delete buttons" do
+    game = create(:game, camp: @camp, team: @team)
+    event = create(:game_event, game: game)
+
+    get camp_game_path(@camp, game)
+
+    assert_response :success
+    assert_select "#game_events_index_table div", text: event.player.name
+    assert_select "#game_events_index_table input[name='_method'][value='delete']", count: 0
+  end
 end
