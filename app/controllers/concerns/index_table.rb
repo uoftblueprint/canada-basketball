@@ -1,7 +1,8 @@
 module IndexTable
   extend ActiveSupport::Concern
 
-  TableState = Data.define(:records, :current_page, :total_pages, :total_count, :param_scope, :query_params)
+  TableState = Data.define(:filtered_query, :records, :current_page, :total_pages, :total_count, :param_scope,
+                           :query_params)
   QueryParams = Data.define(:q, :order_by, :order)
 
   def build_table_state(query, per_page: 10, param_scope: nil)
@@ -21,6 +22,7 @@ module IndexTable
     records = query.limit(per_page).offset((current_page - 1) * per_page)
 
     TableState.new(
+      filtered_query: query,
       records: records,
       current_page: current_page,
       total_pages: total_pages,
@@ -32,5 +34,11 @@ module IndexTable
         order: keyed_params[:order]
       )
     )
+  end
+
+  def respond_with_csv(table_state)
+    model = table_state.filtered_query.model
+    filename = "#{table_state.param_scope || model.model_name.plural}.csv"
+    send_data model.to_csv(table_state.filtered_query), filename: filename, type: "text/csv"
   end
 end

@@ -26,6 +26,9 @@ class GameEvent < ApplicationRecord
   enum :kind, STAT_DELTAS.keys.index_with(&:to_s), validate: true
   enum :period, PERIODS, default: :q1, validate: true
 
+  searchable_by :kind, :period
+  sortable_by :is_opponent, :kind, :period, :created_at
+
   validates :kind, presence: true
   validates :is_opponent, inclusion: { in: [true, false] }
   validate :opponent_events_have_no_player
