@@ -17,6 +17,15 @@ class Game < ApplicationRecord
     game_stat_lines.individual_and_team_stats.totals
   end
 
+  def team_stat_rows
+    opponent_stats = game_stat_lines.opponent.take || GameStatLine.new
+
+    [
+      { name: team.name, stats: team_totals },
+      { name: opponent_name, stats: opponent_stats }
+    ]
+  end
+
   def player_and_opponent_stat_lines
     lines = game_stat_lines
     lines.individual_stats.or(lines.opponent)

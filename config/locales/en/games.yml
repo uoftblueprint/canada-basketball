@@ -34,5 +34,6 @@ en:
       matchup: "%{team} vs %{opponent}"
       page_title: Games · %{name}
       track_box_score: Track Box Score
+    team_stats: Team Stats
     update:
       success: Game updated successfully
