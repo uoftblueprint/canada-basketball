@@ -33,4 +33,21 @@ module IndexTable
       )
     )
   end
+
+  def respond_with_csv(query, param_scope:)
+    model = query.model
+    records = build_csv_query(query, param_scope:)
+    send_data model.to_csv(records), filename: "#{param_scope}.csv", type: "text/csv"
+  end
+
+  private
+
+  def build_csv_query(query, param_scope: nil)
+    scoped_params = param_scope ? params[param_scope] : params
+    keyed_params = scoped_params.is_a?(ActionController::Parameters) ? scoped_params : ActionController::Parameters.new
+
+    query
+      .search(keyed_params[:q])
+      .ordered_by(keyed_params[:order_by], keyed_params[:order])
+  end
 end

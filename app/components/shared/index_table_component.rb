@@ -42,6 +42,21 @@ module Shared
   # to get the filtered, sorted, and paginated data
   #
   # Searching can be disabled using `searchable: false`.
+  #
+  # CSV export can be enabled by passing `csv_path_builder:`. It follows the same lambda
+  # signature as `path_builder:` and exports all records. To enable:
+  #   1. Model: declare exportable columns (the model must include CsvExportable).
+  #        csv_exportable :name, :description
+  #
+  #   2. Controller: add a format.csv block to the index action using respond_with_csv.
+  #      The param_scope parameter should match the param_scope passed to build_table_state
+  #        respond_to do |format|
+  #          format.html
+  #          format.csv { respond_with_csv(Camp.all, param_scope: :camps) }
+  #        end
+  #
+  #   3. View: pass csv_path_builder to the component.
+  #        csv_path_builder: ->(params) { camps_path(params) }
   class IndexTableComponent < ViewComponent::Base
     include Turbo::FramesHelper
 
@@ -49,10 +64,11 @@ module Shared
 
     Column = Data.define(:attribute, :header, :col_size, :fill, :cell_renderer)
 
-    def initialize(state:, path_builder:, searchable: true, search_label: nil)
+    def initialize(state:, path_builder:, csv_path_builder: nil, searchable: true, search_label: nil)
       super()
       @state = state
       @path_builder = path_builder
+      @csv_path_builder = csv_path_builder
       @searchable = searchable
       @search_label = search_label
       @columns = []
@@ -70,7 +86,7 @@ module Shared
 
     private
 
-    attr_reader :state, :path_builder, :searchable, :columns
+    attr_reader :state, :path_builder, :csv_path_builder, :searchable, :columns
 
     def search_label
       @search_label || t("shared.index_table_component.search_label",
@@ -110,6 +126,13 @@ module Shared
 
     def path_with_sort(column)
       path_with(order_by: column.attribute, order: next_dir(column), page: 1)
+    end
+
+    def csv_path
+      new_params = query_params.to_h.compact
+      nested_params = param_scope ? { param_scope => new_params } : new_params
+
+      csv_path_builder.call(nested_params.merge(format: :csv))
     end
 
     def render_cell_content(record, column)

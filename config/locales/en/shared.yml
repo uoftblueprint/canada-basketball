@@ -10,6 +10,7 @@ en:
     index_table_component:
       actions: Actions
       clear_search: Clear search
+      download_csv: Download CSV
       delete: Delete
       edit: Edit
       next_page: Next page
