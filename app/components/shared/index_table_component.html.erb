@@ -66,7 +66,8 @@
         </div>
       <% end %>
       <%# Controls %>
-      <div class="border-[0.5px] border-t-0 bg-base-200 flex flex-row items-center justify-center p-1">
+      <div class="border-[0.5px] border-t-0 bg-base-200 flex flex-row items-center p-1">
+        <div class="flex-1"></div>
         <% if current_page <= 1 %>
           <span class="btn btn-sm btn-ghost btn-disabled" aria-hidden="true">
             <%= render Shared::IconComponent.new(icon: "caret-left") %>
@@ -86,6 +87,13 @@
             <%= render Shared::IconComponent.new(icon: "caret-right") %>
           <% end %>
         <% end %>
+        <div class="flex-1 flex justify-end">
+          <% if csv_path_builder %>
+            <%= link_to csv_path, class: "btn btn-sm btn-circle btn-ghost", aria: { label: t(".download_csv") } do %>
+              <%= render Shared::IconComponent.new(icon: "download") %>
+            <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
   </section>

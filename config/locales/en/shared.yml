@@ -11,6 +11,7 @@ en:
       actions: Actions
       clear_search: Clear search
       delete: Delete
+      download_csv: Download CSV
       edit: Edit
       next_page: Next page
       no_entries: No Entries Found
