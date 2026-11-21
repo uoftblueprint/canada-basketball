@@ -297,19 +297,19 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#stat_lines_index_table div", text: player.name
     assert_select "#stat_lines_index_table div", text: "Pacers"
     assert_select "#stat_lines_index_table div", text: "50%"
-    assert_select "section[aria-labelledby='team-stats-heading'] tbody" do
-      assert_select "tr", count: 2
+    assert_select "section[aria-labelledby='stats-heading'] #team-stats-table" do
+      assert_select "[role='row']", count: 3
 
-      assert_select "tr:nth-child(1)" do
-        assert_select "th[scope='row']", text: @team.name
-        assert_select "td:nth-of-type(1)", text: "2"
-        assert_select "td:nth-of-type(4)", text: "50%"
+      assert_select "[role='row']:nth-child(2)" do
+        assert_select "[role='rowheader']", text: @team.name
+        assert_select "[role='cell']:nth-child(2)", text: "2"
+        assert_select "[role='cell']:nth-child(5)", text: "50%"
       end
 
-      assert_select "tr:nth-child(2)" do
-        assert_select "th[scope='row']", text: game.opponent_name
-        assert_select "td:nth-of-type(1)", text: "3"
-        assert_select "td:nth-of-type(4)", text: "100%"
+      assert_select "[role='row']:nth-child(3)" do
+        assert_select "[role='rowheader']", text: game.opponent_name
+        assert_select "[role='cell']:nth-child(2)", text: "3"
+        assert_select "[role='cell']:nth-child(5)", text: "100%"
       end
     end
   end
@@ -352,17 +352,17 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "#stat_lines_index_table div", text: player.name
-    assert_select "section[aria-labelledby='team-stats-heading'] tbody" do
-      assert_select "tr", count: 2
+    assert_select "section[aria-labelledby='matchup-heading'] #team-stats-table" do
+      assert_select "[role='row']", count: 3
 
-      assert_select "tr:nth-child(1)" do
-        assert_select "th[scope='row']", text: @team.name
-        assert_select "td:nth-of-type(1)", text: "2"
+      assert_select "[role='row']:nth-child(2)" do
+        assert_select "[role='rowheader']", text: @team.name
+        assert_select "[role='cell']:nth-child(2)", text: "2"
       end
 
-      assert_select "tr:nth-child(2)" do
-        assert_select "th[scope='row']", text: game.opponent_name
-        assert_select "td:nth-of-type(1)", text: "0"
+      assert_select "[role='row']:nth-child(3)" do
+        assert_select "[role='rowheader']", text: game.opponent_name
+        assert_select "[role='cell']:nth-child(2)", text: "0"
       end
     end
   end
