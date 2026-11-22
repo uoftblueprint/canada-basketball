@@ -65,14 +65,14 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get camps_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_admin"), flash[:error]
   end
 
   test "index redirects logged out users" do
     get camps_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "new is accessible by admins" do
@@ -89,14 +89,14 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get new_camp_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_admin"), flash[:error]
   end
 
   test "new redirects logged out users" do
     get new_camp_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "create creates a camp" do
@@ -156,7 +156,7 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_admin"), flash[:error]
   end
 
   test "create redirects logged out users" do
@@ -173,7 +173,7 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "destroy deletes the camp" do
@@ -314,7 +314,7 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get camp_path(camp)
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "camp cannot get another camp's page" do
@@ -324,6 +324,6 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     get camp_path(other_camp)
 
     assert_redirected_to login_path
-    assert_equal "You don't have access to this camp", flash[:error]
+    assert_equal I18n.t("authentication.require_camp_access"), flash[:error]
   end
 end

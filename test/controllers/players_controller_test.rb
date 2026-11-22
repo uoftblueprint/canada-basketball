@@ -41,7 +41,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     get players_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "index displays a message when there are no players" do
@@ -290,9 +290,9 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
   [
     { who: "camp users", logged_in: :create_logged_in_camp,
-      message: "You must be logged in as an admin to access this page" },
+      message: I18n.t("authentication.require_admin") },
     { who: "logged out users", logged_in: nil,
-      message: "You must be logged in to access this page" }
+      message: I18n.t("authentication.require_login") }
   ].each do |user|
     test "edit redirects #{user[:who]}" do
       send(user[:logged_in]) if user[:logged_in]
