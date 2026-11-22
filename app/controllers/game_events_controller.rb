@@ -27,6 +27,21 @@ class GameEventsController < ApplicationController
     end
   end
 
+  def destroy
+    @game = current_camp.games.find(params.expect(:game_id))
+    game_event = @game.game_events.find(params.expect(:id))
+
+    if game_event.destroy
+      redirect_to box_score_camp_game_path(current_camp, @game),
+                  flash: { success: t(".success") },
+                  status: :see_other
+    else
+      redirect_to box_score_camp_game_path(current_camp, @game),
+                  flash: { error: game_event.errors.full_messages.to_sentence },
+                  status: :see_other
+    end
+  end
+
   private
 
   def build_box_score_tables
