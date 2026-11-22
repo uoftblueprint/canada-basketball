@@ -57,7 +57,7 @@
       <%= t(".matchup", team: @game.team.name, opponent: @game.opponent_name) %>
     </h2>
   </header>
-  <section class="mt-6 flex min-w-0 flex-col gap-4" aria-labelledby="matchup-heading">
+  <section class="mt-2 flex min-w-0 flex-col gap-4" aria-labelledby="matchup-heading">
       <%= render Games::EventsTableComponent.new(
           state: @game_events_state,
           game: @game,

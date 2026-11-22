@@ -1,32 +1,35 @@
 <div class="overflow-x-auto text-xs">
-  <div
-    id="team-stats-table"
-    class="grid w-max min-w-full whitespace-nowrap border-t-[0.5px] border-l-[0.5px]"
-    style="grid-template-columns: minmax(8rem, 2fr) repeat(<%= STAT_COLUMNS.length %>, minmax(3.5rem, 1fr))"
-    role="table"
-    aria-label="<%= t("games.team_stats") %>">
-    <div class="col-span-full grid grid-cols-subgrid" role="row">
-      <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
-        <%= Game.human_attribute_name(:team) %>
-      </div>
-      <% STAT_COLUMNS.each do |column| %>
-        <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
-          <%= t("game_events.abbreviations.#{column}") %>
-        </div>
-      <% end %>
-    </div>
-
-    <% rows.each do |row| %>
+  <div class="w-max min-w-full">
+    <div
+      id="team-stats-table"
+      class="grid whitespace-nowrap border-t-[0.5px] border-l-[0.5px]"
+      style="grid-template-columns: minmax(6rem, 2fr) repeat(<%= STAT_COLUMNS.length %>, minmax(3rem, 1fr))"
+      role="table"
+      aria-label="<%= t("games.team_stats") %>">
       <div class="col-span-full grid grid-cols-subgrid" role="row">
-        <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="rowheader">
-          <%= row.fetch(:name) %>
+        <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
+          <%= Game.human_attribute_name(:team) %>
         </div>
         <% STAT_COLUMNS.each do |column| %>
-          <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="cell">
-            <%= format_stat(row.fetch(:stats), column) %>
+          <div class="border-b-[0.5px] border-r-[0.5px] bg-base-200 px-3 py-2" role="columnheader">
+            <%= t("game_events.abbreviations.#{column}") %>
           </div>
         <% end %>
       </div>
-    <% end %>
+
+      <% rows.each do |row| %>
+        <div class="col-span-full grid grid-cols-subgrid" role="row">
+          <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="rowheader">
+            <%= row.fetch(:name) %>
+          </div>
+          <% STAT_COLUMNS.each do |column| %>
+            <div class="border-b-[0.5px] border-r-[0.5px] px-3 py-2" role="cell">
+              <%= format_stat(row.fetch(:stats), column) %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <div class="border-[0.5px] border-t-0 bg-base-200 flex flex-row items-center justify-center p-1 min-h-10"></div>
   </div>
 </div>
