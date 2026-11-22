@@ -1,0 +1,5 @@
+---
+en:
+  time:
+    formats:
+      default: "%H:%M:%S"

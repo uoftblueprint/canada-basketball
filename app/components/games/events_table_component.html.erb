@@ -1,13 +1,13 @@
 <div class="overflow-x-auto text-xs">
   <%= render Shared::IndexTableComponent.new(state:, path_builder:, searchable: false) do |table| %>
     <% table.column :created_at do |event| %>
-      <%= event.created_at.strftime("%H:%M:%S") %>
+      <%= l(event.created_at) %>
     <% end %>
     <% table.column :period do |event| %>
-      <%= event.period %>
+      <%= t("game_events.periods.#{event.period}") %>
     <% end %>
     <% table.column :kind, col_size: "2fr" do |event| %>
-      <%= event.kind.humanize %>
+      <%= t("game_events.kinds.#{event.kind}") %>
     <% end %>
     <% table.column :player, col_size: "2fr" do |event| %>
       <%= event.player&.name %>
