@@ -27,13 +27,13 @@ module Authentication
 
     # clear session when identity present but not valid
     reset_session if current_identity
-    redirect_to login_path, flash: { error: "You must be logged in to access this page" }
+    redirect_to login_path, flash: { error: t("authentication.require_login") }
   end
 
   def require_admin
     return if logged_in_as_admin?
 
-    redirect_to login_path, flash: { error: "You must be logged in as an admin to access this page" }
+    redirect_to login_path, flash: { error: t("authentication.require_admin") }
   end
 
   # Require that the user either be logged in as an admin,
@@ -42,7 +42,7 @@ module Authentication
     return if logged_in_admin
     return if logged_in_camp == current_camp
 
-    redirect_to login_path, flash: { error: "You don't have access to this camp" }
+    redirect_to login_path, flash: { error: t("authentication.require_camp_access") }
   end
 
   def current_identity

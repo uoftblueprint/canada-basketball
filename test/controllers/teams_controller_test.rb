@@ -138,8 +138,8 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
   end
 
   [
-    { who: "A camp", logged_out: false, message: "You must be logged in as an admin to access this page" },
-    { who: "A logged out user", logged_out: true, message: "You must be logged in to access this page" }
+    { who: "A camp", logged_out: false, message: I18n.t("authentication.require_admin") },
+    { who: "A logged out user", logged_out: true, message: I18n.t("authentication.require_login") }
   ].each do |user|
     test "#{user[:who]} cannot access the new team page" do
       log_out_user if user[:logged_out]

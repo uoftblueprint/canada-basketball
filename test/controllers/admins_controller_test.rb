@@ -25,14 +25,14 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     get admins_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in as an admin to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_admin"), flash[:error]
   end
 
   test "index redirects logged out users" do
     get admins_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "new is accessible by admins" do
@@ -172,8 +172,8 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
   end
 
   [
-    { who: "A camp", logged_in_as_camp: true, message: "You must be logged in as an admin to access this page" },
-    { who: "A logged out user", logged_in_as_camp: false, message: "You must be logged in to access this page" }
+    { who: "A camp", logged_in_as_camp: true, message: I18n.t("authentication.require_admin") },
+    { who: "A logged out user", logged_in_as_camp: false, message: I18n.t("authentication.require_login") }
   ].each do |user|
     test "#{user[:who]} cannot access the new admin page" do
       create_logged_in_camp if user[:logged_in_as_camp]
@@ -273,7 +273,7 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     get admins_path
 
     assert_redirected_to login_path
-    assert_equal "You must be logged in to access this page", flash[:error]
+    assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
   test "stale session identity is cleared after the admin record is deleted" do
