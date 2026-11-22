@@ -166,6 +166,8 @@ ignore_unused:
   - 'sidebar_component.*'
   - 'game_events.kinds.*'
   - 'game_events.abbreviations.*'
+  - 'game_events.periods.*'
+  - 'time.formats.default'
 
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:

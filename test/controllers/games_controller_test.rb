@@ -354,7 +354,8 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     get box_score_camp_game_path(@camp, game)
 
     table = css_select("#game_events_index_table").first.to_s
-    assert_operator table.index(newer.kind.humanize), :<, table.index(older.kind.humanize)
+    assert_operator table.index(I18n.t("game_events.kinds.#{newer.kind}")), :<,
+                    table.index(I18n.t("game_events.kinds.#{older.kind}"))
   end
   test "box score events table shows time, period, player, team, and kind" do
     game = create(:game, camp: @camp, team: @team)
@@ -364,11 +365,11 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     get box_score_camp_game_path(@camp, game)
 
     assert_response :success
-    assert_select "#game_events_index_table div", text: event.created_at.strftime("%H:%M:%S")
-    assert_select "#game_events_index_table div", text: event.period
+    assert_select "#game_events_index_table div", text: I18n.l(event.created_at, format: :default)
+    assert_select "#game_events_index_table div", text: I18n.t("game_events.periods.#{event.period}")
     assert_select "#game_events_index_table div", text: event.player.name
     assert_select "#game_events_index_table div", text: @team.name
-    assert_select "#game_events_index_table div", text: "Two point made"
+    assert_select "#game_events_index_table div", text: I18n.t("game_events.kinds.#{event.kind}")
   end
   test "box score events table shows the opponent name for opponent events" do
     game = create(:game, camp: @camp, team: @team, opponent_name: "Pacers")
