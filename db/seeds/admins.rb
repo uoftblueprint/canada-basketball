@@ -10,7 +10,7 @@ module Seeds
 
       def seed_admins
         puts "Seeding admins"
-        Admin.create!(email: "admin@test.com", name: "Test", password: "password")
+        Admin.create!(email: "admin@test.com", name: "Test", password: "password", role: :manager)
       end
     end
   end

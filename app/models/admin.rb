@@ -1,6 +1,8 @@
 class Admin < ApplicationRecord
   has_secure_password
 
+  enum :role, { manager: "manager", analyst: "analyst" }, validate: true
+
   searchable_by :name, :email
   sortable_by :name, :email
 
