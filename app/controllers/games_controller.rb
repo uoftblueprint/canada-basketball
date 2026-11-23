@@ -51,7 +51,7 @@ class GamesController < ApplicationController
                                                        status: :see_other
     else
       flash.now[:error] = @game.errors.full_messages.to_sentence
-      render :new, status: :unprocessable_content
+      render :edit, status: :unprocessable_content
     end
   end
 
