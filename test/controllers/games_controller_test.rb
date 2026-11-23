@@ -324,6 +324,9 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     get box_score_camp_game_path(@camp, game)
 
     assert_response :success
+    %i[events_table stat_lines_table].each do |table|
+      assert_select "##{ActionView::RecordIdentifier.dom_id(game, table)}", count: 1
+    end
   end
 
   test "show also displays the stat lines table" do

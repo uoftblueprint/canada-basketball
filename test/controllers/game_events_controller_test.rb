@@ -22,6 +22,7 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
     assert_not event.is_opponent
     assert_equal "two_point_made", event.kind
     assert_redirected_to box_score_camp_game_path(@camp, @game)
+    assert_equal I18n.t("game_events.create.success"), flash[:success]
   end
 
   test "create with team subject creates a team game event" do
@@ -98,5 +99,64 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to box_score_camp_game_path(@camp, @game)
+  end
+
+  test "turbo create replaces existing tables with recomputed player stats" do
+    create(:game_event, game: @game, player: @player, kind: "two_point_missed")
+
+    assert_difference("GameEvent.count", 1) do
+      post camp_game_game_events_path(@camp, @game), params: {
+        game_event: { kind: "two_point_made", period: "q1", subject: @player.id }
+      }, as: :turbo_stream
+    end
+
+    assert_box_score_replacements
+    assert_includes response.body, @player.name
+    assert_includes response.body, "50%"
+  end
+
+  test "turbo create displays team events and preserves player stats" do
+    create(:game_event, game: @game, player: @player, kind: "two_point_made")
+
+    post camp_game_game_events_path(@camp, @game), params: {
+      game_event: { kind: "three_point_made", period: "q1", subject: "team" }
+    }, as: :turbo_stream
+
+    assert_box_score_replacements
+    assert_includes response.body, @team.name
+    assert_includes response.body, @player.name
+    assert_includes response.body, "100%"
+  end
+
+  test "turbo create updates opponent stats" do
+    post camp_game_game_events_path(@camp, @game), params: {
+      game_event: { kind: "three_point_made", period: "q1", subject: "opponent" }
+    }, as: :turbo_stream
+
+    assert_box_score_replacements
+    assert_includes response.body, @game.opponent_name
+    assert_includes response.body, "100%"
+  end
+
+  test "invalid turbo create renders validation errors without adding an event" do
+    assert_no_difference("GameEvent.count") do
+      post camp_game_game_events_path(@camp, @game), params: {
+        game_event: { kind: "invalid", period: "q1", subject: "team" }
+      }, as: :turbo_stream
+    end
+
+    assert_response :unprocessable_content
+    assert_equal "text/html", response.media_type
+    assert_includes response.body, I18n.t("errors.messages.inclusion")
+  end
+
+  private
+
+  def assert_box_score_replacements
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    %i[events_table stat_lines_table].each do |table|
+      assert_turbo_stream action: :replace, target: ActionView::RecordIdentifier.dom_id(@game, table)
+    end
   end
 end

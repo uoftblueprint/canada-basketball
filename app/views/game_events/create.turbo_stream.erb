@@ -1,0 +1,15 @@
+<%= turbo_stream.replace dom_id(@game, :events_table) do %>
+  <%= render Games::EventsTableComponent.new(
+        state: @game_events_state,
+        game: @game,
+        path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
+        delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) }
+      ) %>
+<% end %>
+<%= turbo_stream.replace dom_id(@game, :stat_lines_table) do %>
+  <%= render Games::StatLinesTableComponent.new(
+        state: @stat_lines_state,
+        game: @game,
+        path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) }
+      ) %>
+<% end %>

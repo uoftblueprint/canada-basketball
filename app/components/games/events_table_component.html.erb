@@ -1,4 +1,4 @@
-<div class="overflow-x-auto text-xs">
+<div id="<%= dom_id(game, :events_table) %>" class="overflow-x-auto text-xs">
   <%= render Shared::IndexTableComponent.new(state:, path_builder:, searchable: false) do |table| %>
     <% table.column :created_at do |event| %>
       <%= l(event.created_at) %>
