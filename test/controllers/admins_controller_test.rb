@@ -35,6 +35,31 @@ class AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("authentication.require_login"), flash[:error]
   end
 
+  test "index csv lists admin emails" do
+    create_logged_in_admin
+    create(:admin, email: "jane@test.com")
+
+    get admins_path(format: :csv)
+
+    assert_includes response.body, "jane@test.com"
+  end
+
+  test "index csv leaves out password digests" do
+    admin = create_logged_in_admin
+
+    get admins_path(format: :csv)
+
+    assert_not_includes response.body, admin.password_digest
+  end
+
+  test "index csv redirects camp users" do
+    create_logged_in_camp
+
+    get admins_path(format: :csv)
+
+    assert_redirected_to login_path
+  end
+
   test "new is accessible by admins" do
     create_logged_in_admin
 

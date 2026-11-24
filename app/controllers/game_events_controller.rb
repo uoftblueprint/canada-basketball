@@ -109,6 +109,9 @@ class GameEventsController < ApplicationController
         state: @game_events_state,
         game: @game,
         path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
+        csv_path_builder: lambda do |params|
+          box_score_camp_game_path(current_camp, @game, params.merge(table: :game_events))
+        end,
         delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) },
         table_id: ActionView::RecordIdentifier.dom_id(@game, :box_score_game_events)
       )
@@ -120,6 +123,7 @@ class GameEventsController < ApplicationController
         state: @game_events_state,
         game: @game,
         path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+        csv_path_builder: ->(params) { camp_game_path(current_camp, @game, params.merge(table: :game_events)) },
         delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) },
         table_id: ActionView::RecordIdentifier.dom_id(@game, :show_game_events)
       )
@@ -131,6 +135,9 @@ class GameEventsController < ApplicationController
         state: @stat_lines_state,
         game: @game,
         path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
+        csv_path_builder: lambda do |params|
+          box_score_camp_game_path(current_camp, @game, params.merge(table: :stat_lines))
+        end,
         table_id: ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines)
       )
     )
@@ -141,6 +148,7 @@ class GameEventsController < ApplicationController
         state: @stat_lines_state,
         game: @game,
         path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+        csv_path_builder: ->(params) { camp_game_path(current_camp, @game, params.merge(table: :stat_lines)) },
         table_id: ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines)
       )
     )

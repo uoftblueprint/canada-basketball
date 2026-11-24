@@ -14,7 +14,8 @@
   </header>
   <%= render Shared::IndexTableComponent.new(
         state: @table_state,
-        path_builder: ->(params) { admins_path(params) }
+        path_builder: ->(params) { admins_path(params) },
+        csv_path_builder: ->(params) { admins_path(params) }
       ) do |table| %>
     <% table.column :name %>
     <% table.column :email %>

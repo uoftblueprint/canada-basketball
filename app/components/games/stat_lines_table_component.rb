@@ -5,17 +5,18 @@ module Games
       ftm fta ft_pct orb drb trb ast stl blk tov pf
     ].freeze
 
-    def initialize(state:, game:, path_builder:, table_id:)
+    def initialize(state:, game:, path_builder:, table_id:, csv_path_builder: nil)
       super()
       @state = state
       @game = game
       @path_builder = path_builder
+      @csv_path_builder = csv_path_builder
       @table_id = table_id
     end
 
     private
 
-    attr_reader :state, :game, :path_builder, :table_id
+    attr_reader :state, :game, :path_builder, :csv_path_builder, :table_id
 
     def name_for(line) = line.is_opponent? ? game.opponent_name : line.player.name
 

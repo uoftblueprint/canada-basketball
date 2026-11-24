@@ -19,7 +19,8 @@
   </header>
   <%= render Shared::IndexTableComponent.new(
         state: @table_state,
-        path_builder: ->(params) { players_path(params) }
+        path_builder: ->(params) { players_path(params) },
+        csv_path_builder: ->(params) { players_path(params) }
       ) do |table| %>
     <% table.column :name %>
     <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |player| %>

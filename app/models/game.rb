@@ -7,6 +7,7 @@ class Game < ApplicationRecord
 
   searchable_by :name, :opponent_name
   sortable_by :name, :opponent_name
+  csv_exportable :id, :name, :camp_id, :team_id, :opponent_name, :active, :created_at, :updated_at
 
   validates :name, presence: true, uniqueness: { scope: :camp_id }
   validates :opponent_name, presence: true

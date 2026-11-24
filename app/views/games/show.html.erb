@@ -63,12 +63,14 @@
           state: @game_events_state,
           game: @game,
           path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+          csv_path_builder: ->(params) { camp_game_path(current_camp, @game, params.merge(table: :game_events)) },
           table_id: dom_id(@game, :show_game_events)
         ) %>
     <%= render Games::StatLinesTableComponent.new(
           state: @stat_lines_state,
           game: @game,
           path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
+          csv_path_builder: ->(params) { camp_game_path(current_camp, @game, params.merge(table: :stat_lines)) },
           table_id: dom_id(@game, :show_stat_lines)
         ) %>
     <%= render Games::TeamStatsTableComponent.new(

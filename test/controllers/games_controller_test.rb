@@ -440,4 +440,30 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#game_events_index_table div", text: event.player.name
     assert_select "#game_events_index_table input[name='_method'][value='delete']", count: 0
   end
+
+  test "show csv exports the events table" do
+    game = create(:game, camp: @camp, team: @team)
+    create(:game_event, game: game, kind: "steal")
+
+    get camp_game_path(@camp, game, format: :csv, table: :game_events)
+
+    assert_includes response.body, "steal"
+  end
+
+  test "box score csv exports the stat lines table" do
+    game = create(:game, camp: @camp, team: @team)
+    create(:game_event, game: game)
+
+    get box_score_camp_game_path(@camp, game, format: :csv, table: :stat_lines)
+
+    assert_equal 2, CSV.parse(response.body, headers: true).first["pts"].to_i
+  end
+
+  test "box score csv with an unknown table is not found" do
+    game = create(:game, camp: @camp, team: @team)
+
+    get box_score_camp_game_path(@camp, game, format: :csv, table: :unknown)
+
+    assert_response :not_found
+  end
 end

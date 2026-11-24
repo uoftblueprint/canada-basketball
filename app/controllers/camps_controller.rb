@@ -14,6 +14,11 @@ class CampsController < ApplicationController
     @players = build_table_state(@camp.players.order(:name), param_scope: :players)
     @games = build_table_state(@camp.games.includes(:team).order(active: :desc, name: :asc), param_scope: :games)
     @player_teams = @camp.camp_registrations.includes(:team).index_by(&:player_id)
+
+    respond_to do |format|
+      format.html
+      format.csv { respond_with_table_csv(@teams, @players, @games) }
+    end
   end
 
   def new

@@ -8,4 +8,5 @@ class Team < ApplicationRecord
 
   searchable_by :name
   sortable_by :name
+  csv_exportable :id, :name, :camp_id, :created_at, :updated_at
 end

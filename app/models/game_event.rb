@@ -28,6 +28,7 @@ class GameEvent < ApplicationRecord
 
   searchable_by :kind, :period
   sortable_by :is_opponent, :kind, :period, :created_at
+  csv_exportable :id, :game_id, :player_id, :is_opponent, :kind, :period, :created_at, :updated_at
 
   validates :kind, presence: true
   validates :is_opponent, inclusion: { in: [true, false] }

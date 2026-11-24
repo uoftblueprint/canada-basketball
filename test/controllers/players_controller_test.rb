@@ -53,6 +53,15 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "#players_index_table span", text: I18n.t("shared.index_table_component.no_entries")
   end
 
+  test "index csv lists player names" do
+    create_logged_in_admin
+    create(:player, name: "test_player_1")
+
+    get players_path(format: :csv)
+
+    assert_includes response.body, "test_player_1"
+  end
+
   test "new is accessible by admins" do
     create_logged_in_admin
 
