@@ -37,7 +37,7 @@
       <%= t(".stats") %>
     </h2>
     <div class="flex flex-col gap-4">
-          <%= render Games::EventsTableComponent.new(
+      <%= render Games::EventsTableComponent.new(
             state: @game_events_state,
             game: @game,
             path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
