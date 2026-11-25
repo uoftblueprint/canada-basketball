@@ -155,7 +155,7 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
   def assert_box_score_replacements
     assert_response :success
     assert_equal "text/vnd.turbo-stream.html", response.media_type
-    %i[events_table stat_lines_table].each do |table|
+    %i[box_score_game_events box_score_stat_lines team_stats_table].each do |table|
       assert_turbo_stream action: :replace, target: ActionView::RecordIdentifier.dom_id(@game, table)
     end
   end
@@ -214,5 +214,61 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to box_score_camp_game_path(@camp, @game)
+  end
+
+  test "create broadcasts updated tables to both game views" do
+    targets = [
+      ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines),
+      ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines),
+      ActionView::RecordIdentifier.dom_id(@game, :box_score_game_events),
+      ActionView::RecordIdentifier.dom_id(@game, :show_game_events),
+      ActionView::RecordIdentifier.dom_id(@game, :team_stats_table)
+    ]
+
+    broadcasts = capture_turbo_stream_broadcasts(@game) do
+      post camp_game_game_events_path(@camp, @game), params: {
+        game_event: { kind: "two_point_made", period: "q1", subject: @player.id }
+      }
+    end
+
+    assert_equal 5, broadcasts.size
+    targets.each do |target|
+      assert(
+        broadcasts.any? { |html| html.to_s.include?(%(target="#{target}")) },
+        "Expected broadcast targeting #{target}"
+      )
+    end
+  end
+
+  test "redirects after successful HTML request" do
+    post camp_game_game_events_path(@camp, @game),
+         params: { game_event: { kind: "two_point_made", period: "q1", subject: @player.id } }
+
+    assert_response :see_other
+    assert_redirected_to box_score_camp_game_path(@camp, @game)
+  end
+
+  test "destroy broadcasts updated tables to both game views" do
+    event = create(:game_event, game: @game, player: @player, kind: "two_point_made")
+
+    broadcasts = capture_turbo_stream_broadcasts(@game) do
+      delete camp_game_game_event_path(@camp, @game, event)
+    end
+
+    assert_response :see_other
+    assert_not GameEvent.exists?(event.id)
+    assert_equal 5, broadcasts.size
+
+    targets = %i[box_score_game_events show_game_events box_score_stat_lines show_stat_lines
+                 team_stats_table].map do |table|
+      ActionView::RecordIdentifier.dom_id(@game, table)
+    end
+
+    targets.each do |target|
+      assert(
+        broadcasts.any? { |html| html.to_s.include?(%(target="#{target}")) },
+        "Expected broadcast targeting #{target}"
+      )
+    end
   end
 end
