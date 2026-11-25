@@ -102,12 +102,19 @@ guide.
 
 Seeding the database using `bin/rails db:seed` or `bin/rails
 db:prepare` (as described by the previous section) will populate the database
-with sample data. This includes an admin user and multiple camps.
+with sample data. This includes a manager user, an analyst user, and multiple camps.
 
-#### Admin User
+#### Admin User (Manager)
 
 ```
 Email: admin@test.com
+Password: password
+```
+
+#### Analyst User
+
+```
+Email: analyst@test.com
 Password: password
 ```
 

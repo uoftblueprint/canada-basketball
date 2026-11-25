@@ -34,6 +34,15 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "type" => "camp", "id" => @camp.id }, session[:identity])
   end
 
+  test "analyst can log in with an admin session identity" do
+    analyst = create(:admin, :analyst)
+
+    post login_admin_path, params: { email: analyst.email, password: analyst.password }
+
+    assert_equal({ "type" => "admin", "id" => analyst.id }, session[:identity])
+    assert_equal I18n.t("sessions.create_admin.success"), flash[:success]
+  end
+
   test "Create admin does not allow login with the wrong password" do
     post login_admin_path, params: { email: "admin@test.com", password: "wrongpassword" }
 
