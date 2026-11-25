@@ -1,6 +1,6 @@
 module Games
   class EventsTableComponent < ViewComponent::Base
-    def initialize(state:, game:, path_builder:, delete_path_builder: nil, table_id:)
+    def initialize(state:, game:, path_builder:, table_id:, delete_path_builder: nil)
       super()
       @state = state
       @game = game

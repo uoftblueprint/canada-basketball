@@ -9,8 +9,8 @@ class GameEventsController < ApplicationController
 
     resolve_subject
 
+    build_box_score_tables
     if @game_event.save
-      build_box_score_tables
       broadcast_tables
       respond_to do |format|
         format.html do
@@ -19,11 +19,9 @@ class GameEventsController < ApplicationController
                       status: :see_other
         end
         format.turbo_stream do
-          head :no_content
         end
       end
     else
-      build_box_score_tables
       flash.now[:error] = @game_event.errors.full_messages.to_sentence
       render "games/box_score", formats: [:html], status: :unprocessable_content
     end
@@ -35,9 +33,16 @@ class GameEventsController < ApplicationController
     if game_event.destroy
       build_box_score_tables
       broadcast_tables
-      redirect_to box_score_camp_game_path(current_camp, @game),
-                  flash: { success: t(".success") },
-                  status: :see_other
+
+      respond_to do |format|
+        format.html do
+          redirect_to box_score_camp_game_path(current_camp, @game),
+                      flash: { success: t(".success") },
+                      status: :see_other
+        end
+        format.turbo_stream do
+        end
+      end
     else
       redirect_to box_score_camp_game_path(current_camp, @game),
                   flash: { error: game_event.errors.full_messages.to_sentence },
@@ -82,6 +87,7 @@ class GameEventsController < ApplicationController
                       per_page: 20,
                       param_scope: :game_events)
   end
+
   def broadcast_replace(target:, component:)
     Turbo::StreamsChannel.broadcast_replace_to(
       @game,
@@ -96,18 +102,18 @@ class GameEventsController < ApplicationController
 
   def broadcast_tables
     broadcast_replace(
-      target: dom_id(@game, :box_score_game_events),
+      target: ActionView::RecordIdentifier.dom_id(@game, :box_score_game_events),
       component: Games::EventsTableComponent.new(
         state: @game_events_state,
         game: @game,
         path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
         delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) },
-        table_id: dom_id(@game, :box_score_game_events)
+        table_id: ActionView::RecordIdentifier.dom_id(@game, :box_score_game_events)
       )
     )
 
     broadcast_replace(
-      target: dom_id(@game, :show_game_events),
+      target: ActionView::RecordIdentifier.dom_id(@game, :show_game_events),
       component: Games::EventsTableComponent.new(
         state: @game_events_state,
         game: @game,
@@ -118,31 +124,31 @@ class GameEventsController < ApplicationController
     )
 
     broadcast_replace(
-      target: dom_id(@game, :box_score_stat_lines),
+      target: ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines),
       component: Games::StatLinesTableComponent.new(
         state: @stat_lines_state,
         game: @game,
         path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
-        table_id: dom_id(@game, :box_score_stat_lines),
+        table_id: ActionView::RecordIdentifier.dom_id(@game, :box_score_stat_lines)
       )
     )
 
     broadcast_replace(
-      target: dom_id(@game, :show_stat_lines),
+      target: ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines),
       component: Games::StatLinesTableComponent.new(
         state: @stat_lines_state,
         game: @game,
         path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
-        table_id: dom_id(@game, :show_stat_lines),
+        table_id: ActionView::RecordIdentifier.dom_id(@game, :show_stat_lines)
       )
     )
 
     broadcast_replace(
-      target: dom_id(@game, :team_stats_table),
+      target: ActionView::RecordIdentifier.dom_id(@game, :team_stats_table),
       component: Games::TeamStatsTableComponent.new(
-        rows: @team_stat_rows
+        rows: @team_stat_rows,
+        table_id: ActionView::RecordIdentifier.dom_id(@game, :team_stats_table)
       )
     )
   end
-
 end

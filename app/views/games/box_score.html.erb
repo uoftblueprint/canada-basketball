@@ -51,7 +51,10 @@
             path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
             table_id: dom_id(@game, :box_score_stat_lines)
           ) %>
-      <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
+      <%= render Games::TeamStatsTableComponent.new(
+            rows: @team_stat_rows,
+            table_id: dom_id(@game, :team_stats_table)
+          ) %>
     </div>
   </section>
 </section>

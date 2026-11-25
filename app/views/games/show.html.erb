@@ -71,7 +71,10 @@
           path_builder: ->(params) { camp_game_path(current_camp, @game, params) },
           table_id: dom_id(@game, :show_stat_lines)
         ) %>
-    <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
+    <%= render Games::TeamStatsTableComponent.new(
+          rows: @team_stat_rows,
+          table_id: dom_id(@game, :team_stats_table)
+        ) %>
     </div>
   </section>
 </section>
