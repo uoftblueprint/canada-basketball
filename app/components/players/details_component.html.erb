@@ -4,6 +4,21 @@
     <div class="border-[0.5px] border-base-300 bg-base-200 p-3"><%= player.name %></div>
   </div>
 
+  <% {
+       birth_year: player.birth_year,
+       height_cm: player.height_cm,
+       province: player.province_name,
+       hometown: player.hometown
+     }.each do |attribute, value| %>
+    <% id = "player-#{attribute.to_s.dasherize}" %>
+    <div class="gap-3">
+      <h2 id="<%= id %>" class="my-2 font-medium"><%= Player.human_attribute_name(attribute) %></h2>
+      <div class="border-[0.5px] border-base-300 bg-base-200 p-3" aria-labelledby="<%= id %>">
+        <%= value.presence || t("players.show.not_provided") %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="gap-3">
     <h2 id="registrations-heading" class="my-2 font-medium"><%= t("players.show.registrations") %></h2>
     <ul id="registrations" class="space-y-3" aria-labelledby="registrations-heading">

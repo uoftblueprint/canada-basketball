@@ -1,8 +1,26 @@
 <%= form_with model: player, html: { autocomplete: "off" }, class: "flex flex-col gap-8" do |f| %>
-  <fieldset class="fieldset">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </fieldset>
+  <div class="flex flex-col gap-2">
+    <fieldset class="fieldset">
+      <%= f.label :name %>
+      <%= f.text_field :name, required: true %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :birth_year %>
+      <%= f.number_field :birth_year, min: Player::MIN_BIRTH_YEAR, max: Date.current.year, step: 1 %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :height_cm %>
+      <%= f.number_field :height_cm, min: 51, max: 299, step: 1 %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :province %>
+      <%= f.select :province, province_options, include_blank: true %>
+    </fieldset>
+    <fieldset class="fieldset">
+      <%= f.label :hometown %>
+      <%= f.text_field :hometown %>
+    </fieldset>
+  </div>
 
   <%= f.submit %>
 <% end %>

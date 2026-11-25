@@ -28,6 +28,27 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "#players_index_table .grid > div", text: "test_player_2"
   end
 
+  test "index lists player profile fields" do
+    create_logged_in_admin
+    create(:player, birth_year: 2006, height_cm: 198, province: "BC", hometown: "Victoria")
+
+    get players_path
+
+    assert_select "#players_index_table .grid > div", text: "2006"
+    assert_select "#players_index_table .grid > div", text: "198"
+    assert_select "#players_index_table .grid > div", text: "British Columbia"
+    assert_select "#players_index_table .grid > div", text: "Victoria"
+  end
+
+  test "index marks missing profile fields as not provided" do
+    create_logged_in_admin
+    create(:player, birth_year: nil, height_cm: nil, province: nil, hometown: nil)
+
+    get players_path
+
+    assert_select "#players_index_table span.text-base-300", text: "Not provided"
+  end
+
   test "index links to the player details modal" do
     create_logged_in_admin
     player = create(:player)
@@ -62,6 +83,18 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "test_player_1"
   end
 
+  test "index csv includes player profile fields" do
+    create_logged_in_admin
+    create(:player, name: "test_player_1", birth_year: 2006, height_cm: 198, province: "BC", hometown: "Victoria")
+
+    get players_path(format: :csv)
+
+    rows = CSV.parse(response.body, headers: true)
+    assert_equal %w[id name created_at updated_at birth_year height_cm province hometown], rows.headers
+    assert_equal %w[test_player_1 2006 198 BC Victoria],
+                 rows.first.fields("name", "birth_year", "height_cm", "province", "hometown")
+  end
+
   test "new is accessible by admins" do
     create_logged_in_admin
 
@@ -69,6 +102,11 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'input[name="player[name]"]'
+    assert_select 'input[type="number"][name="player[birth_year]"]'
+    assert_select 'input[type="number"][name="player[height_cm]"]'
+    assert_select 'select[name="player[province]"] option', count: Player::PROVINCES.size + 1
+    assert_select 'select[name="player[province]"] option[value="QC"]', text: "Quebec"
+    assert_select 'input[name="player[hometown]"]'
   end
 
   test "new renders the form in a modal for turbo stream requests" do
@@ -94,6 +132,42 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_response :see_other
     assert_equal I18n.t("players.create.success"), flash[:success]
     assert_equal "test_name", Player.last.name
+  end
+
+  test "create saves the player profile fields" do
+    create_logged_in_admin
+
+    post players_path, params: {
+      player: { name: "test_name", birth_year: "2007", height_cm: "201", province: "MB", hometown: "Winnipeg" }
+    }
+
+    player = Player.last
+    assert_equal 2007, player.birth_year
+    assert_equal 201, player.height_cm
+    assert_equal "MB", player.province
+    assert_equal "Winnipeg", player.hometown
+  end
+
+  test "create stores blank profile fields as nil" do
+    create_logged_in_admin
+
+    post players_path, params: {
+      player: { name: "test_name", birth_year: "", height_cm: "", province: "", hometown: "" }
+    }
+
+    assert_redirected_to players_path
+    assert_equal [nil, nil, nil, nil], Player.last.slice(:birth_year, :height_cm, :province, :hometown).values
+  end
+
+  test "create does not allow a player with an invalid height" do
+    create_logged_in_admin
+
+    assert_no_difference("Player.count") do
+      post players_path, params: { player: { name: "test_name", height_cm: "30" } }
+    end
+
+    assert_response :unprocessable_content
+    assert_equal "Height (cm) must be greater than 50", flash[:error]
   end
 
   test "create does not allow player with blank name" do
@@ -154,6 +228,31 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_select "div", text: player.name, count: 1
     assert_select "h2#registrations-heading", "Registrations"
     assert_select "#registrations li", count: 0
+  end
+
+  test "show displays player profile fields" do
+    create_logged_in_admin
+    player = create(:player, birth_year: 2006, height_cm: 198, province: "BC", hometown: "Victoria")
+
+    get player_path(player)
+
+    assert_select "h2#player-birth-year", "Year of Birth"
+    assert_select "div[aria-labelledby='player-birth-year']", text: "2006"
+    assert_select "h2#player-height-cm", "Height (cm)"
+    assert_select "div[aria-labelledby='player-height-cm']", text: "198"
+    assert_select "h2#player-province", "Province"
+    assert_select "div[aria-labelledby='player-province']", text: "British Columbia"
+    assert_select "h2#player-hometown", "Hometown"
+    assert_select "div[aria-labelledby='player-hometown']", text: "Victoria"
+  end
+
+  test "show marks missing profile fields as not provided" do
+    create_logged_in_admin
+    player = create(:player, birth_year: nil, height_cm: nil, province: nil, hometown: nil)
+
+    get player_path(player)
+
+    assert_select "div[aria-labelledby^='player-']", text: "Not provided", count: 4
   end
 
   test "show renders breadcrumbs" do
@@ -261,6 +360,10 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "input[name='player[name]'][value=?]", player.name
+    assert_select "input[name='player[birth_year]'][value=?]", player.birth_year.to_s
+    assert_select "input[name='player[height_cm]'][value=?]", player.height_cm.to_s
+    assert_select "select[name='player[province]'] option[selected][value=?]", player.province
+    assert_select "input[name='player[hometown]'][value=?]", player.hometown
   end
 
   test "edit renders the form in a modal for turbo stream requests" do
@@ -285,6 +388,29 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to player_path(player)
     assert_equal I18n.t("players.update.success"), flash[:success]
     assert_equal "New Name", player.reload.name
+  end
+
+  test "admin can update a player's profile fields" do
+    create_logged_in_admin
+    player = create(:player)
+
+    patch player_path(player), params: {
+      player: { birth_year: "2004", height_cm: "175", province: "NS", hometown: "Halifax" }
+    }
+
+    assert_redirected_to player_path(player)
+    player.reload
+    assert_equal [2004, 175, "NS", "Halifax"], [player.birth_year, player.height_cm, player.province, player.hometown]
+  end
+
+  test "admin fails to update a player with an invalid province" do
+    create_logged_in_admin
+    player = create(:player, province: "ON")
+
+    patch player_path(player), params: { player: { province: "XX" } }
+
+    assert_response :unprocessable_content
+    assert_equal "ON", player.reload.province
   end
 
   test "admin fails to update a player with no name" do

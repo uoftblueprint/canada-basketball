@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_011634) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_022501) do
   create_table "admins", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
@@ -108,6 +108,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_011634) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "birth_year"
+    t.integer "height_cm"
+    t.string "province"
+    t.string "hometown"
+    t.check_constraint "birth_year BETWEEN 1900 AND 2100", name: "players_birth_year_range"
+    t.check_constraint "height_cm > 50 AND height_cm < 300", name: "players_height_cm_range"
+    t.check_constraint "province IN ('AB','BC','MB','NB','NL','NS','NT','NU','ON','PE','QC','SK','YT')", name: "players_province_valid"
   end
 
   create_table "teams", force: :cascade do |t|

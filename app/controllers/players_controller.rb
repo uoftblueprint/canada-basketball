@@ -85,6 +85,6 @@ class PlayersController < ApplicationController
   private
 
   def player_params
-    params.expect(player: [:name])
+    params.expect(player: %i[name birth_year height_cm province hometown])
   end
 end
