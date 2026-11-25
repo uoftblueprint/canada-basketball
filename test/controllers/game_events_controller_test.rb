@@ -159,4 +159,60 @@ class GameEventsControllerTest < ActionDispatch::IntegrationTest
       assert_turbo_stream action: :replace, target: ActionView::RecordIdentifier.dom_id(@game, table)
     end
   end
+
+  test "destroy deletes the game event" do
+    event = create(:game_event, game: @game, player: @player)
+
+    assert_difference("GameEvent.count", -1) do
+      delete camp_game_game_event_path(@camp, @game, event)
+    end
+
+    assert_redirected_to box_score_camp_game_path(@camp, @game)
+    assert_equal I18n.t("game_events.destroy.success"), flash[:success]
+  end
+
+  test "destroy with a missing event returns not found" do
+    assert_no_difference("GameEvent.count") do
+      delete camp_game_game_event_path(@camp, @game, id: 0)
+    end
+
+    assert_response :not_found
+  end
+
+  test "logged out user cannot destroy a game event" do
+    event = create(:game_event, game: @game, player: @player)
+    log_out_user
+
+    assert_no_difference("GameEvent.count") do
+      delete camp_game_game_event_path(@camp, @game, event)
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "camp cannot destroy an event from another camp's game" do
+    other_camp = create(:camp)
+    other_team = create(:team)
+    other_camp.teams << other_team
+    other_game = create(:game, camp: other_camp, team: other_team)
+    event = create(:game_event, game: other_game, player: nil)
+
+    assert_no_difference("GameEvent.count") do
+      delete camp_game_game_event_path(other_camp, other_game, event)
+    end
+
+    assert_redirected_to login_path
+  end
+
+  test "admin can destroy a game event" do
+    event = create(:game_event, game: @game, player: @player)
+    log_out_user
+    create_logged_in_admin
+
+    assert_difference("GameEvent.count", -1) do
+      delete camp_game_game_event_path(@camp, @game, event)
+    end
+
+    assert_redirected_to box_score_camp_game_path(@camp, @game)
+  end
 end

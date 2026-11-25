@@ -33,6 +33,8 @@ en:
       two_pm: 2PM
     create:
       success: Event recorded successfully
+    destroy:
+      success: Event deleted successfully
     form_component:
       events: Events
       period: Period
