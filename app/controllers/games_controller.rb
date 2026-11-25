@@ -7,12 +7,14 @@ class GamesController < ApplicationController
     @game = current_camp.games.find(params.expect(:id))
     @stat_lines_state = build_stat_lines_state
     @game_events_state = build_events_table
+    @team_stat_rows = @game.team_stat_rows
   end
 
   def box_score
     @game = current_camp.games.find(params.expect(:id))
     @stat_lines_state = build_stat_lines_state
     @game_events_state = build_events_table
+    @team_stat_rows = @game.team_stat_rows
   end
 
   def new

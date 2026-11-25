@@ -32,20 +32,23 @@
     <h2 id="box-score-tracker-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold"><%= t(".box_score_tracker") %></h2>
     <%= render GameEvents::FormComponent.new(game: @game, camp: current_camp) %>
   </section>
-  <section aria-labelledby="stats-heading">
-    <h2 id="stats-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold"><%= t(".stats") %></h2>
-    <div class="flex flex-col gap-6">
+  <section class="mt-6 min-w-0" aria-labelledby="stats-heading">
+    <h2 id="stats-heading" class="border-b-[0.5px] border-base-content pb-2 mb-4 text-3xl font-semibold">
+      <%= t(".stats") %>
+    </h2>
+    <div class="flex flex-col gap-4">
       <%= render Games::EventsTableComponent.new(
             state: @game_events_state,
             game: @game,
             path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) },
             delete_path_builder: ->(event) { camp_game_game_event_path(current_camp, @game, event) }
           ) %>
-    <%= render Games::StatLinesTableComponent.new(
-          state: @stat_lines_state,
-          game: @game,
-          path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) }
-        ) %>
+      <%= render Games::StatLinesTableComponent.new(
+            state: @stat_lines_state,
+            game: @game,
+            path_builder: ->(params) { box_score_camp_game_path(current_camp, @game, params) }
+          ) %>
+      <%= render Games::TeamStatsTableComponent.new(rows: @team_stat_rows) %>
     </div>
   </section>
 </section>
