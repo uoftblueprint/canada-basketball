@@ -19,6 +19,7 @@ class GameEventsController < ApplicationController
                       status: :see_other
         end
         format.turbo_stream do
+          render :create
         end
       end
     else
@@ -39,8 +40,6 @@ class GameEventsController < ApplicationController
           redirect_to box_score_camp_game_path(current_camp, @game),
                       flash: { success: t(".success") },
                       status: :see_other
-        end
-        format.turbo_stream do
         end
       end
     else
