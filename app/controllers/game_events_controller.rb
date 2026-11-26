@@ -41,6 +41,9 @@ class GameEventsController < ApplicationController
                       flash: { success: t(".success") },
                       status: :see_other
         end
+        format.turbo_stream do
+          render :destroy
+        end
       end
     else
       redirect_to box_score_camp_game_path(current_camp, @game),
