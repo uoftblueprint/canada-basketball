@@ -8,6 +8,11 @@ class GamesController < ApplicationController
     @stat_lines_state = build_stat_lines_state
     @game_events_state = build_events_table
     @team_stat_rows = @game.team_stat_rows
+
+    respond_to do |format|
+      format.html
+      format.csv { respond_with_table_csv(@stat_lines_state, @game_events_state) }
+    end
   end
 
   def box_score
@@ -15,6 +20,11 @@ class GamesController < ApplicationController
     @stat_lines_state = build_stat_lines_state
     @game_events_state = build_events_table
     @team_stat_rows = @game.team_stat_rows
+
+    respond_to do |format|
+      format.html
+      format.csv { respond_with_table_csv(@stat_lines_state, @game_events_state) }
+    end
   end
 
   def new

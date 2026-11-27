@@ -5,6 +5,7 @@ class Player < ApplicationRecord
 
   searchable_by :name
   sortable_by :name
+  csv_exportable :id, :name, :created_at, :updated_at
 
   validates :name, presence: true
 end

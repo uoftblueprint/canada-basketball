@@ -8,6 +8,11 @@ class PlayersController < ApplicationController
     @table_state = build_table_state(
       Player.order(:name)
     )
+
+    respond_to do |format|
+      format.html
+      format.csv { respond_with_csv(@table_state) }
+    end
   end
 
   def search

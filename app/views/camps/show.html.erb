@@ -56,7 +56,8 @@
       <h2 id="teams-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Team.model_name.human(count: 2) %></h2>
       <%= render Shared::IndexTableComponent.new(
             state: @teams,
-            path_builder: ->(params) { camp_path(@camp, params) }
+            path_builder: ->(params) { camp_path(@camp, params) },
+            csv_path_builder: ->(params) { camp_path(@camp, params.merge(table: :teams)) }
           ) do |table| %>
         <% table.column :name %>
         <% table.column :actions, header: t("shared.index_table_component.actions"), col_size: "auto", fill: true do |team| %>
@@ -90,7 +91,8 @@
       <h2 id="players-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Player.model_name.human(count: 2) %></h2>
       <%= render Shared::IndexTableComponent.new(
             state: @players,
-            path_builder: ->(params) { camp_path(@camp, params) }
+            path_builder: ->(params) { camp_path(@camp, params) },
+            csv_path_builder: ->(params) { camp_path(@camp, params.merge(table: :players)) }
           ) do |table| %>
         <% table.column :name %>
         <% table.column :team do |player| %>
@@ -107,7 +109,8 @@
       <h2 id="games-heading" class="border-b-[0.5px] border-base-content pb-2 mb-2 text-3xl font-semibold"><%= Game.model_name.human(count: 2) %></h2>
       <%= render Shared::IndexTableComponent.new(
             state: @games,
-            path_builder: ->(params) { camp_path(@camp, params) }
+            path_builder: ->(params) { camp_path(@camp, params) },
+            csv_path_builder: ->(params) { camp_path(@camp, params.merge(table: :games)) }
           ) do |table| %>
         <% table.column :team do |game| %>
           <%= game.team.name %>

@@ -308,6 +308,32 @@ class CampsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tbody tr", count: 0
   end
 
+  test "camp page csv exports the requested table" do
+    camp = create_logged_in_camp
+    create(:game, team: create(:team, camp: camp), opponent_name: "Pacers")
+
+    get camp_path(camp, format: :csv, table: :games)
+
+    assert_includes response.body, "Pacers"
+  end
+
+  test "camp page csv with an unknown table is not found" do
+    camp = create_logged_in_camp
+
+    get camp_path(camp, format: :csv, table: :unknown)
+
+    assert_response :not_found
+  end
+
+  test "camp cannot download another camp's csv" do
+    create_logged_in_camp
+    other_camp = create(:camp)
+
+    get camp_path(other_camp, format: :csv, table: :games)
+
+    assert_redirected_to login_path
+  end
+
   test "guests must log in" do
     camp = create(:camp)
 

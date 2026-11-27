@@ -41,4 +41,9 @@ module IndexTable
     filename = "#{table_state.param_scope || model.model_name.plural}.csv"
     send_data model.to_csv(table_state.filtered_query), filename: filename, type: "text/csv"
   end
+
+  def respond_with_table_csv(*tables)
+    table = tables.find { |t| t.param_scope.to_s == params[:table] }
+    table ? respond_with_csv(table) : head(:not_found)
+  end
 end

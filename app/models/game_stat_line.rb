@@ -19,6 +19,7 @@ class GameStatLine < ApplicationRecord
   PERCENTAGE_COLUMNS = %i[fg_pct two_p_pct three_p_pct ft_pct].freeze
 
   sortable_by(*COLUMNS, *PERCENTAGE_COLUMNS)
+  csv_exportable :id, :game_id, :player_id, :is_opponent, *COLUMNS, *PERCENTAGE_COLUMNS, :created_at, :updated_at
 
   def self.totals
     sum_exprs = COLUMNS.map { |c| "COALESCE(SUM(#{c}), 0) AS #{c}" }
