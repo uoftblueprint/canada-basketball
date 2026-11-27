@@ -15,10 +15,14 @@
   </fieldset>
   <fieldset class="fieldset">
     <legend class="fieldset-legend text-lg font-medium"><%= t(".events") %></legend>
-    <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-      <% GameEvent.kinds.each_key do |kind| %>
-        <%= form.button t("game_events.kinds.#{kind}"), name: form.field_name(:kind), value: kind, class: "btn btn-primary" %>
-      <% end %>
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <% COLUMN_KINDS.each do |kinds| %>
+      <div class="flex flex-col gap-2">
+        <% kinds.each do |kind| %>
+          <%= form.button t("game_events.kinds.#{kind}"), name: form.field_name(:kind), value: kind, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    <% end %>
     </div>
   </fieldset>
 <% end %>
