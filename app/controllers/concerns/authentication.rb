@@ -6,7 +6,7 @@ module Authentication
     # Use skip_before_action to skip login
     before_action :require_login
     helper_method :logged_in_state, :logged_in?, :logged_in_as_admin?, :logged_in_as_camp?, :logged_in_admin,
-                  :logged_in_camp
+                  :logged_in_camp, :logged_in_as_manager?, :logged_in_as_analyst?
   end
 
   class_methods do
@@ -36,6 +36,18 @@ module Authentication
     redirect_to login_path, flash: { error: t("authentication.require_admin") }
   end
 
+  def require_manager
+    return if logged_in_as_manager?
+
+    redirect_to login_path, flash: { error: t("authentication.require_manager") }
+  end
+
+  def require_analyst
+    return if logged_in_as_manager? || logged_in_as_analyst?
+
+    redirect_to login_path, flash: { error: t("authentication.require_analyst") }
+  end
+
   # Require that the user either be logged in as an admin,
   # or be logged in as the current camp
   def require_camp_access
@@ -57,6 +69,8 @@ module Authentication
   end
 
   def logged_in_as_admin? = logged_in_state == :admin
+  def logged_in_as_manager? = logged_in_admin&.manager? == true
+  def logged_in_as_analyst? = logged_in_admin&.analyst? == true
   def logged_in_as_camp? = logged_in_state == :camp
   def logged_in? = logged_in_state != :logged_out
 

@@ -15,8 +15,8 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
-    def create_logged_in_admin
-      create(:admin).tap do |admin|
+    def create_logged_in_admin(role: :manager)
+      create(:admin, role: role).tap do |admin|
         post login_admin_url, params: { email: admin.email, password: admin.password }
       end
     end

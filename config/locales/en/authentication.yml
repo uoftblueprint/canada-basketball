@@ -2,5 +2,7 @@
 en:
   authentication:
     require_admin: You must be logged in as an admin to access this page
+    require_analyst: You must be logged in as a manager or analyst to access this page
     require_camp_access: You don't have access to this camp
     require_login: You must be logged in to access this page
+    require_manager: You must be logged in as a manager to access this page
