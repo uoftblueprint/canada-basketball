@@ -31,7 +31,7 @@ class AuthenticationTest < ActiveSupport::TestCase
       if identity == :manager
         assert_nil auth.redirect
       else
-        assert_denied auth, "authentication.require_manager"
+        assert_denied auth, I18n.t("authentication.require_manager")
       end
     end
 
@@ -43,7 +43,7 @@ class AuthenticationTest < ActiveSupport::TestCase
       if %i[manager analyst].include?(identity)
         assert_nil auth.redirect
       else
-        assert_denied auth, "authentication.require_analyst"
+        assert_denied auth, I18n.t("authentication.require_analyst")
       end
     end
 
@@ -63,7 +63,7 @@ class AuthenticationTest < ActiveSupport::TestCase
 
       auth.send(guard)
 
-      assert_denied auth, "authentication.#{guard}"
+      assert_denied auth, I18n.t("authentication.#{guard}")
     end
   end
 
@@ -82,7 +82,7 @@ class AuthenticationTest < ActiveSupport::TestCase
     end
   end
 
-  def assert_denied(auth, translation_key)
-    assert_equal({ path: "/login", flash: { error: I18n.t(translation_key) } }, auth.redirect)
+  def assert_denied(auth, message)
+    assert_equal({ path: "/login", flash: { error: message } }, auth.redirect)
   end
 end

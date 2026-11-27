@@ -20,8 +20,9 @@ class AdminTest < ActiveSupport::TestCase
       assert_predicate admin.reload, :valid?
       assert_equal role.to_s, admin.role
       assert_predicate admin, :"#{role}?"
-      other_role = role == :manager ? :analyst : :manager
-      assert_not_predicate admin, :"#{other_role}?"
+      (Admin.roles.keys - [role.to_s]).each do |other_role|
+        assert_not_predicate admin, :"#{other_role}?"
+      end
     end
   end
 
