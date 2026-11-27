@@ -167,6 +167,7 @@ ignore_unused:
   - 'game_events.kinds.*'
   - 'game_events.abbreviations.*'
   - 'game_events.periods.*'
+  - 'players.provinces.*'
   - 'time.formats.default'
 
 ## Exclude these keys from the `i18n-tasks eq-base' report:

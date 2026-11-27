@@ -3,7 +3,11 @@ en:
   activerecord:
     attributes:
       player:
+        birth_year: Year of Birth
+        height_cm: Height (cm)
+        hometown: Hometown
         name: Name
+        province: Province
         team: Team
     models:
       player:
@@ -20,14 +24,30 @@ en:
     index:
       create_player: Create Player
       delete_confirmation: Are you sure you want to delete player %{name}?
+      not_provided: Not provided
       page_title: Players
       title: Players
     new:
       page_title: New Player
       title: New Player
+    provinces:
+      AB: Alberta
+      BC: British Columbia
+      MB: Manitoba
+      NB: New Brunswick
+      NL: Newfoundland and Labrador
+      NS: Nova Scotia
+      NT: Northwest Territories
+      NU: Nunavut
+      'ON': Ontario
+      PE: Prince Edward Island
+      QC: Quebec
+      SK: Saskatchewan
+      YT: Yukon
     show:
       name: Name
       no_team: No team
+      not_provided: Not provided
       page_title: Players · %{name}
       registrations: Registrations
       title: Player Details
